@@ -3,4 +3,4 @@
 SELF=$(readlink -f "$0")
 ROOT=$(dirname "${SELF}")
 
-stow -d "${ROOT}" -t "${HOME}" home --adopt
+stow -R --override='.*' -d "${ROOT}" -t "${HOME}" home

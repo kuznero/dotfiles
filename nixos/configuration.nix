@@ -140,7 +140,6 @@ in {
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    bcompare
     btop
     chromium
     copyq
@@ -159,8 +158,9 @@ in {
     xclip
     zsh
   ] ++ lib.optionals (pkgs.system == "x86_64-linux") (with pkgs; [
-    slack
     bitwarden-desktop
+    bcompare
+    slack
   ]) ++ [
     vscodeCustomized
   ];
