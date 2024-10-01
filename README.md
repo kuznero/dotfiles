@@ -1,17 +1,17 @@
-# Dotfiles
+# dotfiles
 
-There are two parts to this Dotfiles:
+Powered by [Home Manager](https://nixos.wiki/wiki/Home_Manager) with a wide range of [configuration options](https://nix-community.github.io/home-manager/options.xhtml).
 
-System-wide configuration for **NixOS**:
+## Usage
 
-```bash
-./install-nixos.sh
-```
-
-Dotfiles in `$HOME` folder for **NixOS** and **MacOS**:
+To install all the packages and configuration:
 
 ```bash
-./install-home.sh
+./install.sh
 ```
 
-> Both of these are powered by GNU Stow.
+To uninstall Home Manager:
+
+```bash
+./uninstall.sh
+```
