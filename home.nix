@@ -122,18 +122,9 @@ in
     userName = "Roman Kuznetsov";
     userEmail = "roku@lix.one";
     extraConfig =
-    let
-      helper =
-        if builtins.match ".*-darwin" os != null then
-          "osxkeychain"
-        else if builtins.match ".*-linux" os != null then
-          "libsecret"
-        else
-          "cache";
-    in
     {
       core = {
-        editor = "vim";
+        editor = "nvim";
         autocrlf = "input";
       };
       push = {
@@ -156,7 +147,6 @@ in
       mergetool.bc = {
         trustExitCode = true;
       };
-      credential.helper = helper;
     };
   };
 
@@ -181,7 +171,7 @@ in
         cursorStyle = "line";
         fontFamily = "'Monaspace Neon', monospace";
         fontLigatures = "'calt', 'liga', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08'";
-        fontSize = 14;
+        fontSize = 13;
         fontWeight = "400";
         lineHeight = 1.4;
         lineNumbers = "relative";
