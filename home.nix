@@ -2,6 +2,7 @@
 
 let
   os = builtins.currentSystem;
+
   shellAliases = {
     gst = "git status";
     gl = "git pull --all --prune";
@@ -14,6 +15,7 @@ let
     lzg = "lazygit";
     lzd = "lazydocker";
   };
+
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -33,6 +35,46 @@ in
   fonts.fontconfig = {
     enable = true;
     defaultFonts.monospace = [ "Monaspace Neon" ];
+  };
+
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode;
+  };
+
+  home.activation.afterWriteBoundary =
+    let
+      # $HOME/.config/Code (on Linux)
+      # $HOME/Library/Application Support/Code (on macOS)
+      userDataDir =
+        if builtins.match ".*-darwin" os != null then
+          "${config.home.homeDirectory}/Library/Application Support/Code/User"
+        else if builtins.match ".*-linux" os != null then
+          "${config.home.homeDirectory}/.config/Code/User"
+        else
+          "${config.home.homeDirectory}/.config/Code/User";
+    in
+    {
+      after = [ "writeBoundary" ];
+      before = [];
+      data = ''
+        #!${pkgs.stdenv.shell}
+
+        echo [info] deploy settings and keybindings
+        mkdir -p "${userDataDir}" >/dev/null 2>&1
+        rm -f "${userDataDir}/settings.json*" "${userDataDir}/keybindings.json*" >/dev/null 2>&1
+        cat ${pkgs.writeText "tmp_vscode_settings" (builtins.readFile ./dotfiles/vscode/settings.json)} | jq --monochrome-output > "${userDataDir}/settings.json"
+        cat ${pkgs.writeText "tmp_vscode_keybindings" (builtins.readFile ./dotfiles/vscode/keybindings.json)} | jq --monochrome-output > "${userDataDir}/keybindings.json"
+        echo
+
+        echo [info] uninstalling existing extensions
+        ${pkgs.vscode}/bin/code --list-extensions | xargs -I {} ${pkgs.vscode}/bin/code --uninstall-extension {} --force
+        echo
+
+        echo [info] installing curated extensions
+        cat ${pkgs.writeText "tmp_vscode_extensions" (builtins.readFile ./dotfiles/vscode/extensions.txt)} | xargs -I {} ${pkgs.vscode}/bin/code --install-extension {} --force
+        echo
+      '';
   };
 
   home.packages = with pkgs; [
@@ -148,177 +190,6 @@ in
         trustExitCode = true;
       };
     };
-  };
-
-  programs.vscode = {
-    enable = true;
-    extensions = with pkgs.vscode-extensions; [
-      bbenoist.nix
-      catppuccin.catppuccin-vsc
-      catppuccin.catppuccin-vsc-icons
-      ms-vscode-remote.remote-containers
-      shardulm94.trailing-spaces
-      sumneko.lua
-      vscodevim.vim
-      yzhang.markdown-all-in-one
-    ];
-    userSettings = {
-      debug.console.fontFamily = "'Monaspace Neon', monospace";
-      editor = {
-        accessibilitySupport = "off";
-        cursorBlinking = "smooth";
-        cursorSmoothCaretAnimation = "on";
-        cursorStyle = "line";
-        fontFamily = "'Monaspace Neon', monospace";
-        fontLigatures = "'calt', 'liga', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08'";
-        fontSize = 13;
-        fontWeight = "400";
-        lineHeight = 1.4;
-        lineNumbers = "relative";
-        minimap.enabled = false;
-        renderLineHighlight = "gutter";
-        semanticHighlighting.enabled = true;
-        tabSize = 2;
-        wordSeparators = "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-";
-        wordWrap = "off";
-      };
-      explorer.confirmDragAndDrop = false;
-      extensions = {
-        autoCheckUpdates = false;
-        ignoreRecommendations = true;
-      };
-      remote.autoForwardPortsSource = "hybrid";
-      security.workspace.trust.untrustedFiles = "open";
-      telemetry.telemetryLevel = "off";
-      terminal.integrated = {
-        fontFamily = "'Monaspace Neon', monospace";
-        fontSize = 13;
-        fontWeight = "400";
-        fontWeightBold = "400";
-        minimumContrastRatio = 1;
-        tabs.enabled = true;
-      };
-      window = {
-        autoDetectColorScheme = true;
-        commandCenter = false;
-        nativeFullScreen = false;
-        titleBarStyle = "custom";
-        zoomLevel = 1;
-      };
-      workbench = {
-        colorTheme = "Catppuccin Macchiato";
-        editor.enablePreview = false;
-        iconTheme = "catppuccin-macchiato";
-        layoutControl.enabled = false;
-        preferredDarkColorTheme = "Catppuccin Macchiato";
-        preferredLightColorTheme = "Catppuccin Latte";
-        startupEditor = "none";
-      };
-      catppuccin = {
-        accentColor = "pink";
-        colorOverrides.mocha = {
-          base = "#000000";
-          mantle = "#010101";
-          crust = "#020202";
-        };
-        customUIColors.mocha = {
-          statusBar.foreground = "accent";
-        };
-        italicKeywords = false;
-        italicComments = true;
-        boldKeywords = false;
-      };
-    };
-    keybindings = [
-      {
-        key = "alt+-";
-        command = "workbench.action.terminal.toggleTerminal";
-      }
-      {
-        key = "ctrl+`";
-        command = "-workbench.action.terminal.toggleTerminal";
-      }
-      {
-        key = "alt+=";
-        command = "workbench.action.toggleMaximizedPanel";
-      }
-      {
-        key = "alt+d";
-        command = "editor.action.addSelectionToNextFindMatch";
-        when = "editorFocus";
-      }
-      {
-        key = "ctrl+d";
-        command = "-editor.action.addSelectionToNextFindMatch";
-        when = "editorFocus";
-      }
-      {
-        key = "ctrl+alt+.";
-        command = "bookmarks.listFromAllFiles";
-      }
-      {
-        key = "alt+/";
-        command = "workbench.action.toggleSidebarVisibility";
-      }
-      {
-        key = "shift+alt+/";
-        command = "workbench.action.toggleAuxiliaryBar";
-      }
-      {
-        key = "ctrl+b";
-        command = "-workbench.action.toggleSidebarVisibility";
-      }
-      {
-        key = "cmd+e";
-        command = "workbench.view.explorer";
-      }
-      {
-        key = "ctrl+shift+e";
-        command = "-workbench.view.explorer";
-      }
-      {
-        key = "ctrl+shift+/";
-        command = "workbench.files.action.collapseExplorerFolders";
-      }
-      {
-        key = "ctrl+alt+f";
-        command = "explorer.newFile";
-      }
-      {
-        key = "ctrl+alt+d";
-        command = "explorer.newFolder";
-      }
-      {
-        key = "ctrl+alt+z";
-        command = "workbench.action.toggleZenMode";
-      }
-      {
-        key = "ctrl+k z";
-        command = "-workbench.action.toggleZenMode";
-      }
-      {
-        key = "ctrl+alt+]";
-        command = "outline.focus";
-      }
-      {
-        key = "ctrl+p";
-        command = "workbench.action.quickOpen";
-      }
-      {
-        key = "alt+o";
-        command = "editor.action.openLink";
-      }
-      {
-        key = "alt+f11";
-        command = "workbench.action.debug.stepInto";
-        when = "debugState != 'inactive'";
-      }
-      {
-        key = "f11";
-        command = "-workbench.action.debug.stepInto";
-        when = "debugState != 'inactive'";
-      }
-    ];
   };
 
   programs.zoxide = {

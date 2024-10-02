@@ -1,0 +1,8 @@
+bbenoist.nix
+catppuccin.catppuccin-vsc
+catppuccin.catppuccin-vsc-icons
+ms-vscode-remote.remote-containers
+shardulm94.trailing-spaces
+sumneko.lua
+vscodevim.vim
+yzhang.markdown-all-in-one

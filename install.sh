@@ -38,7 +38,7 @@ if [ -d $HOME/.config/home-manager ]; then
 fi
 mkdir -p $HOME/.config/home-manager >/dev/null 2>&1
 cp -r $ROOT/dotfiles $HOME/.config/home-manager/dotfiles >/dev/null 2>&1
-cp $ROOT/home.nix $HOME/.config/home-manager/home.nix >/dev/null 2>&1
+cp $ROOT/*.nix $HOME/.config/home-manager/ >/dev/null 2>&1
 echo
 
 set -e
