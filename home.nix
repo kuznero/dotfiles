@@ -20,7 +20,7 @@ in
 {
   nixpkgs.config.allowUnfree = true;
 
-  home.username = "roku";
+  home.username = builtins.getEnv "USER";
   home.homeDirectory =
     if builtins.match ".*-darwin" os != null then
       "/Users/${config.home.username}"
@@ -136,7 +136,7 @@ in
   #
   # or
   #
-  #  /etc/profiles/per-user/roku/etc/profile.d/hm-session-vars.sh
+  #  /etc/profiles/per-user/${config.home.username}/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
     # EDITOR = "emacs";
@@ -162,7 +162,7 @@ in
       ps = "push";
     };
     userName = "Roman Kuznetsov";
-    userEmail = "roku@lix.one";
+    userEmail = "${config.home.username}@lix.one";
     extraConfig =
     {
       core = {
@@ -303,7 +303,7 @@ in
     font = {
       package = pkgs.monaspace;
       name = "Monaspace Neon Var";
-      size = 14;
+      size = 13;
     };
     shellIntegration.enableZshIntegration = true;
     settings = {
@@ -361,6 +361,15 @@ in
   };
 
   # programs.gpg = { enable = true; };
+
+  programs.chromium = {
+    enable = true;
+    package = pkgs.chromium;
+    extensions = [
+      "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+    ];
+  };
 
   programs.neovim = {
     enable = true;

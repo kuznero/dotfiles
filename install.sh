@@ -44,9 +44,9 @@ echo
 set -e
 
 echo "[info] Building home-manager configuration"
-home-manager build
+home-manager build --impure
 echo
 
 echo "[info] Switching home-manager configuration"
-home-manager switch -b backup
+home-manager switch --impure -b backup
 echo
