@@ -148,9 +148,11 @@
     gnome.dconf-editor
     gnomeExtensions.appindicator
     kitty
+    pcloud
     slack
     vim
     xmind
+    zoom-us
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
