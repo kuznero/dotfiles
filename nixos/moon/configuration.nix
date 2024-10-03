@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports =
@@ -46,7 +46,10 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    wayland = false;
+  };
   services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
@@ -90,8 +93,50 @@
     ];
   };
 
-  # Install firefox.
   programs.firefox.enable = true;
+  programs.dconf = {
+    enable = true;
+    profiles = {
+      user.databases = [{
+        settings = with lib.gvariant; {
+          "org/gnome/desktop/privacy".remember-recent-files = false;
+          "org/gnome/desktop/interface".color-scheme = "prefer-dark";
+          "org/gnome/shell/keybindings".show-screen-recording-ui = ["<Shift><Super>s"];
+
+          "org/gnome/shell".enabled-extensions = [
+            "apps-menu@gnome-shell-extensions.gcampax.github.com"
+            "system-monitor@gnome-shell-extensions.gcampax.github.com"
+            "appindicatorsupport@rgcjonas.gmail.com"
+            "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
+          ];
+
+          "org/gnome/settings-daemon/plugins/media-keys".custom-keybindings = [
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+            "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+          ];
+
+          "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+            binding = "<Super>t";
+            command = "kitty";
+            name    = "Open Terminal";
+          };
+
+          "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+            binding = "<Super>b";
+            command = "chromium";
+            name    = "Open Browser";
+          };
+
+          "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+            binding = "<Super>e";
+            command = "nautilus";
+            name    = "Open Files";
+          };
+        };
+      }];
+    };
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -99,6 +144,11 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    copyq
+    gnome.dconf-editor
+    gnomeExtensions.appindicator
+    kitty
+    slack
     vim
   ];
 
@@ -111,6 +161,8 @@
   # };
 
   # List services that you want to enable:
+
+  services.gnome.gnome-settings-daemon.enable = true;
 
   services.logind.lidSwitch = "ignore";
   services.logind.lidSwitchExternalPower = "ignore";
