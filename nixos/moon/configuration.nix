@@ -151,7 +151,6 @@
     pcloud
     slack
     vim
-    xmind
     zoom-us
   ];
 
@@ -173,6 +172,8 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  services.flatpak.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
