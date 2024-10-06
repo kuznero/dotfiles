@@ -149,6 +149,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     copyq
+    docker-credential-helpers
     gnome.dconf-editor
     gnomeExtensions.appindicator
     kitty
