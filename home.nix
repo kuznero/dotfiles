@@ -303,7 +303,7 @@ in
     font = {
       package = pkgs.monaspace;
       name = "Monaspace Neon Var";
-      size = 13;
+      size = 12;
     };
     shellIntegration.enableZshIntegration = true;
     settings = {
