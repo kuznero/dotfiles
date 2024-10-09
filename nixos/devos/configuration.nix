@@ -120,6 +120,10 @@
             "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
           ];
 
+          "org/gnome/desktop/input-sources" = {
+            sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) ];
+          };
+
           "org/gnome/settings-daemon/plugins/media-keys".custom-keybindings = [
             "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
             "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"

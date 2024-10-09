@@ -87,6 +87,7 @@ in
     monaspace
     neofetch
     talosctl
+    telegram-desktop
     tmux
     vim
     xclip
@@ -302,7 +303,7 @@ in
     enable = true;
     font = {
       package = pkgs.monaspace;
-      name = "Monaspace Neon Var";
+      name = "Monaspace Neon";
       size = 12;
     };
     shellIntegration.enableZshIntegration = true;
