@@ -369,6 +369,7 @@ in
     extensions = [
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
       "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+      "bhchdcejhohfmigjafbampogmaanbfkg" # User-Agent Switcher and Manager
     ];
   };
 
