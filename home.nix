@@ -367,7 +367,7 @@ in
     enable = true;
     package = pkgs.chromium;
     extensions = [
-      "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
+      "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
       "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
     ];
   };
