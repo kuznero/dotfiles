@@ -67,9 +67,9 @@ in
         cat ${pkgs.writeText "tmp_vscode_keybindings" (builtins.readFile ./dotfiles/vscode/keybindings.json)} | jq --monochrome-output > "${userDataDir}/keybindings.json"
         echo
 
-        echo [info] uninstalling existing extensions
-        ${pkgs.vscode}/bin/code --list-extensions | xargs -I {} ${pkgs.vscode}/bin/code --uninstall-extension {} --force
-        echo
+        # echo [info] uninstalling existing extensions
+        # ${pkgs.vscode}/bin/code --list-extensions | xargs -I {} ${pkgs.vscode}/bin/code --uninstall-extension {} --force
+        # echo
 
         echo [info] installing curated extensions
         cat ${pkgs.writeText "tmp_vscode_extensions" (builtins.readFile ./dotfiles/vscode/extensions.txt)} | xargs -I {} ${pkgs.vscode}/bin/code --install-extension {} --force
@@ -86,6 +86,7 @@ in
     lazygit
     monaspace
     neofetch
+    sublime-merge
     talosctl
     telegram-desktop
     tmux
@@ -179,16 +180,11 @@ in
       color = {
         ui = true;
       };
-      diff = {
-        tool = "bc";
-        colorMoved = "default";
-      };
       merge = {
-        tool = "bc";
-        conflictstyle = "diff3";
+        tool = "smerge";
       };
-      mergetool.bc = {
-        trustExitCode = true;
+      mergetool.smerge = {
+        cmd = "smerge mergetool \"$BASE\" \"$REMOTE\" \"$LOCAL\" -o \"$MERGED\"";
       };
     };
   };
