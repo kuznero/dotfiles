@@ -81,6 +81,7 @@ in
     btop
     flux
     k9s
+    kdiff3
     kubectl
     lazydocker
     lazygit
