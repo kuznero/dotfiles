@@ -2,6 +2,7 @@ bbenoist.nix
 catppuccin.catppuccin-vsc
 catppuccin.catppuccin-vsc-icons
 github.copilot
+github.copilot-chat
 ms-vscode-remote.remote-containers
 shardulm94.trailing-spaces
 sumneko.lua
