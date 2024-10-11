@@ -112,6 +112,8 @@
           "org/gnome/desktop/privacy".remember-recent-files = false;
           "org/gnome/desktop/interface".color-scheme = "prefer-dark";
           "org/gnome/shell/keybindings".show-screen-recording-ui = ["<Shift><Super>s"];
+          "org/gnome/desktop/interface".font-hinting = "full";
+          "org/gnome/desktop/interface".font-antialiasing = "rgba";
 
           "org/gnome/shell".enabled-extensions = [
             "apps-menu@gnome-shell-extensions.gcampax.github.com"
@@ -161,6 +163,7 @@
     copyq
     docker-credential-helpers
     gnome.dconf-editor
+    gnome.gnome-tweaks
     gnomeExtensions.appindicator
     kitty
     vim
