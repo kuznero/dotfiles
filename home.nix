@@ -32,11 +32,6 @@ in
   home.stateVersion = "24.05"; # Please read the comment before changing.
   home.enableNixpkgsReleaseCheck = false;
 
-  fonts.fontconfig = {
-    enable = true;
-    defaultFonts.monospace = [ "Monaspace Neon" ];
-  };
-
   programs.vscode = {
     enable = true;
     package = pkgs.vscode;

@@ -85,6 +85,28 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  fonts = {
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "Monaspace Neon" ];
+        sansSerif = [ "Source Sans Pro" ];
+        serif = [ "Source Serif Pro" ];
+      };
+    };
+    enableDefaultPackages = true;
+    fontDir.enable = true;
+    packages = with pkgs; [
+      font-awesome
+      iosevka
+      monaspace
+      source-sans-pro
+      source-serif-pro
+      nerdfonts
+      # (nerdfonts.override { fonts = [ "DroidSansMono" ]; })
+    ];
+  };
+
   programs.zsh.enable = true;
 
   programs._1password.enable = true;
