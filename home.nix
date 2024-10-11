@@ -82,6 +82,7 @@ in
     lazygit
     monaspace
     neofetch
+    obsidian
     sublime-merge
     talosctl
     telegram-desktop

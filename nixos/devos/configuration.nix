@@ -100,9 +100,11 @@
       font-awesome
       iosevka
       monaspace
+      montserrat
+      nerdfonts
+      poppins
       source-sans-pro
       source-serif-pro
-      nerdfonts
       # (nerdfonts.override { fonts = [ "DroidSansMono" ]; })
     ];
   };
