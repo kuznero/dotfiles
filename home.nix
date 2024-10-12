@@ -296,7 +296,7 @@ in
     enable = true;
     font = {
       package = pkgs.monaspace;
-      name = "Monaspace Neon";
+      name = "0xProto Nerd Font";
       size = 12;
     };
     shellIntegration.enableZshIntegration = true;
