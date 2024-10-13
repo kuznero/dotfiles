@@ -80,7 +80,37 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  fonts = {
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "Monaspace Neon" ];
+        sansSerif = [ "Source Sans Pro" ];
+        serif = [ "Source Serif Pro" ];
+      };
+    };
+    enableDefaultPackages = true;
+    fontDir.enable = true;
+    packages = with pkgs; [
+      font-awesome
+      iosevka
+      monaspace
+      montserrat
+      nerdfonts
+      poppins
+      source-sans-pro
+      source-serif-pro
+      # (nerdfonts.override { fonts = [ "DroidSansMono" ]; })
+    ];
+  };
+
   programs.zsh.enable = true;
+
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "roku" ];
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.roku = {
@@ -93,7 +123,6 @@
     ];
   };
 
-  programs.firefox.enable = true;
   programs.dconf = {
     enable = true;
     profiles = {
@@ -102,6 +131,8 @@
           "org/gnome/desktop/privacy".remember-recent-files = false;
           "org/gnome/desktop/interface".color-scheme = "prefer-dark";
           "org/gnome/shell/keybindings".show-screen-recording-ui = ["<Shift><Super>s"];
+          "org/gnome/desktop/interface".font-hinting = "full";
+          "org/gnome/desktop/interface".font-antialiasing = "rgba";
 
           "org/gnome/shell".enabled-extensions = [
             "apps-menu@gnome-shell-extensions.gcampax.github.com"
@@ -109,6 +140,10 @@
             "appindicatorsupport@rgcjonas.gmail.com"
             "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
           ];
+
+          "org/gnome/desktop/input-sources" = {
+            sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) ];
+          };
 
           "org/gnome/settings-daemon/plugins/media-keys".custom-keybindings = [
             "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
@@ -145,7 +180,9 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     copyq
+    docker-credential-helpers
     gnome.dconf-editor
+    gnome.gnome-tweaks
     gnomeExtensions.appindicator
     kitty
     pcloud
@@ -164,6 +201,12 @@
 
   # List services that you want to enable:
 
+  # flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  # flatpak update
+  # flatpak search xmind
+  # flatpak install flathub net.xmind.XMind
+  services.flatpak.enable = true;
+
   services.gnome.gnome-settings-daemon.enable = true;
 
   services.logind.lidSwitch = "ignore";
@@ -172,8 +215,6 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
-  services.flatpak.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
