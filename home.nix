@@ -165,7 +165,6 @@ in
     extraConfig =
     {
       core = {
-        editor = "nvim";
         autocrlf = "input";
       };
       push = {
@@ -176,12 +175,6 @@ in
       };
       color = {
         ui = true;
-      };
-      merge = {
-        tool = "smerge";
-      };
-      mergetool.smerge = {
-        cmd = "smerge mergetool \"$BASE\" \"$REMOTE\" \"$LOCAL\" -o \"$MERGED\"";
       };
     };
   };
