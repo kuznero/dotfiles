@@ -92,7 +92,6 @@ in
     neofetch
     obsidian
     sublime-merge
-    talosctl
     telegram-desktop
     tmux
     vim
