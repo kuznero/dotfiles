@@ -16,6 +16,14 @@ let
     lzd = "lazydocker";
   };
 
+  # nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
+  # nix-channel --update
+  unstable = import <nixpkgs-unstable> {
+    config = {
+      allowUnfree = true;
+    };
+  };
+
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -34,7 +42,7 @@ in
 
   programs.vscode = {
     enable = true;
-    package = pkgs.vscode;
+    package = unstable.vscode;
   };
 
   home.activation.afterWriteBoundary =

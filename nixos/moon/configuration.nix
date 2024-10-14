@@ -4,6 +4,15 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  # sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
+  # sudo nix-channel --update
+  unstable = import <nixos-unstable> {
+    config = {
+      allowUnfree = true;
+    };
+  };
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -185,7 +194,7 @@
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
     kitty
-    pcloud
+    unstable.pcloud
     slack
     vim
     zoom-us
