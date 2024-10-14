@@ -212,6 +212,7 @@ in
     kitty
     pcloudFixed
     slack
+    unstable.bcompare
     unstable.talosctl
     vim
     zoom-us
