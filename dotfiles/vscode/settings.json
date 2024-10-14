@@ -8,6 +8,7 @@
   "catppuccin.italicComments": true,
   "catppuccin.italicKeywords": false,
   "debug.console.fontFamily": "'0xProto Nerd Font', 'Monaspace Neon', monospace",
+  "debug.console.fontSize": 13,
   "editor.accessibilitySupport": "off",
   "editor.cursorBlinking": "smooth",
   "editor.cursorSmoothCaretAnimation": "on",
@@ -27,6 +28,7 @@
   "explorer.confirmDragAndDrop": false,
   "extensions.autoCheckUpdates": false,
   "extensions.ignoreRecommendations": true,
+  "go.toolsManagement.autoUpdate": true,
   "remote.autoForwardPortsSource": "hybrid",
   "security.workspace.trust.untrustedFiles": "open",
   "telemetry.telemetryLevel": "off",
@@ -38,6 +40,7 @@
   "terminal.integrated.tabs.enabled": true,
   "window.autoDetectColorScheme": true,
   "window.commandCenter": false,
+  "window.menuBarVisibility": "compact",
   "window.nativeFullScreen": false,
   "window.titleBarStyle": "custom",
   "window.zoomLevel": 1,
@@ -46,8 +49,5 @@
   "workbench.iconTheme": "catppuccin-latte",
   "workbench.layoutControl.enabled": false,
   "workbench.preferredDarkColorTheme": "Catppuccin Macchiato",
-  "workbench.preferredLightColorTheme": "Catppuccin Latte",
-  "workbench.startupEditor": "none",
-  "go.toolsManagement.autoUpdate": true,
-  "debug.console.fontSize": 13
+  "workbench.startupEditor": "none"
 }
