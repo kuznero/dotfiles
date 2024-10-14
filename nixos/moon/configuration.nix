@@ -157,6 +157,7 @@ in
           "org/gnome/shell/keybindings".show-screen-recording-ui = ["<Shift><Super>s"];
           "org/gnome/desktop/interface".font-hinting = "full";
           "org/gnome/desktop/interface".font-antialiasing = "rgba";
+          "org/gnome/desktop/wm/preferences".num-workspaces = mkInt32 2;
 
           "org/gnome/shell".enabled-extensions = [
             "apps-menu@gnome-shell-extensions.gcampax.github.com"
