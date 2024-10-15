@@ -49,13 +49,15 @@ in
     let
       # $HOME/.config/Code (on Linux)
       # $HOME/Library/Application Support/Code (on macOS)
-      userDataDir =
+      vscodeDir =
         if builtins.match ".*-darwin" os != null then
           "${config.home.homeDirectory}/Library/Application Support/Code/User"
         else if builtins.match ".*-linux" os != null then
           "${config.home.homeDirectory}/.config/Code/User"
         else
           "${config.home.homeDirectory}/.config/Code/User";
+
+      kittyDir = "${config.home.homeDirectory}/.config/kitty";
     in
     {
       after = [ "writeBoundary" ];
@@ -63,19 +65,25 @@ in
       data = ''
         #!${pkgs.stdenv.shell}
 
-        echo [info] deploy settings and keybindings
-        mkdir -p "${userDataDir}" >/dev/null 2>&1
-        rm -f "${userDataDir}/settings.json*" "${userDataDir}/keybindings.json*" >/dev/null 2>&1
-        cat ${pkgs.writeText "tmp_vscode_settings" (builtins.readFile ./dotfiles/vscode/settings.json)} | jq --monochrome-output > "${userDataDir}/settings.json"
-        cat ${pkgs.writeText "tmp_vscode_keybindings" (builtins.readFile ./dotfiles/vscode/keybindings.json)} | jq --monochrome-output > "${userDataDir}/keybindings.json"
+        echo [info] deploy VSCode settings and keybindings
+        mkdir -p "${vscodeDir}" >/dev/null 2>&1
+        rm -f "${vscodeDir}/settings.json*" "${vscodeDir}/keybindings.json*" >/dev/null 2>&1
+        cat ${pkgs.writeText "tmp_vscode_settings" (builtins.readFile ./dotfiles/vscode/settings.json)} | jq --monochrome-output > "${vscodeDir}/settings.json"
+        cat ${pkgs.writeText "tmp_vscode_keybindings" (builtins.readFile ./dotfiles/vscode/keybindings.json)} | jq --monochrome-output > "${vscodeDir}/keybindings.json"
         echo
 
-        # echo [info] uninstalling existing extensions
+        # echo [info] uninstalling VSCode existing extensions
         # ${pkgs.vscode}/bin/code --list-extensions | xargs -I {} ${pkgs.vscode}/bin/code --uninstall-extension {} --force
         # echo
 
-        echo [info] installing curated extensions
+        echo [info] installing VSCode  extensions
         cat ${pkgs.writeText "tmp_vscode_extensions" (builtins.readFile ./dotfiles/vscode/extensions.txt)} | xargs -I {} ${pkgs.vscode}/bin/code --install-extension {} --force
+        echo
+
+        echo [info] deploy Kitty settings
+        mkdir -p "${kittyDir}" >/dev/null 2>&1
+        rm -f "${vscodeDir}/kitty.conf" >/dev/null 2>&1
+        cat ${pkgs.writeText "tmp_kitty_settings" (builtins.readFile ./dotfiles/kitty/kitty.conf)} > "${kittyDir}/kitty.conf"
         echo
       '';
   };
@@ -85,6 +93,7 @@ in
     flux
     k9s
     kdiff3
+    kitty
     kubectl
     lazydocker
     lazygit
@@ -290,68 +299,6 @@ in
     changeDirWidgetOptions = [ "--preview 'tree -C {} | head -200'" ];
     tmux.enableShellIntegration = true;
     historyWidgetOptions = [ "--sort" "--exact" ];
-  };
-
-  programs.kitty = {
-    enable = true;
-    font = {
-      package = pkgs.monaspace;
-      name = "0xProto Nerd Font";
-      size = 12;
-    };
-    shellIntegration.enableZshIntegration = true;
-    settings = {
-      bold_font = "auto";
-      italic_font = "auto";
-      bold_italic_font = "auto";
-      strip_trailing_spaces = "smart";
-      enable_audio_bell = "no";
-      term = "xterm-256color";
-      macos_titlebar_color = "background";
-      macos_option_as_alt = "yes";
-      scrollback_lines = 10000;
-      window_padding_width = 4;
-
-      # Nord Colorscheme for Kitty
-      foreground = "#D8DEE9";
-      background = "#2E3440";
-      selection_foreground = "#000000";
-      selection_background = "#FFFACD";
-      url_color = "#0087BD";
-      cursor = "#81A1C1";
-
-      # black
-      color0 = "#3B4252";
-      color8 = "#4C566A";
-
-      # red
-      color1 = "#BF616A";
-      color9 = "#BF616A";
-
-      # green
-      color2 = "#A3BE8C";
-      color10 = "#A3BE8C";
-
-      # yellow
-      color3 = "#EBCB8B";
-      color11 = "#EBCB8B";
-
-      # blue
-      color4 = "#81A1C1";
-      color12 = "#81A1C1";
-
-      # magenta
-      color5 = "#B48EAD";
-      color13 = "#B48EAD";
-
-      # cyan
-      color6 = "#88C0D0";
-      color14 = "#8FBCBB";
-
-      # white
-      color7 = "#E5E9F0";
-      color15 = "#ECEFF4";
-    };
   };
 
   # programs.gpg = { enable = true; };
