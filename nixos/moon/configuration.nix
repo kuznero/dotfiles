@@ -64,8 +64,6 @@ in
     LC_TIME = "en_US.UTF-8";
   };
 
-  powerManagement.enable = false;
-
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -160,6 +158,9 @@ in
           "org/gnome/desktop/interface".font-hinting = "full";
           "org/gnome/desktop/interface".font-antialiasing = "rgba";
           "org/gnome/desktop/wm/preferences".num-workspaces = mkInt32 2;
+
+          "org/gnome/settings-daemon/plugins/power".sleep-inactive-ac-type = "nothing";
+          "org/gnome/settings-daemon/plugins/power".power-button-action = "nothing";
 
           "org/gnome/shell".enabled-extensions = [
             "apps-menu@gnome-shell-extensions.gcampax.github.com"
