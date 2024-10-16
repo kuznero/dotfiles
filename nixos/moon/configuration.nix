@@ -34,6 +34,9 @@ in
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Allow to cross-compile for arm64
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
