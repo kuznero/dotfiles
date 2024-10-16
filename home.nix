@@ -28,6 +28,11 @@ in
 {
   nixpkgs.config.allowUnfree = true;
 
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
+
   home.username = builtins.getEnv "USER";
   home.homeDirectory =
     if builtins.match ".*-darwin" os != null then
