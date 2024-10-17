@@ -104,9 +104,10 @@ in
     lazygit
     monaspace
     neofetch
-    obsidian
-    sublime-merge
-    telegram-desktop
+    # TODO: move to nixos/configuration.nix
+    # obsidian
+    # sublime-merge
+    # telegram-desktop
     tmux
     vim
     xclip
@@ -290,6 +291,10 @@ in
       command -v talosctl >/dev/null 2>&1 && {
         source <(talosctl completion zsh)
       }
+
+      if [ -n "$NIX_FLAKE_NAME" ]; then
+        export RPROMPT="%F{green}($NIX_FLAKE_NAME)%f";
+      fi
     '';
   };
 
@@ -309,7 +314,7 @@ in
   # programs.gpg = { enable = true; };
 
   programs.chromium = {
-    enable = true;
+    enable = builtins.match "x86_64-.*" os != null;
     package = pkgs.chromium;
     extensions = [
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
