@@ -218,8 +218,10 @@ in
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
     kitty
+    obsidian
     pcloudFixed
     slack
+    telegram-desktop
     unstable.bcompare
     unstable.talosctl
     vim
