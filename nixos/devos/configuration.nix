@@ -4,11 +4,24 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  # sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
+  # sudo nix-channel --update
+  unstable = import <nixos-unstable> {
+    config = {
+      allowUnfree = true;
+    };
+  };
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Allow to cross-compile for arm64
+  boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -138,6 +151,10 @@
           "org/gnome/shell/keybindings".show-screen-recording-ui = ["<Shift><Super>s"];
           "org/gnome/desktop/interface".font-hinting = "full";
           "org/gnome/desktop/interface".font-antialiasing = "rgba";
+          "org/gnome/desktop/wm/preferences".num-workspaces = mkInt32 2;
+
+          "org/gnome/settings-daemon/plugins/power".sleep-inactive-ac-type = "nothing";
+          "org/gnome/settings-daemon/plugins/power".power-button-action = "nothing";
 
           "org/gnome/shell".enabled-extensions = [
             "apps-menu@gnome-shell-extensions.gcampax.github.com"
@@ -190,6 +207,9 @@
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
     kitty
+    obsidian
+    telegram-desktop
+    unstable.talosctl
     vim
   ];
 

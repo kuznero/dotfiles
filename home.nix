@@ -81,9 +81,9 @@ in
         # ${pkgs.vscode}/bin/code --list-extensions | xargs -I {} ${pkgs.vscode}/bin/code --uninstall-extension {} --force
         # echo
 
-        echo [info] installing VSCode  extensions
-        cat ${pkgs.writeText "tmp_vscode_extensions" (builtins.readFile ./dotfiles/vscode/extensions.txt)} | xargs -I {} ${pkgs.vscode}/bin/code --install-extension {} --force
-        echo
+        # echo [info] installing VSCode extensions
+        # cat ${pkgs.writeText "tmp_vscode_extensions" (builtins.readFile ./dotfiles/vscode/extensions.txt)} | xargs -I {} ${pkgs.vscode}/bin/code --install-extension {} --force
+        # echo
 
         echo [info] deploy Kitty settings
         mkdir -p "${kittyDir}" >/dev/null 2>&1
@@ -104,10 +104,6 @@ in
     lazygit
     monaspace
     neofetch
-    # TODO: move to nixos/configuration.nix
-    # obsidian
-    # sublime-merge
-    # telegram-desktop
     tmux
     vim
     xclip
