@@ -302,7 +302,7 @@ in
   # programs.gpg = { enable = true; };
 
   programs.chromium = {
-    enable = builtins.match "x86_64-.*" os != null;
+    enable = builtins.match ".*-linux" os != null;
     package = pkgs.chromium;
     extensions = [
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
