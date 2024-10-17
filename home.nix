@@ -77,14 +77,6 @@ in
         cat ${pkgs.writeText "tmp_vscode_keybindings" (builtins.readFile ./dotfiles/vscode/keybindings.json)} | jq --monochrome-output > "${vscodeDir}/keybindings.json"
         echo
 
-        # echo [info] uninstalling VSCode existing extensions
-        # ${pkgs.vscode}/bin/code --list-extensions | xargs -I {} ${pkgs.vscode}/bin/code --uninstall-extension {} --force
-        # echo
-
-        # echo [info] installing VSCode extensions
-        # cat ${pkgs.writeText "tmp_vscode_extensions" (builtins.readFile ./dotfiles/vscode/extensions.txt)} | xargs -I {} ${pkgs.vscode}/bin/code --install-extension {} --force
-        # echo
-
         echo [info] deploy Kitty settings
         mkdir -p "${kittyDir}" >/dev/null 2>&1
         rm -f "${vscodeDir}/kitty.conf" >/dev/null 2>&1
