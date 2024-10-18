@@ -221,6 +221,8 @@ in
     obsidian
     pcloudFixed
     slack
+    spotify
+    spotify-tray
     telegram-desktop
     unstable.bcompare
     unstable.talosctl
