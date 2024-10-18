@@ -22,7 +22,7 @@
   "editor.minimap.enabled": false,
   "editor.renderLineHighlight": "gutter",
   "editor.semanticHighlighting.enabled": true,
-  "editor.tabSize": 1,
+  "editor.tabSize": 2,
   "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
   "editor.wordWrap": "off",
   "explorer.confirmDragAndDrop": false,
