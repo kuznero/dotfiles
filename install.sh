@@ -26,6 +26,14 @@ nix-channel --list | grep -q home-manager || {
   echo
 }
 
+nix-channel --list | grep -q nixpkgs-unstable || {
+  echo "[info] Adding nixpkgs-unstable channel"
+  nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
+  nix-channel --update
+  nix-channel --list
+  echo
+}
+
 command -v home-manager >/dev/null 2>&1 || {
   echo "[info] Installing home-manager"
   nix-shell '<home-manager>' -A install
