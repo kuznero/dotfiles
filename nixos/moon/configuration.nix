@@ -214,6 +214,7 @@ in
   environment.systemPackages = with pkgs; [
     copyq
     docker-credential-helpers
+    gitFull
     gnome.dconf-editor
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
