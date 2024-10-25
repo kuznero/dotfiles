@@ -26,6 +26,7 @@ in
   environment.systemPackages = with pkgs; [
     docker-credential-helpers
     gitFull
+    home-manager
     kitty
     obsidian
     pcloudFixed
