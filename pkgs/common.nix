@@ -1,14 +1,6 @@
 { pkgs, ... }:
 
 let
-  # # sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
-  # # sudo nix-channel --update
-  # unstable = import <nixos-unstable> {
-  #   config = {
-  #     allowUnfree = true;
-  #   };
-  # };
-
   patchelfFixed = pkgs.patchelfUnstable.overrideAttrs (_finalAttrs: _previousAttrs: {
     src = pkgs.fetchFromGitHub {
       owner = "Patryk27";
@@ -24,6 +16,7 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
+    copyq
     docker-credential-helpers
     gitFull
     home-manager
@@ -34,10 +27,6 @@ in
     spotify
     telegram-desktop
     vim
-
-    # copyq
-    # unstable.bcompare
-    # unstable.talosctl
-    # zoom-us
+    zoom-us
   ];
 }

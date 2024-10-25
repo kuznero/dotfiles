@@ -78,6 +78,7 @@ in
   };
 
   home.packages = with pkgs; [
+    bcompare
     btop
     fd
     flux
