@@ -95,9 +95,9 @@
             };
           };
           "<leader>p" = {
-            action = "git_files";
+            action = "find_files";
             options = {
-              desc = "Telescope Git Files";
+              desc = "Telescope Find Files";
             };
           };
           "<leader>b" = {

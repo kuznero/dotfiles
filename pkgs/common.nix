@@ -30,6 +30,7 @@ in
     slack
     spotify
     telegram-desktop
+    tree
     tmux
     vim
     xclip

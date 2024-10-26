@@ -49,6 +49,7 @@
           ./hosts/flatpak.nix
           ./hosts/fonts.nix
           ./hosts/gnome.nix
+          ./hosts/hyprland.nix
           ./hosts/logind.nix
 
           # packages
