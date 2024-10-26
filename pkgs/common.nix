@@ -16,17 +16,23 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
+    btop
     copyq
     docker-credential-helpers
+    fd
     gitFull
     home-manager
     kitty
+    neofetch
     obsidian
     pcloudFixed
+    ripgrep
     slack
     spotify
     telegram-desktop
+    tmux
     vim
+    xclip
     zoom-us
   ];
 }
