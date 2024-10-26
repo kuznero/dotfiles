@@ -25,25 +25,24 @@
           "${config.home.homeDirectory}/.config/Code/User";
 
       kittyDir = "${config.home.homeDirectory}/.config/kitty";
+
+      # Hyprland components
+      hyprDir = "${config.home.homeDirectory}/.config/hypr";
+      waybarDir = "${config.home.homeDirectory}/.config/waybar";
+      dunstDir = "${config.home.homeDirectory}/.config/dunst";
+      fishDir = "${config.home.homeDirectory}/.config/fish";
     in
     {
       after = [ "writeBoundary" ];
       before = [];
       data = ''
         #!${pkgs.stdenv.shell}
-
-        echo [info] deploy VSCode settings and keybindings
-        mkdir -p "${vscodeDir}" >/dev/null 2>&1
-        rm -f "${vscodeDir}/settings.json*" "${vscodeDir}/keybindings.json*" >/dev/null 2>&1
-        cat ${pkgs.writeText "tmp_vscode_settings" (builtins.readFile ./dotfiles/vscode/settings.json)} | jq --monochrome-output > "${vscodeDir}/settings.json"
-        cat ${pkgs.writeText "tmp_vscode_keybindings" (builtins.readFile ./dotfiles/vscode/keybindings.json)} | jq --monochrome-output > "${vscodeDir}/keybindings.json"
-        echo
-
-        echo [info] deploy Kitty settings
-        mkdir -p "${kittyDir}" >/dev/null 2>&1
-        rm -f "${kittyDir}/kitty.conf" >/dev/null 2>&1
-        cat ${pkgs.writeText "tmp_kitty_settings" (builtins.readFile ./dotfiles/kitty/kitty.conf)} > "${kittyDir}/kitty.conf"
-        echo
+        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/vscode}/ "${vscodeDir}/"
+        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/kitty}/ "${kittyDir}/"
+        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/hypr}/ "${hyprDir}/"
+        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/waybar}/ "${waybarDir}/"
+        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/dunst}/ "${dunstDir}/"
+        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/fish}/ "${fishDir}/"
       '';
   };
 

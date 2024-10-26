@@ -20,6 +20,7 @@ in
     copyq
     docker-credential-helpers
     fd
+    fish
     gitFull
     home-manager
     kitty
@@ -27,11 +28,12 @@ in
     obsidian
     pcloudFixed
     ripgrep
+    rsync
     slack
     spotify
     telegram-desktop
-    tree
     tmux
+    tree
     vim
     xclip
     zoom-us
