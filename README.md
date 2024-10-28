@@ -14,7 +14,12 @@ EOF
 # install home-manager from master
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update
+
+# on non-NixOS
 nix-shell '<home-manager>' -A install
+
+# on NixOS
+nix-env -iA nixos.home-manager
 ```
 
 ## Apply configuration
