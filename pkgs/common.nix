@@ -17,7 +17,6 @@ in
 {
   environment.systemPackages = with pkgs; [
     btop
-    copyq
     docker-credential-helpers
     fd
     fish
@@ -26,16 +25,18 @@ in
     kitty
     neofetch
     obsidian
-    pcloudFixed
     ripgrep
     rsync
     slack
     spotify
-    telegram-desktop
     tmux
     tree
     vim
     xclip
     zoom-us
+  ] ++ lib.optionals (!stdenv.isDarwin) [
+    copyq
+    pcloudFixed
+    telegram-desktop
   ];
 }

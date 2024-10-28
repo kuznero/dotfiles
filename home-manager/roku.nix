@@ -1,14 +1,15 @@
-{ config, pkgs, system, user, ... }:
+{ config, lib, pkgs, system, user, ... }:
 
 {
   home.username = user;
-  home.homeDirectory =
+  home.homeDirectory = lib.mkForce (
     if builtins.match ".*-darwin" system != null then
       "/Users/${config.home.username}"
     else if builtins.match ".*-linux" system != null then
       "/home/${config.home.username}"
     else
-      "/home/${config.home.username}";
+      "/home/${config.home.username}"
+  );
 
   home.enableNixpkgsReleaseCheck = false;
 
@@ -105,6 +106,8 @@
   home.sessionVariables = {
     # EDITOR = "emacs";
   };
+
+  home.stateVersion = "24.05";
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

@@ -21,17 +21,23 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nix-darwin }@inputs:
     let
-      system = builtins.currentSystem or "x86_64-linux";
       user = "roku";
     in
     {
+
       # sudo nixos-rebuild switch --flake .#moon --impure
-      nixosConfigurations.moon = nixpkgs.lib.nixosSystem {
-        system = system;
+      nixosConfigurations.moon = let
+        system = "x86_64-linux";
+      in nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs system user; };
         modules = [
           {
@@ -59,13 +65,14 @@
       };
 
       # home-manager switch --flake .#moon --impure
-      homeConfigurations.moon = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.moon = let
+        system = "x86_64-linux";
+      in home-manager.lib.homeManagerConfiguration {
         extraSpecialArgs = { inherit inputs system user; };
         pkgs = nixpkgs-unstable.legacyPackages.${system};
         modules = [
           {
             nixpkgs.config.allowUnfree = true;
-            home.stateVersion = "24.05";
           }
 
           ./home-manager/${user}.nix
@@ -77,6 +84,34 @@
           ./home-manager/programs/vscode.nix
           ./home-manager/programs/zoxide.nix
           ./home-manager/programs/zsh.nix
+        ];
+      };
+
+      # nix run nix-darwin -- switch --flake .#Romans-MacBook-Pro
+      # darwin-rebuild build --flake .#Romans-MacBook-Pro
+      darwinConfigurations."Romans-MacBook-Pro" = let
+        system = "aarch64-darwin";
+      in nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit inputs system user; };
+        modules = [
+          {
+            nixpkgs.config.allowUnfree = true;
+            system.stateVersion = 5;
+          }
+
+          # basic configuration & users
+          ./hosts/romans-macbook-pro/configuration.nix
+
+          # packages
+          ./pkgs/common.nix
+
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.extraSpecialArgs = { inherit inputs system user; };
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.${user} = import ./home-manager/${user}.nix;
+          }
         ];
       };
 
