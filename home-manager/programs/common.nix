@@ -1,4 +1,4 @@
-{ pkgs, pkgs-stable, ... }:
+{ pkgs, pkgs-stable, system, ... }:
 
 {
   home.packages = with pkgs; [
@@ -17,7 +17,7 @@
     nerdfonts
     ripgrep
     rsync
-    slack
+    (if system != "aarch64-linux" then slack else null)
     spotify
     tmux
     tree

@@ -22,7 +22,7 @@ nix-env -iA nixos.home-manager
 
 ## Apply configuration
 
-> Choose the right target, e.g. `#moon` or `#mac`.
+> Make sure to have `git` installed before running following commands, e.g. with `nix-shell -p git`.
 
 ```bash
 # NixOS managed moon server (x86_64-linux)
