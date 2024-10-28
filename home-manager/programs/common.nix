@@ -18,7 +18,7 @@
     ripgrep
     rsync
     (if system != "aarch64-linux" then slack else null)
-    spotify
+    (if system != "aarch64-linux" then spotify else null)
     tmux
     tree
     vim
