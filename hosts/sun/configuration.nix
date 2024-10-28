@@ -29,6 +29,11 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  environment.systemPackages = with pkgs; [
+    gitFull
+    vim
+  ];
+
   services.xserver.xkb = {
     layout = "us";
     variant = "";
