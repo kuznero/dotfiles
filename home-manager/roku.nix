@@ -38,12 +38,12 @@
       before = [];
       data = ''
         #!${pkgs.stdenv.shell}
-        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/vscode}/ "${vscodeDir}/"
-        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/kitty}/ "${kittyDir}/"
-        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/hypr}/ "${hyprDir}/"
-        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/waybar}/ "${waybarDir}/"
-        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/dunst}/ "${dunstDir}/"
-        ${pkgs.rsync}/bin/rsync -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/fish}/ "${fishDir}/"
+        ${pkgs.rsync}/bin/rsync --mkpath -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/vscode}/ "${vscodeDir}/"
+        ${pkgs.rsync}/bin/rsync --mkpath -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/kitty}/ "${kittyDir}/"
+        ${pkgs.rsync}/bin/rsync --mkpath -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/hypr}/ "${hyprDir}/"
+        ${pkgs.rsync}/bin/rsync --mkpath -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/waybar}/ "${waybarDir}/"
+        ${pkgs.rsync}/bin/rsync --mkpath -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/dunst}/ "${dunstDir}/"
+        ${pkgs.rsync}/bin/rsync --mkpath -avh --delete --perms --chmod=u=rwX ${toString ../dotfiles/fish}/ "${fishDir}/"
       '';
   };
 
