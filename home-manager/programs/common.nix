@@ -23,7 +23,7 @@
     tree
     vim
     xclip
-    zoom-us
+    (if system != "aarch64-linux" then zoom-us else null)
     zoxide
     zsh
   ] ++ (with pkgs-stable; [
