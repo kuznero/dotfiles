@@ -22,20 +22,33 @@ nix-env -iA nixos.home-manager
 
 ## Apply configuration
 
-> Make sure to have `git` installed before running following commands, e.g. with `nix-shell -p git`.
+### DevOS Virtual Machine (`aarch64-linux`)
 
 ```bash
-# NixOS managed moon server (x86_64-linux)
-sudo nixos-rebuild switch --flake .#moon --impure
-home-manager switch --flake .#moon
+sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#devos --impure
+nix-env -iA home-manager
+home-manager switch --flake gitlab:roku-labs/dotfiles#devos
+```
 
-# NixOS managed devos server (aarch64-linux)
-sudo nixos-rebuild switch --flake .#devos --impure
-home-manager switch --flake .#devos
+### Moon Lenovo Laptop (`x86_64-linux`)
 
-# NixOS managed sun server (x86_64-linux)
-sudo nixos-rebuild switch --flake .#sun --impure
+```bash
+sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#moon --impure
+nix-env -iA home-manager
+home-manager switch --flake gitlab:roku-labs/dotfiles#moon
+```
 
-# MacOS
-home-manager switch -flake .#mac
+### Sun GitLab Runner Server (`x86_64-linux`)
+
+```bash
+sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#sun --impure
+```
+
+### Roman's MacBook Pro Laptop (`aarch64-darwin`)
+
+```bash
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
+home-manager switch --flake gitlab:roku-labs/dotfiles#mac
 ```
