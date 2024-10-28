@@ -5,11 +5,11 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "moon";
+  networking.hostName = "devos";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Copenhagen";
@@ -34,4 +34,9 @@
   };
 
   services.openssh.enable = true;
+
+  virtualisation.vmware.guest = {
+    enable = true;
+    headless = true;
+  };
 }

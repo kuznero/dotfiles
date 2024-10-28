@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [ /etc/nixos/hardware-configuration.nix ];
@@ -9,7 +9,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "moon";
+  boot.kernel.sysctl."net.ipv4.ip_forward" = true;
+
+  networking.hostName = "sun";
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Copenhagen";
@@ -27,7 +29,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.enable = true;
   services.xserver.xkb = {
     layout = "us";
     variant = "";
