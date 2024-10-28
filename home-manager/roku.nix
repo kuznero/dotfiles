@@ -1,4 +1,4 @@
-{ config, lib, pkgs, system, user, ... }:
+{ inputs, config, lib, pkgs, pkgs-stable, system, user, ... }:
 
 {
   home.username = user;
@@ -48,13 +48,28 @@
   };
 
   home.packages = with pkgs; [
-    bcompare
+    btop
+    docker-credential-helpers
+    fd
+    fish
     flux
+    gitFull
     k9s
     kitty
     kubectl
     lazydocker
     lazygit
+    neofetch
+    nerdfonts
+    ripgrep
+    rsync
+    slack
+    spotify
+    tmux
+    tree
+    vim
+    xclip
+    zoom-us
     zoxide
     zsh
 
@@ -70,7 +85,9 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-  ];
+  ] ++ (with pkgs-stable; [
+    obsidian
+  ]);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -106,6 +123,8 @@
   home.sessionVariables = {
     # EDITOR = "emacs";
   };
+
+  fonts.fontconfig.enable = true;
 
   home.stateVersion = "24.05";
 

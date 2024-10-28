@@ -1,24 +1,25 @@
 # Roku Labs Dotfiles
 
-> `.#moon` can be replaced with other hosts supported.
-
-## Deploy OS setup to the Moon laptop (NixOS configuration)
+## Prerequisites
 
 ```bash
-# build
-sudo nixos-rebuild build --flake gitlab:roku-labs/dotfiles#moon --impure
+# install nix package manager (assume done)
 
-# or switch
-sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#moon --impure
+# install home-manager from master
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
 ```
 
-## Deploy user setup to the Moon laptop (Home Manager configuration)
+## Apply configuration
+
+> Choose the right target, e.g. `#moon` or `#mac`.
 
 ```bash
-# build
-home-manager build --flake gitlab:roku-labs/dotfiles#moon
+# NixOS managed moon server
+sudo nixos-rebuild switch --flake .#moon --impure
+home-manager switch --flake .#moon --impure
 
-# or switch
-home-manager switch --flake gitlab:roku-labs/dotfiles#moon
+# MacOS
+home-manager switch -flake .#mac --impure
 ```
-

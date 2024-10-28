@@ -21,14 +21,9 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    nix-darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nix-darwin }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim }@inputs:
     let
       user = "roku";
     in
@@ -67,8 +62,12 @@
       # home-manager switch --flake .#moon --impure
       homeConfigurations.moon = let
         system = "x86_64-linux";
+        pkgs-stable = import inputs.nixpkgs {
+          system = system;
+          config.allowUnfree = true;
+        };
       in home-manager.lib.homeManagerConfiguration {
-        extraSpecialArgs = { inherit inputs system user; };
+        extraSpecialArgs = { inherit inputs system user pkgs-stable; };
         pkgs = nixpkgs-unstable.legacyPackages.${system};
         modules = [
           {
@@ -87,31 +86,30 @@
         ];
       };
 
-      # nix run nix-darwin -- switch --flake .#Romans-MacBook-Pro
-      # darwin-rebuild build --flake .#Romans-MacBook-Pro
-      darwinConfigurations."Romans-MacBook-Pro" = let
+      # home-manager switch --flake .#mac --impure
+      homeConfigurations.mac = let
         system = "aarch64-darwin";
-      in nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs system user; };
+        pkgs-stable = import inputs.nixpkgs {
+          system = system;
+          config.allowUnfree = true;
+        };
+      in home-manager.lib.homeManagerConfiguration {
+        extraSpecialArgs = { inherit inputs system user pkgs-stable; };
+        pkgs = nixpkgs-unstable.legacyPackages.${system};
         modules = [
           {
             nixpkgs.config.allowUnfree = true;
-            system.stateVersion = 5;
           }
 
-          # basic configuration & users
-          ./hosts/romans-macbook-pro/configuration.nix
+          ./home-manager/${user}.nix
 
-          # packages
-          ./pkgs/common.nix
-
-          home-manager.darwinModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs system user; };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${user} = import ./home-manager/${user}.nix;
-          }
+          ./home-manager/programs/chromium.nix
+          ./home-manager/programs/fzf.nix
+          ./home-manager/programs/git.nix
+          ./home-manager/programs/nixvim.nix
+          ./home-manager/programs/vscode.nix
+          ./home-manager/programs/zoxide.nix
+          ./home-manager/programs/zsh.nix
         ];
       };
 
