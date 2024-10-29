@@ -2,16 +2,17 @@
 
 let
   shellAliases = {
-    gst = "git status";
-    gl = "git pull --all --prune";
-    gp = "git push";
+    fv = "fzf --bind \"enter:execute(nvim {})\"";
     gci = "git commit";
     gco = "git checkout";
-    fv = "fzf --bind \"enter:execute(nvim {})\"";
-    v = "nvim";
-    n = "nvim";
-    lzg = "lazygit";
+    gl = "git pull --all --prune";
+    gp = "git push";
+    gst = "git status";
     lzd = "lazydocker";
+    lzg = "lazygit";
+    n = "nvim";
+    v = "nvim";
+    y = "yazi";
   };
 in
 {

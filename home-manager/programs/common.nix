@@ -24,6 +24,7 @@
     vim
     xclip
     (if system != "aarch64-linux" then zoom-us else null)
+    yazi
     zoxide
     zsh
   ] ++ (with pkgs-stable; [
