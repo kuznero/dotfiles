@@ -140,6 +140,7 @@
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/telegram.nix
+              ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
@@ -169,6 +170,7 @@
               ./home-manager/programs/git.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/telegram.nix
+              ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
@@ -198,6 +200,7 @@
               ./home-manager/programs/git.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/telegram.nix
+              ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
