@@ -15,6 +15,14 @@
       maplocalleader = " ";
     };
 
+    keymaps = [
+      {
+        mode = "n";
+        key = "<leader>e";
+        action = ":Neotree<CR>";
+      }
+    ];
+
     editorconfig.enable = true;
     colorschemes.catppuccin.enable = true;
 
@@ -103,7 +111,37 @@
         };
       };
       lualine.enable = true;
-      neo-tree.enable = true;
+      neo-tree = {
+        enable = true;
+        autoCleanAfterSessionRestore = true;
+        closeIfLastWindow = true;
+        window.position = "left";
+        filesystem = {
+          followCurrentFile.enabled = true;
+          filteredItems = {
+            hideHidden = false;
+            hideDotfiles = false;
+            forceVisibleInEmptyFolder = true;
+            hideGitignored = false;
+          };
+        };
+        defaultComponentConfigs = {
+          diagnostics = {
+            symbols = {
+              hint = "";
+              info = "";
+              warn = "";
+              error = "";
+            };
+            highlights = {
+              hint = "DiagnosticSignHint";
+              info = "DiagnosticSignInfo";
+              warn = "DiagnosticSignWarn";
+              error = "DiagnosticSignError";
+            };
+          };
+        };
+      };
       nix-develop.enable = true;
       nix.enable = true;
       noice.enable = true;
