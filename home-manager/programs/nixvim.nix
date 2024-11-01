@@ -29,7 +29,12 @@
       {
         mode = "n";
         key = "<esc>";
-        action = "<cmd>nohlsearch<cr>";
+        action = "<cmd>nohlsearch<CR>";
+      }
+      {
+        mode = "n";
+        key = "<leader>z";
+        action = ":Twilight<CR>";
       }
     ];
 
@@ -234,6 +239,7 @@
       trouble.enable = true;
       ts-autotag.enable = true;
       ts-context-commentstring.enable = true;
+      twilight.enable = true;
       web-devicons.enable = true;
       which-key = {
         enable = true;
@@ -279,6 +285,10 @@
             {
               __unkeyed-1 = "<leader>e";
               group = "Neo-Tree";
+            }
+            {
+              __unkeyed-1 = "<leader>z";
+              group = "Twilight";
             }
             {
               __unkeyed = "<leader>c";
