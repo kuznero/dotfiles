@@ -23,6 +23,11 @@
       }
       {
         mode = "n";
+        key = "<leader>g";
+        action = ":LazyGit<CR>";
+      }
+      {
+        mode = "n";
         key = "<esc>";
         action = "<cmd>nohlsearch<cr>";
       }
@@ -69,6 +74,7 @@
       illuminate.enable = true;
       indent-blankline.enable = true;
       lazy.enable = true;
+      lazygit.enable = true;
       lint.enable = true;
       lsp = {
         enable = true;
@@ -156,7 +162,7 @@
       telescope = {
         enable = true;
         keymaps = {
-          "<leader>g" = {
+          "<leader>/" = {
             action = "live_grep";
             options = {
               desc = "Telescope Live Grep";
@@ -223,7 +229,108 @@
       ts-autotag.enable = true;
       ts-context-commentstring.enable = true;
       web-devicons.enable = true;
-      which-key.enable = true;
+      which-key = {
+        enable = true;
+        settings = {
+          delay = 200;
+          expand = 1;
+          notify = false;
+          preset = false;
+          replace = {
+            desc = [
+              [
+                "<space>"
+                "SPACE"
+              ]
+              [
+                "<leader>"
+                "SPACE"
+              ]
+              [
+                "<[cC][rR]>"
+                "RETURN"
+              ]
+              [
+                "<[tT][aA][bB]>"
+                "TAB"
+              ]
+              [
+                "<[bB][sS]>"
+                "BACKSPACE"
+              ]
+            ];
+          };
+          spec = [
+            {
+              __unkeyed-1 = "<leader>b";
+              group = "Buffers";
+              icon = "󰓩 ";
+            }
+            {
+              __unkeyed-1 = "<leader>g";
+              group = "LazyGit";
+            }
+            {
+              __unkeyed-1 = "<leader>e";
+              group = "Neo-Tree";
+            }
+            {
+              __unkeyed = "<leader>c";
+              group = "Codesnap";
+              icon = "󰄄 ";
+              mode = "v";
+            }
+            {
+              __unkeyed-1 = "<leader>bs";
+              group = "Sort";
+              icon = "󰒺 ";
+            }
+            {
+              __unkeyed-1 = [
+                {
+                  __unkeyed-1 = "<leader>f";
+                  group = "Normal Visual Group";
+                }
+                {
+                  __unkeyed-1 = "<leader>f<tab>";
+                  group = "Normal Visual Group in Group";
+                }
+              ];
+              mode = [
+                "n"
+                "v"
+              ];
+            }
+            {
+              __unkeyed-1 = "<leader>w";
+              group = "windows";
+              proxy = "<C-w>";
+            }
+            {
+              __unkeyed-1 = "<leader>cS";
+              __unkeyed-2 = "<cmd>CodeSnapSave<CR>";
+              desc = "Save";
+              mode = "v";
+            }
+            {
+              __unkeyed-1 = "<leader>db";
+              __unkeyed-2 = {
+                __raw = ''
+                  function()
+                    require("dap").toggle_breakpoint()
+                  end
+                '';
+              };
+              desc = "Breakpoint toggle";
+              mode = "n";
+              silent = true;
+            }
+          ];
+          win = {
+            border = "single";
+          };
+        };
+      };
     };
   };
 }
