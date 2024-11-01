@@ -47,7 +47,7 @@
 
           "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
             binding = "<Super>t";
-            command = "kitty";
+            command = "wezterm";
             name    = "Open Terminal";
           };
 

@@ -144,6 +144,7 @@
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
+              ./home-manager/programs/wezterm.nix
             ];
           };
 
@@ -174,6 +175,7 @@
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
+              ./home-manager/programs/wezterm.nix
             ];
           };
 
@@ -203,6 +205,7 @@
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
+              ./home-manager/programs/wezterm.nix
             ];
           };
       };
