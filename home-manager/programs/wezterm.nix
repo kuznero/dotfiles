@@ -320,9 +320,16 @@
       local config = wezterm.config_builder()
 
       config.front_end = "WebGpu"
-      config.font = wezterm.font "0xProto Nerd Font"
+      config.font = wezterm.font("0xProto Nerd Font", { weight = 'Regular', italic = false })
       config.font_size = 12.0
       config.color_scheme = scheme_for_appearance(get_appearance())
+      config.keys = {
+        {
+          key = 'n',
+          mods = 'SHIFT|CTRL',
+          action = wezterm.action.ToggleFullScreen,
+        },
+      }
 
       return config
     '';
