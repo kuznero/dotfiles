@@ -241,7 +241,15 @@
       };
       treesitter-context.enable = true;
       treesitter-textobjects.enable = true;
-      trouble.enable = true;
+      trouble = {
+        enable = true;
+        settings = {
+          auto_close = true;
+          auto_open = false;
+          auto_fold = false;
+          auto_preview = false;
+        };
+      };
       ts-autotag.enable = true;
       ts-context-commentstring.enable = true;
       twilight.enable = true;
