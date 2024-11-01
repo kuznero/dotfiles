@@ -33,6 +33,11 @@
       }
       {
         mode = "n";
+        key = "<leader>t";
+        action = ":FloatermToggle<CR>";
+      }
+      {
+        mode = "n";
         key = "<leader>z";
         action = ":Twilight<CR>";
       }
@@ -285,6 +290,10 @@
             {
               __unkeyed-1 = "<leader>e";
               group = "Neo-Tree";
+            }
+            {
+              __unkeyed-1 = "<leader>t";
+              group = "Floatterm";
             }
             {
               __unkeyed-1 = "<leader>z";
