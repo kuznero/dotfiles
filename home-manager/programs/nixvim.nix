@@ -69,6 +69,12 @@
       conform-nvim.enable = true;
       dressing.enable = true;
       flash.enable = true;
+      floaterm = {
+        enable = true;
+        width = 0.8;
+        height = 0.8;
+        keymaps.toggle = "<leader>t";
+      };
       friendly-snippets.enable = true;
       gitsigns.enable = true;
       illuminate.enable = true;
