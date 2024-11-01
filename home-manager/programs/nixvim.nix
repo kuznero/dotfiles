@@ -21,6 +21,11 @@
         key = "<leader>e";
         action = ":Neotree<CR>";
       }
+      {
+        mode = "n";
+        key = "<esc>";
+        action = "<cmd>nohlsearch<cr>";
+      }
     ];
 
     editorconfig.enable = true;
@@ -210,6 +215,7 @@
           xml
           yaml
         ];
+        settings.auto_install = true;
       };
       treesitter-context.enable = true;
       treesitter-textobjects.enable = true;
