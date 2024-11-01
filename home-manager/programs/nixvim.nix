@@ -132,6 +132,7 @@
             autostart = true;
             package = null; # ref: https://github.com/nix-community/nixvim/discussions/1442
             extraOptions.settings.gopls = {
+              buildFlags = [ "-tags=unit,integration" ];
               gofumpt = true;
               codelenses = {
                 gc_details = false;
@@ -277,9 +278,10 @@
         enable = true;
         settings = {
           auto_close = true;
-          auto_open = false;
           auto_fold = false;
+          auto_open = false;
           auto_preview = false;
+          auto_refresh = true;
         };
       };
       ts-autotag.enable = true;
