@@ -53,6 +53,7 @@
               ./hosts/gnome.nix
               ./hosts/hyprland.nix
               ./hosts/logind.nix
+              ./hosts/ollama.nix
 
               # packages
               ./pkgs/1password.nix
@@ -81,6 +82,7 @@
               ./hosts/gnome.nix
               ./hosts/hyprland.nix
               ./hosts/logind.nix
+              ./hosts/ollama.nix
 
               # packages
               ./pkgs/1password.nix
@@ -138,6 +140,7 @@
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/nixvim.nix
+              ./home-manager/programs/ollama.nix
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/telegram.nix
               ./home-manager/programs/transmission.nix
@@ -170,6 +173,7 @@
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/nixvim.nix
+              ./home-manager/programs/ollama.nix
               ./home-manager/programs/telegram.nix
               ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
@@ -201,6 +205,7 @@
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/nixvim.nix
+              ./home-manager/programs/ollama.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
