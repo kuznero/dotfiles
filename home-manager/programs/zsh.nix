@@ -12,7 +12,6 @@ let
     lzg = "lazygit";
     n = "nvim";
     v = "nvim";
-    y = "yazi";
   };
 in
 {
@@ -98,6 +97,15 @@ in
 
       command -v talosctl >/dev/null 2>&1 && {
         source <(talosctl completion zsh)
+      }
+
+      function y() {
+        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+        yazi "$@" --cwd-file="$tmp"
+        if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+          builtin cd -- "$cwd"
+        fi
+        rm -f -- "$tmp"
       }
 
       if [ -n "$NIX_FLAKE_NAME" ]; then
