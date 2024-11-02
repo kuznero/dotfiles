@@ -170,6 +170,16 @@
           yamlls.enable = true;
         };
       };
+      lsp-format = {
+        enable = true;
+        lspServersToEnable = "all";
+      };
+      none-ls = {
+        enable = true;
+        enableLspFormat = true;
+        sources.formatting.nixfmt.enable = true;
+        sources.formatting.gofumpt.enable = true;
+      };
       lualine.enable = true;
       neo-tree = {
         enable = true;
