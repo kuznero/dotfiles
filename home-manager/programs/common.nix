@@ -1,4 +1,4 @@
-{ pkgs, system, ... }:
+{ pkgs, pkgs-stable, system, ... }:
 
 {
   home.packages = with pkgs; builtins.filter (pkg: pkg != null) [
@@ -8,7 +8,6 @@
     fish
     flux
     gitFull
-    home-manager
     k9s
     kitty
     kubectl
@@ -26,9 +25,10 @@
     vim
     xclip
     (if system != "aarch64-linux" then zoom-us else null)
-    yazi
     zoxide
     zsh
-  ];
+  ] ++ (with pkgs-stable; [
+    yazi
+  ]);
 }
 
