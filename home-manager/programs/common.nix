@@ -5,6 +5,7 @@
     btop
     docker-credential-helpers
     fd
+    ffmpegthumbnailer
     fish
     flux
     gitFull
