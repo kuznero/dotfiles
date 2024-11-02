@@ -1,4 +1,4 @@
-{ pkgs, pkgs-stable, system, ... }:
+{ pkgs, system, ... }:
 
 {
   home.packages = with pkgs; builtins.filter (pkg: pkg != null) [
@@ -8,6 +8,7 @@
     fish
     flux
     gitFull
+    home-manager
     k9s
     kitty
     kubectl
@@ -15,6 +16,7 @@
     lazygit
     neofetch
     nerdfonts
+    obsidian
     ripgrep
     rsync
     (if system != "aarch64-linux" then slack else null)
@@ -27,8 +29,6 @@
     yazi
     zoxide
     zsh
-  ] ++ (with pkgs-stable; [
-    obsidian
-  ]);
+  ];
 }
 

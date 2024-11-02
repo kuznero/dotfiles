@@ -8,7 +8,7 @@
     };
 
     nixpkgs-unstable = {
-      url = "github:NixOS/nixpkgs?ref=nixpkgs-unstable";
+      url = "github:NixOS/nixpkgs?ref=master";
     };
 
     home-manager = {

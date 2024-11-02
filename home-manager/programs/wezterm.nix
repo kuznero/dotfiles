@@ -321,8 +321,8 @@
 
       config.front_end = "WebGpu"
       config.font = wezterm.font("0xProto Nerd Font", { weight = 'Regular', italic = false })
-      config.font_size = 12.0
-      config.line_height = 1.2
+      config.font_size = 14.0
+      config.line_height = 1.1
       config.color_scheme = scheme_for_appearance(get_appearance())
       config.keys = {
         {
