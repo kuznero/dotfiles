@@ -10,14 +10,6 @@ experimental-features = flakes nix-command
 EOF
 
 # install nix package manager (assume done)
-
-# install home-manager on non-NixOS
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-
-# install home-manager on NixOS
-nix-env -iA nixos.home-manager
 ```
 
 ## Apply configuration
@@ -27,7 +19,8 @@ nix-env -iA nixos.home-manager
 ```bash
 sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#devos --impure
 nix-env -iA home-manager
-home-manager switch --flake gitlab:roku-labs/dotfiles#devos
+nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#devos
+# home-manager switch --flake gitlab:roku-labs/dotfiles#devos
 ```
 
 ### Moon Lenovo Laptop (`x86_64-linux`)
@@ -35,7 +28,8 @@ home-manager switch --flake gitlab:roku-labs/dotfiles#devos
 ```bash
 sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#moon --impure
 nix-env -iA home-manager
-home-manager switch --flake gitlab:roku-labs/dotfiles#moon
+nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#moon
+# home-manager switch --flake gitlab:roku-labs/dotfiles#moon
 ```
 
 ### Sun GitLab Runner Server (`x86_64-linux`)
@@ -47,8 +41,6 @@ sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#sun --impure
 ### Roman's MacBook Pro Laptop (`aarch64-darwin`)
 
 ```bash
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-home-manager switch --flake gitlab:roku-labs/dotfiles#mac
+nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#mac
+# home-manager switch --flake gitlab:roku-labs/dotfiles#mac
 ```
