@@ -18,7 +18,6 @@ EOF
 
 ```bash
 sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#devos --impure
-nix-env -iA home-manager
 nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#devos
 # home-manager switch --flake gitlab:roku-labs/dotfiles#devos
 ```
@@ -27,7 +26,6 @@ nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#devos
 
 ```bash
 sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#moon --impure
-nix-env -iA home-manager
 nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#moon
 # home-manager switch --flake gitlab:roku-labs/dotfiles#moon
 ```
