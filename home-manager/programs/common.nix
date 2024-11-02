@@ -16,6 +16,7 @@
     neofetch
     nerdfonts
     obsidian
+    poppler
     ripgrep
     rsync
     (if system != "aarch64-linux" then slack else null)
