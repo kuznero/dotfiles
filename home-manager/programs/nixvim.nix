@@ -1,9 +1,7 @@
 { inputs, pkgs, ... }:
 
 {
-  imports = [
-    inputs.nixvim.homeManagerModules.nixvim
-  ];
+  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
 
   programs.nixvim = {
     enable = true;
@@ -106,7 +104,34 @@
       cmp-buffer.enable = true;
       cmp-nvim-lsp.enable = true;
       cmp-path.enable = true;
-      cmp.enable = true;
+      cmp = {
+        enable = true;
+        autoEnableSources = true;
+        settings = {
+          sources = [
+            { name = "nvim_lsp"; }
+            { name = "nvim_lsp_signature_help"; }
+            { name = "nvim_lsp_document_symbol"; }
+            { name = "luasnip"; } # For luasnip users.
+            { name = "path"; }
+            { name = "buffer"; }
+            { name = "cmdline"; }
+            { name = "spell"; }
+            { name = "dictionary"; }
+            { name = "treesitter"; }
+          ];
+          mapping = {
+            "<C-Space>" = "cmp.mapping.complete()";
+            "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+            "<C-e>" = "cmp.mapping.close()";
+            "<C-f>" = "cmp.mapping.scroll_docs(4)";
+            "<CR>" = "cmp.mapping.confirm({ select = true })";
+            "<S-Tab>" =
+              "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
+            "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+          };
+        };
+      };
       cmp_luasnip.enable = true;
       conform-nvim.enable = true;
       dressing.enable = true;
@@ -130,7 +155,8 @@
           gopls = {
             enable = true;
             autostart = true;
-            package = null; # ref: https://github.com/nix-community/nixvim/discussions/1442
+            package =
+              null; # ref: https://github.com/nix-community/nixvim/discussions/1442
             extraOptions.settings.gopls = {
               buildFlags = [ "-tags=unit,integration" ];
               gofumpt = true;
@@ -163,7 +189,8 @@
               usePlaceholders = true;
               completeUnimported = true;
               staticcheck = true;
-              directoryFilters = ["-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules"];
+              directoryFilters =
+                [ "-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules" ];
               semanticTokens = true;
             };
           };
@@ -223,39 +250,27 @@
         keymaps = {
           "<leader>/" = {
             action = "live_grep";
-            options = {
-              desc = "Telescope Live Grep";
-            };
+            options = { desc = "Telescope Live Grep"; };
           };
           "<leader>p" = {
             action = "find_files";
-            options = {
-              desc = "Telescope Find Files";
-            };
+            options = { desc = "Telescope Find Files"; };
           };
           "<leader>b" = {
             action = "buffers";
-            options = {
-              desc = "Telescope Buffers";
-            };
+            options = { desc = "Telescope Buffers"; };
           };
           "<leader>k" = {
             action = "keymaps";
-            options = {
-              desc = "Telescope Keymaps";
-            };
+            options = { desc = "Telescope Keymaps"; };
           };
           "gd" = {
             action = "lsp_definitions";
-            options = {
-              desc = "Telescope LSP Definitions";
-            };
+            options = { desc = "Telescope LSP Definitions"; };
           };
           "gr" = {
             action = "lsp_references";
-            options = {
-              desc = "Telescope LSP References";
-            };
+            options = { desc = "Telescope LSP References"; };
           };
         };
       };
@@ -307,26 +322,11 @@
           preset = false;
           replace = {
             desc = [
-              [
-                "<space>"
-                "SPACE"
-              ]
-              [
-                "<leader>"
-                "SPACE"
-              ]
-              [
-                "<[cC][rR]>"
-                "RETURN"
-              ]
-              [
-                "<[tT][aA][bB]>"
-                "TAB"
-              ]
-              [
-                "<[bB][sS]>"
-                "BACKSPACE"
-              ]
+              [ "<space>" "SPACE" ]
+              [ "<leader>" "SPACE" ]
+              [ "<[cC][rR]>" "RETURN" ]
+              [ "<[tT][aA][bB]>" "TAB" ]
+              [ "<[bB][sS]>" "BACKSPACE" ]
             ];
           };
           spec = [
@@ -373,10 +373,7 @@
                   group = "Normal Visual Group in Group";
                 }
               ];
-              mode = [
-                "n"
-                "v"
-              ];
+              mode = [ "n" "v" ];
             }
             {
               __unkeyed-1 = "<leader>w";
@@ -403,9 +400,7 @@
               silent = true;
             }
           ];
-          win = {
-            border = "single";
-          };
+          win = { border = "single"; };
         };
       };
     };
