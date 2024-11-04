@@ -10,9 +10,27 @@
     colorSchemes = {
       # ref: https://github.com/catppuccin/wezterm/blob/main/dist/catppuccin-mocha.toml
       catpuccin-mocha = {
-        ansi = [ "#45475a" "#f38ba8" "#a6e3a1" "#f9e2af" "#89b4fa" "#f5c2e7" "#94e2d5" "#bac2de" ];
+        ansi = [
+          "#45475a"
+          "#f38ba8"
+          "#a6e3a1"
+          "#f9e2af"
+          "#89b4fa"
+          "#f5c2e7"
+          "#94e2d5"
+          "#bac2de"
+        ];
         background = "#1e1e2e";
-        brights = [ "#585b70" "#f38ba8" "#a6e3a1" "#f9e2af" "#89b4fa" "#f5c2e7" "#94e2d5" "#a6adc8" ];
+        brights = [
+          "#585b70"
+          "#f38ba8"
+          "#a6e3a1"
+          "#f9e2af"
+          "#89b4fa"
+          "#f5c2e7"
+          "#94e2d5"
+          "#a6adc8"
+        ];
         compose_cursor = "#f2cdcd";
         cursor_bg = "#f5e0dc";
         cursor_border = "#f5e0dc";
@@ -82,9 +100,27 @@
 
       # ref: https://github.com/catppuccin/wezterm/blob/main/dist/catppuccin-macchiato.toml
       catpuccin-macchiato = {
-        ansi = [ "#494d64" "#ed8796" "#a6da95" "#eed49f" "#8aadf4" "#f5bde6" "#8bd5ca" "#b8c0e0" ];
+        ansi = [
+          "#494d64"
+          "#ed8796"
+          "#a6da95"
+          "#eed49f"
+          "#8aadf4"
+          "#f5bde6"
+          "#8bd5ca"
+          "#b8c0e0"
+        ];
         background = "#24273a";
-        brights = [ "#5b6078" "#ed8796" "#a6da95" "#eed49f" "#8aadf4" "#f5bde6" "#8bd5ca" "#a5adcb" ];
+        brights = [
+          "#5b6078"
+          "#ed8796"
+          "#a6da95"
+          "#eed49f"
+          "#8aadf4"
+          "#f5bde6"
+          "#8bd5ca"
+          "#a5adcb"
+        ];
         compose_cursor = "#f0c6c6";
         cursor_bg = "#f4dbd6";
         cursor_border = "#f4dbd6";
@@ -154,9 +190,27 @@
 
       # ref: https://github.com/catppuccin/wezterm/blob/main/dist/catppuccin-latte.toml
       catpuccin-latte = {
-        ansi = [ "#bcc0cc" "#d20f39" "#40a02b" "#df8e1d" "#1e66f5" "#ea76cb" "#179299" "#5c5f77" ];
+        ansi = [
+          "#bcc0cc"
+          "#d20f39"
+          "#40a02b"
+          "#df8e1d"
+          "#1e66f5"
+          "#ea76cb"
+          "#179299"
+          "#5c5f77"
+        ];
         background = "#eff1f5";
-        brights = [ "#acb0be" "#d20f39" "#40a02b" "#df8e1d" "#1e66f5" "#ea76cb" "#179299" "#6c6f85" ];
+        brights = [
+          "#acb0be"
+          "#d20f39"
+          "#40a02b"
+          "#df8e1d"
+          "#1e66f5"
+          "#ea76cb"
+          "#179299"
+          "#6c6f85"
+        ];
         compose_cursor = "#dd7878";
         cursor_bg = "#dc8a78";
         cursor_border = "#dc8a78";
@@ -226,9 +280,27 @@
 
       # ref: https://github.com/catppuccin/wezterm/blob/main/dist/catppuccin-frappe.toml
       catpuccin-frappe = {
-        ansi = [ "#51576d" "#e78284" "#a6d189" "#e5c890" "#8caaee" "#f4b8e4" "#81c8be" "#b5bfe2" ];
+        ansi = [
+          "#51576d"
+          "#e78284"
+          "#a6d189"
+          "#e5c890"
+          "#8caaee"
+          "#f4b8e4"
+          "#81c8be"
+          "#b5bfe2"
+        ];
         background = "#303446";
-        brights = [ "#626880" "#e78284" "#a6d189" "#e5c890" "#8caaee" "#f4b8e4" "#81c8be" "#a5adce" ];
+        brights = [
+          "#626880"
+          "#e78284"
+          "#a6d189"
+          "#e5c890"
+          "#8caaee"
+          "#f4b8e4"
+          "#81c8be"
+          "#a5adce"
+        ];
         compose_cursor = "#eebebe";
         cursor_bg = "#f2d5cf";
         cursor_border = "#f2d5cf";
@@ -320,9 +392,10 @@
       local config = wezterm.config_builder()
 
       config.front_end = "WebGpu"
-      config.font = wezterm.font("0xProto Nerd Font", { weight = 'Regular', italic = false })
-      config.font_size = 14.0
-      config.line_height = 1.1
+      -- config.font = wezterm.font("0xProto Nerd Font", { weight = 'Regular', italic = false })
+      config.font = wezterm.font("Iosevka Nerd Font", { weight = 'ExtraLight', italic = false })
+      config.font_size = 12.0
+      config.line_height = 1.0
       config.color_scheme = scheme_for_appearance(get_appearance())
       config.keys = {
         {
