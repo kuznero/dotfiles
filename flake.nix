@@ -21,9 +21,14 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nixos-wsl }@inputs:
     let
       user = "roku";
     in
@@ -64,7 +69,7 @@
           let
             system = "aarch64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user; };
+            specialArgs = { inherit inputs system user nixos-wsl; };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -111,6 +116,22 @@
 
               # packages
               ./pkgs/1password.nix
+            ];
+          };
+
+        wsl = # sudo nixos-rebuild switch --flake .#wsl --impure
+          let
+            system = "x86_64-linux";
+          in nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs system user; };
+            modules = [
+              {
+                nixpkgs.config.allowUnfree = true;
+                system.stateVersion = "24.05";
+              }
+
+              # basic configuration & users
+              ./hosts/wsl/configuration.nix
             ];
           };
 
@@ -213,6 +234,33 @@
               ./home-manager/programs/wezterm.nix
             ];
           };
+
+        wsl = # home-manager switch --flake .#wsl
+          let
+            system = "x86_64-linux";
+            pkgs-stable = import inputs.nixpkgs {
+              system = system;
+              config.allowUnfree = true;
+            };
+          in home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = { inherit inputs system user pkgs-stable; };
+            pkgs = nixpkgs-unstable.legacyPackages.${system};
+            modules = [
+              {
+                nixpkgs.config.allowUnfree = true;
+              }
+
+              ./home-manager/${user}.nix
+
+              ./home-manager/programs/common.nix
+              ./home-manager/programs/fzf.nix
+              ./home-manager/programs/git.nix
+              ./home-manager/programs/nixvim.nix
+              ./home-manager/programs/zoxide.nix
+              ./home-manager/programs/zsh.nix
+            ];
+          };
+
       };
 
     };

@@ -42,3 +42,12 @@ sudo nixos-rebuild switch --flake gitlab:roku-labs/dotfiles#sun --impure
 nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#mac
 # home-manager switch --flake gitlab:roku-labs/dotfiles#mac
 ```
+
+### WSL2 (`x86_64-linux`)
+
+```bash
+sudo nixos-rebuild switch --flake .#wsl --impure
+export NIX_SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
+nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#wsl
+# home-manager switch --flake gitlab:roku-labs/dotfiles#wsl
+```
