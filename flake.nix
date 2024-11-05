@@ -231,7 +231,7 @@
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 fontFamily = "Iosevka Nerd Font";
-                fontWeight = "ExtraLight";
+                fontWeight = "Light";
                 fontSize = 16.0;
                 lineHeight = 1.0;
               })

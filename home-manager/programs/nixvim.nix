@@ -9,8 +9,8 @@
     extraPackages = with pkgs; [ gotools gofumpt delve ];
 
     globals = {
-      mapleader = " ";
-      maplocalleader = " ";
+      mapleader = "\\";
+      maplocalleader = "\\";
     };
 
     keymaps = [
