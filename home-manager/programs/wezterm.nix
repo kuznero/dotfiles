@@ -1,4 +1,5 @@
-{ pkgs, ... }:
+{ pkgs, fontFamily ? "Iosevka Nerd Font", fontWeight ? "ExtraLight"
+, fontSize ? 12.0, lineHeight ? 1.0, ... }:
 
 {
   programs.wezterm = {
@@ -393,9 +394,9 @@
 
       config.front_end = "WebGpu"
       -- config.font = wezterm.font("0xProto Nerd Font", { weight = 'Regular', italic = false })
-      config.font = wezterm.font("Iosevka Nerd Font", { weight = 'ExtraLight', italic = false })
-      config.font_size = 12.0
-      config.line_height = 1.0
+      config.font = wezterm.font("${fontFamily}", { weight = "${fontWeight}", italic = false })
+      config.font_size = ${toString fontSize}
+      config.line_height = ${toString lineHeight}
       config.color_scheme = scheme_for_appearance(get_appearance())
       config.keys = {
         {

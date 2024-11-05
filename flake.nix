@@ -3,13 +3,9 @@
 
   inputs = {
 
-    nixpkgs = {
-      url = "github:NixOS/nixpkgs?ref=nixos-24.05";
-    };
+    nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-24.05"; };
 
-    nixpkgs-unstable = {
-      url = "github:NixOS/nixpkgs?ref=master";
-    };
+    nixpkgs-unstable = { url = "github:NixOS/nixpkgs?ref=master"; };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -28,16 +24,14 @@
 
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nixos-wsl }@inputs:
-    let
-      user = "roku";
-    in
-    {
+  outputs =
+    { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nixos-wsl }@inputs:
+    let user = "roku";
+    in {
 
       nixosConfigurations = {
         moon = # sudo nixos-rebuild switch --flake .#moon --impure
-          let
-            system = "x86_64-linux";
+          let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs system user; };
             modules = [
@@ -66,8 +60,7 @@
           };
 
         devos = # sudo nixos-rebuild switch --flake .#devos --impure
-          let
-            system = "aarch64-linux";
+          let system = "aarch64-linux";
           in nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs system user nixos-wsl; };
             modules = [
@@ -95,8 +88,7 @@
           };
 
         sun = # sudo nixos-rebuild switch --flake .#sun --impure
-          let
-            system = "x86_64-linux";
+          let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs system user; };
             modules = [
@@ -120,8 +112,7 @@
           };
 
         wsl = # sudo nixos-rebuild switch --flake .#wsl --impure
-          let
-            system = "x86_64-linux";
+          let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs system user; };
             modules = [
@@ -149,9 +140,7 @@
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-              }
+              { nixpkgs.config.allowUnfree = true; }
 
               ./home-manager/${user}.nix
 
@@ -168,7 +157,13 @@
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
-              ./home-manager/programs/wezterm.nix
+              (import ./home-manager/programs/wezterm.nix {
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                fontFamily = "Iosevka Nerd Font";
+                fontWeight = "ExtraLight";
+                fontSize = 12.0;
+                lineHeight = 1.0;
+              })
             ];
           };
 
@@ -183,9 +178,7 @@
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-              }
+              { nixpkgs.config.allowUnfree = true; }
 
               ./home-manager/${user}.nix
 
@@ -200,7 +193,13 @@
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
-              ./home-manager/programs/wezterm.nix
+              (import ./home-manager/programs/wezterm.nix {
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                fontFamily = "Iosevka Nerd Font";
+                fontWeight = "ExtraLight";
+                fontSize = 12.0;
+                lineHeight = 1.0;
+              })
             ];
           };
 
@@ -215,9 +214,7 @@
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-              }
+              { nixpkgs.config.allowUnfree = true; }
 
               ./home-manager/${user}.nix
 
@@ -231,7 +228,13 @@
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
-              ./home-manager/programs/wezterm.nix
+              (import ./home-manager/programs/wezterm.nix {
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                fontFamily = "Iosevka Nerd Font";
+                fontWeight = "ExtraLight";
+                fontSize = 16.0;
+                lineHeight = 1.0;
+              })
             ];
           };
 
@@ -246,9 +249,7 @@
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-              }
+              { nixpkgs.config.allowUnfree = true; }
 
               ./home-manager/${user}.nix
 
