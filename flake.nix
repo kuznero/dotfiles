@@ -233,7 +233,7 @@
                 fontFamily = "Mononoki Nerd Font";
                 fontWeight = "Regular";
                 fontSize = 16.0;
-                lineHeight = 1.2;
+                lineHeight = 1.1;
               })
             ];
           };
