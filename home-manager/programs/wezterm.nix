@@ -399,9 +399,21 @@
       config.line_height = ${toString lineHeight}
       config.color_scheme = scheme_for_appearance(get_appearance())
       config.keys = {
+        -- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word
         {
-          key = 'n',
-          mods = 'SHIFT|CTRL',
+          key = "LeftArrow",
+          mods = "OPT",
+          action = wezterm.action{ SendString = "\x1bb" },
+        },
+        -- Make Option-Right equivalent to Alt-f; forward-word
+        {
+          key = "RightArrow",
+          mods = "OPT",
+          action = wezterm.action{ SendString = "\x1bf" },
+        },
+        {
+          key = "n",
+          mods = "SHIFT|CTRL",
           action = wezterm.action.ToggleFullScreen,
         },
       }
