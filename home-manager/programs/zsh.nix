@@ -2,7 +2,7 @@
 
 let
   shellAliases = {
-    fv = "fzf --bind \"enter:execute(nvim {})\"";
+    fv = ''fzf --bind "enter:execute(nvim {})"'';
     gci = "git commit";
     gco = "git checkout";
     gl = "git pull --all --prune";
@@ -13,8 +13,7 @@ let
     n = "nvim";
     v = "nvim";
   };
-in
-{
+in {
   programs.zsh = {
     inherit shellAliases;
     enable = true;
@@ -30,15 +29,7 @@ in
 
     oh-my-zsh = {
       enable = true;
-      plugins = [
-        "docker"
-        "fzf"
-        "git"
-        "git-extras"
-        "man"
-        "systemd"
-        "tmux"
-      ];
+      plugins = [ "fzf" "git" "git-extras" "man" "systemd" "tmux" ];
       # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
       theme = "af-magic";
     };

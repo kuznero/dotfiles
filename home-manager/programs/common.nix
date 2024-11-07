@@ -4,7 +4,6 @@
   home.packages = with pkgs;
     builtins.filter (pkg: pkg != null) [
       btop
-      docker-credential-helpers
       fd
       ffmpegthumbnailer
       fish
