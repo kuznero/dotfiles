@@ -323,7 +323,7 @@
         ];
         settings.auto_install = true;
       };
-      treesitter-context.enable = true;
+      treesitter-context.enable = false;
       treesitter-textobjects.enable = true;
       trouble = {
         enable = true;
