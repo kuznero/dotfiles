@@ -4,6 +4,7 @@
   home.packages = with pkgs;
     builtins.filter (pkg: pkg != null) [
       btop
+      cmatrix
       fd
       ffmpegthumbnailer
       fish
