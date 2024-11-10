@@ -290,133 +290,46 @@
           autoExtendCols = false;
         };
         yaml = { bib = { override = false; }; };
-        # mappings = {
-        #   MkdnEnter = {
-        #     modes = [
-        #       "n"
-        #       "v"
-        #       "i"
-        #     ];
-        #     key = "<CR>";
-        #   };
-        #   MkdnTab = false;
-        #   MkdnSTab = false;
-        #   MkdnNextLink = {
-        #     modes = "n";
-        #     key = "<Tab>";
-        #   };
-        #   MkdnPrevLink = {
-        #     modes = "n";
-        #     key = "<S-Tab>";
-        #   };
-        #   MkdnNextHeading = {
-        #     modes = "n";
-        #     key = "]]";
-        #   };
-        #   MkdnPrevHeading = {
-        #     modes = "n";
-        #     key = "[[";
-        #   };
-        #   MkdnGoBack = {
-        #     modes = "n";
-        #     key = "<BS>";
-        #   };
-        #   MkdnGoForward = {
-        #     modes = "n";
-        #     key = "<Del>";
-        #   };
-        #   MkdnFollowLink = false;
-        #   MkdnCreateLink = false;
-        #   MkdnCreateLinkFromClipboard = {
-        #     modes = [
-        #       "n"
-        #       "v"
-        #     ];
-        #     key = "<leader>p";
-        #   };
-        #   MkdnDestroyLink = {
-        #     modes = "n";
-        #     key = "<M-CR>";
-        #   };
-        #   MkdnMoveSource = {
-        #     modes = "n";
-        #     key = "<F2>";
-        #   };
-        #   MkdnYankAnchorLink = {
-        #     modes = "n";
-        #     key = "ya";
-        #   };
-        #   MkdnYankFileAnchorLink = {
-        #     modes = "n";
-        #     key = "yfa";
-        #   };
-        #   MkdnIncreaseHeading = {
-        #     modes = "n";
-        #     key = "+";
-        #   };
-        #   MkdnDecreaseHeading = {
-        #     modes = "n";
-        #     key = "-";
-        #   };
-        #   MkdnToggleToDo = {
-        #     modes = [
-        #       "n"
-        #       "v"
-        #     ];
-        #     key = "<C-Space>";
-        #   };
-        #   MkdnNewListItem = false;
-        #   MkdnNewListItemBelowInsert = {
-        #     modes = "n";
-        #     key = "o";
-        #   };
-        #   MkdnNewListItemAboveInsert = {
-        #     modes = "n";
-        #     key = "O";
-        #   };
-        #   MkdnExtendList = false;
-        #   MkdnUpdateNumbering = {
-        #     modes = "n";
-        #     key = "<leader>nn";
-        #   };
-        #   MkdnTableNextCell = {
-        #     modes = "i";
-        #     key = "<Tab>";
-        #   };
-        #   MkdnTablePrevCell = {
-        #     modes = "i";
-        #     key = "<S-Tab>";
-        #   };
-        #   MkdnTableNextRow = false;
-        #   MkdnTablePrevRow = {
-        #     modes = "i";
-        #     key = "<M-CR>";
-        #   };
-        #   MkdnTableNewRowBelow = {
-        #     modes = "n";
-        #     key = "<leader>ir";
-        #   };
-        #   MkdnTableNewRowAbove = {
-        #     modes = "n";
-        #     key = "<leader>iR";
-        #   };
-        #   MkdnTableNewColAfter = {
-        #     modes = "n";
-        #     key = "<leader>ic";
-        #   };
-        #   MkdnTableNewColBefore = {
-        #     modes = "n";
-        #     key = "<leader>iC";
-        #   };
-        #   MkdnFoldSection = {
-        #     modes = "n";
-        #     key = "<leader>f";
-        #   };
-        #   MkdnUnfoldSection = {
-        #     modes = "n";
-        #     key = "<leader>F";
-        #   };
-        # };
+        mappings = {
+          MkdnCreateLink = false;
+          MkdnCreateLinkFromClipboard = false;
+          MkdnDecreaseHeading = false;
+          MkdnDestroyLink = false;
+          MkdnEnter = false;
+          MkdnExtendList = false;
+          MkdnFoldSection = false;
+          MkdnFollowLink = false;
+          MkdnGoBack = false;
+          MkdnGoForward = false;
+          MkdnIncreaseHeading = false;
+          MkdnMoveSource = false;
+          MkdnNewListItem = false;
+          MkdnNewListItemAboveInsert = false;
+          MkdnNewListItemBelowInsert = false;
+          MkdnNextHeading = false;
+          MkdnNextLink = false;
+          MkdnPrevHeading = false;
+          MkdnPrevLink = false;
+          MkdnSTab = false;
+          MkdnTab = false;
+          MkdnTableNewColAfter = false;
+          MkdnTableNewColBefore = false;
+          MkdnTableNewRowAbove = false;
+          MkdnTableNewRowBelow = false;
+          MkdnTableNextCell = false;
+          MkdnTableNextRow = false;
+          MkdnTablePrevCell = false;
+          MkdnTablePrevRow = false;
+          MkdnToggleToDo = false;
+          MkdnUnfoldSection = false;
+          MkdnUpdateNumbering = false;
+          MkdnYankAnchorLink = false;
+          MkdnYankFileAnchorLink = false;
+          MkdnTableFormat = {
+            key = "<leader>ft";
+            modes = "n";
+          };
+        };
       };
       none-ls = {
         enable = true;
@@ -469,7 +382,7 @@
             action = "live_grep";
             options = { desc = "Telescope Live Grep"; };
           };
-          "<leader>p" = {
+          "<leader><leader>" = {
             action = "find_files";
             options = { desc = "Telescope Find Files"; };
           };
