@@ -45,6 +45,12 @@ nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#mac
 
 ### WSL2 (`x86_64-linux`)
 
+To list all linux distributions currently installed, run the following PowerShell:
+
+```powershell
+wsl -l -v
+```
+
 NixOS is not yet packaged as a official WSL distribution or on the Microsoft store. Download the latest release of `nixos-wsl.tar.gz` from the [NixOS-WSL Github page](https://github.com/nix-community/NixOS-WSL/releases).
 
 Import the WSL container using PowerShell:
