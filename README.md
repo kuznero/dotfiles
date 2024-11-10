@@ -45,6 +45,19 @@ nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#mac
 
 ### WSL2 (`x86_64-linux`)
 
+NixOS is not yet packaged as a official WSL distribution or on the Microsoft store. Download the latest release of `nixos-wsl.tar.gz` from the [NixOS-WSL Github page](https://github.com/nix-community/NixOS-WSL/releases).
+
+Import the WSL container using PowerShell:
+
+```powershell
+wsl --import NixOS .\NixOS\ nixos-wsl.tar.gz --version 2
+```
+Start it with PowerShell:
+
+```powershell
+wsl -d NixOS
+```
+
 > Make sure to update custom CA certificate according to your company settings.
 
 ```bash
