@@ -56,7 +56,7 @@ NixOS is not yet packaged as a official WSL distribution or on the Microsoft sto
 Import the WSL container using PowerShell:
 
 ```powershell
-wsl --import NixOS .\NixOS\ nixos-wsl.tar.gz --version 2
+wsl --import NixOS .\NixOS\ .\Downloads\nixos-wsl.tar.gz --version 2
 ```
 Start it with PowerShell:
 
