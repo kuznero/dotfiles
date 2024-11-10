@@ -10,23 +10,12 @@
   wsl.enable = true;
   wsl.defaultUser = user;
 
-  # This setting should be enough, but seems to be ignored.
-  security.pki.certificateFiles = [
-    /etc/pki/tls/certs/ca-zscaler.crt
-  ];
-
-  # This sets the env var for all shells
+  security.pki.certificateFiles = [ /etc/pki/tls/certs/ca-zscaler.crt ];
   environment.variables = {
-    "NIX_SSL_CERT_FILE" = "/etc/pki/tls/certs/ca-zscaler.crt";
+    "NIX_SSL_CERT_FILE" = "/etc/ssl/certs/ca-certificates.crt";
   };
 
-  # This adds an extra line to sudoers to always keep this variable
-  security.sudo.extraConfig = ''
-    Defaults env_keep += "NIX_SSL_CERT_FILE"
-  '';  
+  security.sudo.extraConfig = ''Defaults env_keep += "NIX_SSL_CERT_FILE"'';
 
-  environment.systemPackages = with pkgs; [
-    gitFull
-    vim
-  ];
+  environment.systemPackages = with pkgs; [ gitFull vim ];
 }

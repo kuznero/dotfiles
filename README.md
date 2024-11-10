@@ -45,9 +45,16 @@ nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#mac
 
 ### WSL2 (`x86_64-linux`)
 
+> Make sure to update custom CA certificate according to your company settings.
+
 ```bash
+cat <<EOF | sudo tee /etc/pki/tls/certs/ca-zscaler.crt
+-----BEGIN CERTIFICATE-----
+...
+-----END CERTIFICATE-----
+EOF
+
 sudo nixos-rebuild switch --flake .#wsl --impure
-export NIX_SSL_CERT_FILE=/etc/pki/tls/certs/ca-bundle.crt
 nix run home-manager/master -- switch --flake gitlab:roku-labs/dotfiles#wsl
 # home-manager switch --flake gitlab:roku-labs/dotfiles#wsl
 ```
