@@ -1,8 +1,8 @@
-{ pkgs, pkgs-stable, system, ... }:
+{ pkgs, pkgs-stable, ... }:
 
 {
   home.packages = with pkgs;
-    builtins.filter (pkg: pkg != null) [
+    [
       btop
       cmatrix
       fd
@@ -10,6 +10,7 @@
       fish
       flux
       gitFull
+      gnupg
       k9s
       kitty
       kubectl

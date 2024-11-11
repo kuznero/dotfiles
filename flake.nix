@@ -126,6 +126,7 @@
 
               # features
               ./hosts/docker.nix
+              ./hosts/gnupg.nix
             ];
           };
 
