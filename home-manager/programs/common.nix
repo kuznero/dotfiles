@@ -25,7 +25,6 @@
       poppler
       ripgrep
       rsync
-      tmux
       tree
       vim
       wl-clipboard

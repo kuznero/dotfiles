@@ -22,10 +22,12 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    catppuccin.url = "github:catppuccin/nix";
+
   };
 
-  outputs =
-    { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nixos-wsl }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nixos-wsl
+    , catppuccin }@inputs:
     let user = "roku";
     in {
 
@@ -160,6 +162,7 @@
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/telegram.nix
+              ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
@@ -199,6 +202,7 @@
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/telegram.nix
+              ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
@@ -237,6 +241,7 @@
               ./home-manager/programs/obsidian.nix
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/spotify.nix
+              ./home-manager/programs/tmux.nix
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
@@ -270,6 +275,7 @@
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/nixvim.nix
+              ./home-manager/programs/tmux.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
             ];
