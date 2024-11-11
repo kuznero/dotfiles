@@ -123,6 +123,9 @@
 
               # basic configuration & users
               ./hosts/wsl/configuration.nix
+
+              # features
+              ./hosts/docker.nix
             ];
           };
 
