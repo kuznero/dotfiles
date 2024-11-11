@@ -28,6 +28,7 @@
       tmux
       tree
       vim
+      wl-clipboard
       xclip
       zoxide
       zsh
