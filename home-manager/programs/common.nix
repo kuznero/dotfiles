@@ -17,20 +17,17 @@
       lazygit
       neofetch
       nerdfonts
-      obsidian
+      pass
       podman
       podman-compose
       podman-tui
       poppler
       ripgrep
       rsync
-      (if system != "aarch64-linux" then slack else null)
-      (if system != "aarch64-linux" then spotify else null)
       tmux
       tree
       vim
       xclip
-      (if system != "aarch64-linux" then zoom-us else null)
       zoxide
       zsh
     ] ++ (with pkgs-stable; [ yazi ]);
