@@ -1,18 +1,16 @@
 { config, ... }:
 
 {
-  users.users."github-runner-sun" = {
-    isNormalUser = true; # Ensure the user is a normal user
-    extraGroups = [ "docker" ]; # Add the user to the docker group
-  };
-
   services.github-runners.${config.networking.hostName} = {
     enable = true;
     ephemeral = true;
     replace = true;
     tokenFile = "/data/github-runner.conf";
     url = "https://github.com/lix-one";
-    extraLabels = [ "sun" ];
+    extraLabels = [ "${config.networking.hostName}" ];
     # extraPackages = with pkgs; [ cachix ];
   };
+
+  systemd.services.github-runners-${config.networking.hostName}.path =
+    [ "/run/wrappers" "/run/current-system/sw/bin" ];
 }
