@@ -11,6 +11,6 @@
     # extraPackages = with pkgs; [ cachix ];
   };
 
-  systemd.services.github-runners-${config.networking.hostName}.path =
+  systemd.services."github-runners-${config.networking.hostName}".path =
     [ "/run/wrappers" "/run/current-system/sw/bin" ];
 }
