@@ -14,7 +14,7 @@
   systemd.services."github-runners-${config.networking.hostName}".path =
     [ "/run/wrappers" "/run/current-system/sw/bin" ];
 
-  services.github-runners.runner1.serviceOverrides = {
+  services.github-runners.${config.networking.hostName}.serviceOverrides = {
     # ReadWritePaths = [
     #   "/nix"
     #   # "/nix/var/nix/profiles/per-user/" # https://github.com/cachix/cachix-ci-agents/blob/63f3f600d13cd7688e1b5db8ce038b686a5d29da/agents/linux.nix#L30C26-L30C59
