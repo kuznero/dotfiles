@@ -108,9 +108,6 @@
               ./hosts/logind.nix
               ./hosts/gitlab-runner.nix
               ./hosts/github-runner.nix
-
-              # packages
-              ./pkgs/1password.nix
             ];
           };
 
