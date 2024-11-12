@@ -1,6 +1,11 @@
 { config, ... }:
 
 {
+  users.users."github-runner-sun" = {
+    isNormalUser = true; # Ensure the user is a normal user
+    extraGroups = [ "docker" ]; # Add the user to the docker group
+  };
+
   services.github-runners.${config.networking.hostName} = {
     enable = true;
     ephemeral = true;
