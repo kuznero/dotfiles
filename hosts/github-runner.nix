@@ -1,20 +1,13 @@
-{ ... }:
+{ config, ... }:
 
 {
-  services.github-runner = {
+  services.github-runners.${config.networking.hostName} = {
     enable = true;
-    name = "sun";
-    url = "https://github.com/lix-one";
+    ephemeral = true;
+    replace = true;
     tokenFile = "/data/github-runner.conf";
-    # extraPackages = [
-    #   pkgs.openssh
-    #   pkgs.git
-    #   pkgs.psmisc
-    # ];
-    # extraEnvironment = {
-    #   TMP = "/tmp";
-    #   TMPDIR = "/tmp";
-    #   ANSIBLE_LOCAL_TEMP = "/tmp";
-    # };
+    url = "https://github.com/lix-one";
+    extraLabels = [ "sun" ];
+    # extraPackages = with pkgs; [ cachix ];
   };
 }
