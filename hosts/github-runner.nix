@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [ tail ];
+  environment.systemPackages = with pkgs; [ coreutils-full ];
 
   services.github-runners.${config.networking.hostName} = {
     enable = true;
