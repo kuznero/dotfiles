@@ -7,6 +7,7 @@
     replace = true;
     tokenFile = "/data/github-runner.conf";
     url = "https://github.com/lix-one";
+    concurrent = 10;
     extraLabels = [ "sun" ];
     # extraPackages = with pkgs; [ cachix ];
   };
