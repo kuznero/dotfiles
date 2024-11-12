@@ -1,6 +1,8 @@
 { config, ... }:
 
 {
+  environment.systemPackages = with pkgs; [ tail ];
+
   services.github-runners.${config.networking.hostName} = {
     enable = true;
     ephemeral = true;
