@@ -18,7 +18,7 @@
     # service will fail as soon as the registration token expired.
 
     # Changing this option triggers a new runner registration.
-    ephemeral = false;
+    ephemeral = true;
 
     replace = true;
     tokenFile = "/data/github-runner.conf";
