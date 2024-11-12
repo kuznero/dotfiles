@@ -14,7 +14,7 @@
     };
   };
 
-  systemd.services."github-runners-${config.networking.hostName}" = {
+  systemd.services."github-runner-${config.networking.hostName}" = {
     path = [ "/run/wrappers" "/run/current-system/sw/bin" ];
     serviceConfig = { User = "root"; };
   };
