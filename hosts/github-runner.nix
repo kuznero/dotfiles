@@ -12,9 +12,10 @@
     serviceOverrides = {
       Environment = "PATH=/run/wrappers/bin:/run/current-system/sw/bin";
     };
-    serviceConfig = { User = "root"; };
   };
 
-  systemd.services."github-runners-${config.networking.hostName}".path =
-    [ "/run/wrappers" "/run/current-system/sw/bin" ];
+  systemd.services."github-runners-${config.networking.hostName}" = {
+    path = [ "/run/wrappers" "/run/current-system/sw/bin" ];
+    serviceConfig = { User = "root"; };
+  };
 }
