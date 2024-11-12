@@ -5,7 +5,21 @@
 
   services.github-runners.${config.networking.hostName} = {
     enable = true;
-    ephemeral = true;
+
+    # If enabled, causes the following behavior:
+
+    # - Passes the `--ephemeral` flag to the runner configuration script
+    # - De-registers and stops the runner with GitHub after it has processed one job
+    # - Restarts the service after its successful exit
+    # - On start, wipes the state directory and configures a new runner
+
+    # You should only enable this option if `tokenFile` points to a file which contains a
+    # personal access token (PAT). If you're using the option with a registration token, restarting the
+    # service will fail as soon as the registration token expired.
+
+    # Changing this option triggers a new runner registration.
+    ephemeral = false;
+
     replace = true;
     tokenFile = "/data/github-runner.conf";
     url = "https://github.com/lix-one";
