@@ -4,7 +4,7 @@
   services.github-runner = {
     enable = true;
     name = "sun";
-    url = "https://github.com/lix-one/lix-one";
+    url = "https://github.com/lix-one";
     tokenFile = "/data/github-runner.conf";
     # extraPackages = [
     #   pkgs.openssh
