@@ -159,7 +159,6 @@
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/spotify.nix
-              ./home-manager/programs/telegram.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
@@ -167,9 +166,9 @@
               ./home-manager/programs/zsh.nix
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "Iosevka Nerd Font";
-                fontWeight = "ExtraLight";
-                fontSize = 12.0;
+                fontFamily = "Mononoki Nerd Font";
+                fontWeight = "Regular";
+                fontSize = 14.0;
                 lineHeight = 1.0;
               })
             ];
