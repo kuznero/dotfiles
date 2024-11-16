@@ -54,6 +54,7 @@
               ./hosts/gnome.nix
               ./hosts/hyprland.nix
               ./hosts/logind.nix
+              ./hosts/media.nix
               ./hosts/ollama.nix
 
               # packages
