@@ -52,7 +52,6 @@
               ./hosts/flatpak.nix
               ./hosts/fonts.nix
               ./hosts/gnome.nix
-              ./hosts/hyprland.nix
               ./hosts/logind.nix
               ./hosts/media.nix
               ./hosts/ollama.nix
@@ -81,7 +80,6 @@
               ./hosts/flatpak.nix
               ./hosts/fonts.nix
               ./hosts/gnome.nix
-              ./hosts/hyprland.nix
               ./hosts/logind.nix
               ./hosts/ollama.nix
 

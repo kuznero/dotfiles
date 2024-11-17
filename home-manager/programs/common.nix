@@ -12,7 +12,6 @@
       gitFull
       gnupg
       k9s
-      kitty
       kubectl
       lazydocker
       lazygit
