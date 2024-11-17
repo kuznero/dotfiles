@@ -14,6 +14,9 @@
 
     catppuccin-gtk
     catppuccin-cursors
+
+    fluent-gtk-theme
+    fluent-icon-theme
   ];
 
   programs.dconf = {
