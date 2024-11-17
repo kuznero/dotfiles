@@ -12,11 +12,9 @@
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
 
-    catppuccin-gtk
-    catppuccin-cursors
-
-    fluent-gtk-theme
-    fluent-icon-theme
+    kanagawa-gtk-theme
+    kanagawa-icon-theme
+    phinger-cursors
   ];
 
   programs.dconf = {
@@ -26,6 +24,14 @@
         settings = with lib.gvariant; {
           "org/gnome/desktop/privacy".remember-recent-files = false;
           "org/gnome/desktop/interface".color-scheme = "prefer-dark";
+          # tweak >> appearance >> cursor
+          "org/gnome/desktop/interface".cursor-theme = "phinger-cursors-dark";
+          # tweak >> appearance >> shell
+          "org/gnome/shell/extensions/user-theme".name = "Kanagawa-BL";
+          # tweak >> appearance >> legacy applications
+          "org/gnome/desktop/interface".gtk-theme = "Kanagawa-BL";
+          # tweak >> appearance >> icons
+          "org/gnome/desktop/interface".icon-theme = "Kanagawa";
           "org/gnome/shell/keybindings".show-screen-recording-ui =
             [ "<Shift><Super>s" ];
           "org/gnome/desktop/interface".font-hinting = "full";
@@ -42,6 +48,7 @@
             "system-monitor@gnome-shell-extensions.gcampax.github.com"
             "appindicatorsupport@rgcjonas.gmail.com"
             "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
+            "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
 
           "org/gnome/desktop/input-sources" = {
