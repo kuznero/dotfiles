@@ -1,0 +1,52 @@
+[book]
+authors = ["Roman Kuznetsov"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Docs"
+
+[preprocessor.admonish]
+command = "mdbook-admonish"
+assets_version = "3.0.2" # do not edit: managed by `mdbook-admonish install`
+
+[preprocessor.admonish.default]
+collapsible = false
+
+[preprocess.links]
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[preprocessor.toc]
+command = "mdbook-toc"
+max-level = 4
+renderer = ["html"]
+
+[output.linkcheck]
+follow-web-links = false
+traverse-parent-directories = true
+warning-policy = "ignore"
+
+[output.html]
+additional-css = ["./theme/catppuccin.css", "./theme/catppuccin-admonish.css", "./theme/mdbook-admonish.css", "./theme/pagetoc.css"]
+additional-js = ["./theme/mermaid.min.js", "./theme/mermaid-init.js", "./theme/pagetoc.js"]
+git-repository-url = "https://gitlab.com/roku-labs/dotfiles"
+git-repository-icon = "fa-git-square"
+no-section-label = true
+default-theme = "latte"
+preferred-dark-theme = "mocha"
+
+[output.html.fold]
+enable = true
+level = 0
+
+[output.html.print]
+enable = true
+page-break = true
+
+[output.html.playground]
+editable = false
+copyable = true
+copy-js = true
+line-numbers = true
+runnable = false
