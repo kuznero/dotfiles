@@ -243,8 +243,7 @@ pre > .buttons i {
 }
 pre > .buttons button {
   cursor: inherit;
-  margin: 0.5rem 4rem;
-  /* margin: 1rem 3rem; */
+  margin: 0.5rem 1rem;
   padding: 3px 5px;
   font-size: 14px;
 
@@ -269,7 +268,7 @@ pre > code {
   border-radius: 8px;
   border-top: 0.1em solid #8c51ff7a;
   border-bottom: 0.1em solid #8c51ff7a;
-  margin: 1rem 3rem;
+  /* margin: 1rem 3rem; */
 }
 
 /* FIXME: ACE editors overlap their buttons because ACE does absolute
