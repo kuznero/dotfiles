@@ -11,6 +11,7 @@
       flux
       gitFull
       gnupg
+      go-task
       k9s
       kubectl
       lazydocker

@@ -90,6 +90,10 @@ in {
         source <(talosctl completion zsh)
       }
 
+      command -v task >/dev/null 2>&1 && {
+        source <(task --completion zsh)
+      }
+
       function y() {
         local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
         yazi "$@" --cwd-file="$tmp"
