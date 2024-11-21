@@ -232,13 +232,13 @@
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
-              ./home-manager/programs/messengers.nix
+              # ./home-manager/programs/messengers.nix
               ./home-manager/programs/nixvim.nix
-              ./home-manager/programs/obsidian.nix
+              # ./home-manager/programs/obsidian.nix
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
-              ./home-manager/programs/vscode.nix
+              # ./home-manager/programs/vscode.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
