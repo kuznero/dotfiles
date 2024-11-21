@@ -91,6 +91,7 @@ in {
       }
 
       command -v task >/dev/null 2>&1 && {
+        alias t='task'
         source <(task --completion zsh)
       }
 
