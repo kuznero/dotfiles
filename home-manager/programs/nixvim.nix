@@ -429,6 +429,16 @@
       };
       treesitter-context.enable = false;
       treesitter-textobjects.enable = true;
+      trim = {
+        enable = true;
+        settings = {
+          highlight = true;
+          trim_on_write = false;
+          trim_trailing = false;
+          trim_first_line = false;
+          trim_last_line = false;
+        };
+      };
       trouble = {
         enable = true;
         settings = {
