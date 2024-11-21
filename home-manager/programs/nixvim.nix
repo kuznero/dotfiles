@@ -334,8 +334,16 @@
       none-ls = {
         enable = true;
         enableLspFormat = true;
-        sources.formatting.nixfmt.enable = true;
-        sources.formatting.gofumpt.enable = true;
+        sources = {
+          diagnostics = {
+            trail_space.enable = true;
+            staticcheck.enable = true;
+          };
+          formatting = {
+            nixfmt.enable = true;
+            gofumpt.enable = true;
+          };
+        };
       };
       lualine.enable = true;
       neo-tree = {
