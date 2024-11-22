@@ -438,7 +438,7 @@
       treesitter-context.enable = false;
       treesitter-textobjects.enable = true;
       trim = {
-        enable = true;
+        enable = false;
         settings = {
           highlight = true;
           trim_on_write = false;
