@@ -14,6 +14,7 @@
       go-task
       k9s
       kubectl
+      kubectx
       lazydocker
       lazygit
       neofetch
