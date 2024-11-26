@@ -55,6 +55,7 @@
               # features
               ./hosts/displaylink.nix
               ./hosts/docker.nix
+              ./hosts/gaming.nix
               ./hosts/flatpak.nix
               ./hosts/fonts.nix
               ./hosts/gnome.nix
