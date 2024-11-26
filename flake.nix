@@ -7,6 +7,9 @@
 
     nixpkgs-unstable = { url = "github:NixOS/nixpkgs?ref=master"; };
 
+    # ref: https://github.com/NixOS/nixos-hardware/tree/master
+    nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -26,8 +29,8 @@
 
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixvim, nixos-wsl
-    , catppuccin }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
+    , nixvim, nixos-wsl, catppuccin }@inputs:
     let user = "roku";
     in {
 
@@ -41,6 +44,9 @@
                 nixpkgs.config.allowUnfree = true;
                 system.stateVersion = "24.05";
               }
+
+              # ref: https://github.com/NixOS/nixos-hardware/blob/master/flake.nix
+              nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
 
               # basic configuration & users
               ./hosts/moon/configuration.nix
