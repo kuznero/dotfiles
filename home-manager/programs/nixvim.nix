@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 
 {
   imports = [ inputs.nixvim.homeManagerModules.nixvim ];
@@ -7,6 +7,87 @@
     enable = true;
     package = pkgs.neovim-unwrapped;
     extraPackages = with pkgs; [ gotools gofumpt delve ];
+
+    extraPlugins = [
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "gp";
+        src = pkgs.fetchFromGitHub {
+          owner = "Robitx";
+          repo = "gp.nvim";
+          rev = "2372d5323c6feaa2e9c19f7ccb537c615d878e18";
+          hash = "sha256-QUZrFU/+TPBEU8yi9gmyRYjI/u7DP88AxcS0RMk7Jvk=";
+        };
+      })
+    ];
+
+    extraConfigLua = ''
+      require("gp").setup({
+        -- openai_api_key = os.getenv("OPENAI_API_KEY"),
+        providers = {
+          -- anthropic = {
+          --   endpoint = "https://api.anthropic.com/v1/messages",
+          --   secret = os.getenv("ANTHROPIC_API_KEY"),
+          -- },
+          -- copilot = {
+          --   endpoint = "https://api.githubcopilot.com/chat/completions",
+          --   secret = {
+          --     "bash",
+          --     "-c",
+          --     "cat /home/${config.home.username}/.config/github-copilot/hosts.json | sed -e 's/.*oauth_token...//;s/\".*//'",
+          --   },
+          -- },
+          ollama = {
+            endpoint = "http://localhost:11434/v1/chat/completions",
+          },
+          -- openai = {
+          --   endpoint = "https://api.openai.com/v1/chat/completions",
+          --   secret = vim.fn.getenv("OPENAI_API_KEY"),
+          -- },
+        },
+        default_command_agent = "Qwen2.5Coder",
+        default_chat_agent = "Qwen2.5Coder",
+        agents = {
+          -- {
+          --   name = "Codellama",
+          --   chat = true,
+          --   command = true,
+          --   provider = "ollama",
+          --   model = { model = "codellama" },
+          --   system_prompt = "I am an AI meticulously crafted to provide programming guidance and code assistance. "
+          --     .. "To best serve you as a computer programmer, please provide detailed inquiries and code snippets when necessary, "
+          --     .. "and expect precise, technical responses tailored to your development needs.\n",
+          -- },
+          {
+            name = "Qwen2.5Coder",
+            chat = true,
+            command = true,
+            provider = "ollama",
+            model = { model = "qwen2.5-coder:1.5b" },
+            system_prompt = "You are a general AI assistant.\n\n"
+              .. "The user provided the additional info about how they would like you to respond:\n\n"
+              .. "- If you're unsure don't guess and say you don't know instead.\n"
+              .. "- Ask question if you need clarification to provide better answer.\n"
+              .. "- Think deeply and carefully from first principles step by step.\n"
+              .. "- Zoom out first to see the big picture and then zoom in to details.\n"
+              .. "- Use Socratic method to improve your thinking and coding skills.\n"
+              .. "- Don't elide any code from your output if the answer requires coding.\n"
+              .. "- Take a deep breath; You've got this!\n",
+          },
+        },
+        hooks = {
+          CodeReview = function(gp, params)
+            local template = "I have the following code from {{filename}}:\n\n"
+              .. "```{{filetype}}\n{{selection}}\n```\n\n"
+              .. "Please analyze for code smells and suggest improvements."
+            local agent = gp.get_chat_agent()
+            gp.Prompt(params, gp.Target.enew("markdown"), agent, template)
+          end,
+          BufferChatNew = function(gp, _)
+            vim.api.nvim_command("%" .. gp.config.cmd_prefix .. "ChatNew")
+          end,
+        },
+      })
+    '';
 
     globals = {
       mapleader = "\\";
@@ -17,12 +98,12 @@
       {
         mode = "n";
         key = "<leader>e";
-        action = ":Neotree<CR>";
+        action = "<cmd>Neotree<CR>";
       }
       {
         mode = "n";
         key = "<leader>g";
-        action = ":LazyGit<CR>";
+        action = "<cmd>LazyGit<CR>";
       }
       {
         mode = "n";
@@ -32,12 +113,117 @@
       {
         mode = "n";
         key = "<leader>t";
-        action = ":FloatermToggle<CR>";
+        action = "<cmd>FloatermToggle<CR>";
       }
       {
         mode = "n";
         key = "<leader>z";
-        action = ":Twilight<CR>";
+        action = "<cmd>Twilight<CR>";
+      }
+
+      # gp.nvim keymaps (normal mode)
+      {
+        mode = "n";
+        key = "<C-g><C-t>";
+        action = "<cmd>GpChatNew tabnew<CR>";
+        options = { desc = "New Chat tabnew"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g><C-v>";
+        action = "<cmd>GpChatNew vsplit<cr>";
+        options = { desc = "New Chat vsplit"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g><C-x>";
+        action = "<cmd>GpChatNew split<cr>";
+        options = { desc = "New Chat split"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>a";
+        action = "<cmd>GpAppend<cr>";
+        options = { desc = "Append (after)"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>b";
+        action = "<cmd>GpPrepend<cr>";
+        options = { desc = "Prepend (before)"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>c";
+        action = "<cmd>GpChatNew<cr>";
+        options = { desc = "New Chat"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>f";
+        action = "<cmd>GpChatFinder<cr>";
+        options = { desc = "Chat Finder"; };
+      }
+      #     ["<C-g>g"] = { name = "generate into new .." },
+      {
+        mode = "n";
+        key = "<C-g>ge";
+        action = "<cmd>GpEnew<cr>";
+        options = { desc = "GpEnew"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>gn";
+        action = "<cmd>GpNew<cr>";
+        options = { desc = "GpNew"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>gp";
+        action = "<cmd>GpPopup<cr>";
+        options = { desc = "Popup"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>gt";
+        action = "<cmd>GpTabnew<cr>";
+        options = { desc = "GpTabnew"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>gv";
+        action = "<cmd>GpVnew<cr>";
+        options = { desc = "GpVnew"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>n";
+        action = "<cmd>GpNextAgent<cr>";
+        options = { desc = "Next Agent"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>r";
+        action = "<cmd>GpRewrite<cr>";
+        options = { desc = "Inline Rewrite"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>s";
+        action = "<cmd>GpStop<cr>";
+        options = { desc = "GpStop"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>t";
+        action = "<cmd>GpChatToggle<cr>";
+        options = { desc = "Toggle Chat"; };
+      }
+      {
+        mode = "n";
+        key = "<C-g>x";
+        action = "<cmd>GpContext<cr>";
+        options = { desc = "Toggle GpContext"; };
       }
     ];
 
@@ -546,6 +732,10 @@
               desc = "Breakpoint toggle";
               mode = "n";
               silent = true;
+            }
+            {
+              __unkeyed-1 = "<C-g>";
+              group = "LLM";
             }
           ];
           win = { border = "single"; };
