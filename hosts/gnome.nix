@@ -50,6 +50,7 @@
             "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
             "user-theme@gnome-shell-extensions.gcampax.github.com"
           ];
+          "org/gnome/shell/app-switcher".current-workspace-only = true;
 
           "org/gnome/desktop/input-sources" = {
             sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) ];
