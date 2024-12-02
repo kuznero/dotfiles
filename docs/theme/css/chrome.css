@@ -266,8 +266,10 @@ pre > code {
   padding: 0.6rem;
   white-space: pre-wrap;
   border-radius: 8px;
+  /*
   border-top: 0.1em solid #8c51ff7a;
   border-bottom: 0.1em solid #8c51ff7a;
+  */
   /* margin: 1rem 3rem; */
 }
 

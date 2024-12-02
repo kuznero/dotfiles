@@ -29,6 +29,13 @@ body {
   overflow-x: hidden;
 }
 
+svg {
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: auto;
+}
+
 a[target="_blank"] {
   text-decoration: underline dotted !important;
   text-underline-offset: 2px !important;
