@@ -29,6 +29,14 @@ body {
   overflow-x: hidden;
 }
 
+.nodeLabel p {
+  text-align: center !important;
+}
+
+.edgeLabel p {
+  text-align: center !important;
+}
+
 svg {
   height: auto;
   max-width: 100%;

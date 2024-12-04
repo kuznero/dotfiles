@@ -1,9 +1,14 @@
+// ref: https://mermaid.js.org/config/theming.html
 var config = {
   theme: 'neutral', // 'default', 'forest', 'dark', 'neutral', 'null'
+  look: 'handDrawn',
   logLevel: 'fatal',
   securityLevel: 'strict',
   startOnLoad: true,
   arrowMarkerAbsolute: false,
+  themeVariables: {
+    fontFamily: 'Montserrat',
+  },
   er: {
     diagramPadding: 20,
     layoutDirection: 'TB',
@@ -51,4 +56,30 @@ var config = {
     topAxis: false,
   }
 };
+
 mermaid.initialize(config);
+
+document.addEventListener("DOMContentLoaded", () => {
+  const updateMermaidTheme = () => {
+    const htmlElement = document.documentElement;
+    var theme = localStorage.getItem('mdbook-theme');
+    config.theme = theme === "latte" ? "neutral" : "dark";
+    mermaid.initialize(config);
+    document.querySelectorAll('.mermaid').forEach((el) => {
+      const graphDefinition = el.getAttribute('data-graph-definition') || el.innerText.trim(); // Retrieve stored definition or original text
+      el.setAttribute('data-graph-definition', graphDefinition); // Store definition for future use
+      el.innerHTML = graphDefinition; // Reset content to raw Mermaid definition
+      el.removeAttribute('data-processed'); // Mark the diagram for re-rendering
+    });
+    mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+  };
+
+  updateMermaidTheme();
+
+  // Observe changes to the `class` attribute on the <html> element
+  const observer = new MutationObserver(updateMermaidTheme);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+});
