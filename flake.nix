@@ -174,7 +174,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 fontFamily = "Mononoki Nerd Font";
                 fontWeight = "Regular";
-                fontSize = 14.0;
+                fontSize = 12.0;
                 lineHeight = 1.0;
               })
             ];

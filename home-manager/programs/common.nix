@@ -17,7 +17,20 @@
       lazydocker
       lazygit
       neofetch
-      nerdfonts
+      nerd-fonts.envy-code-r
+      nerd-fonts.fantasque-sans-mono
+      nerd-fonts.iosevka
+      nerd-fonts.iosevka-term
+      nerd-fonts.iosevka-term-slab
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.lekton
+      nerd-fonts.meslo-lg
+      nerd-fonts.monaspace
+      nerd-fonts.monofur
+      nerd-fonts.mononoki
+      nerd-fonts.ubuntu
+      nerd-fonts.ubuntu-mono
+      nerd-fonts.ubuntu-sans
       pass
       podman
       podman-compose

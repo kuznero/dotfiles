@@ -397,7 +397,6 @@
       config.hide_tab_bar_if_only_one_tab = true
 
       config.front_end = "WebGpu"
-      -- config.font = wezterm.font("0xProto Nerd Font", { weight = 'Regular', italic = false })
       config.font = wezterm.font("${fontFamily}", { weight = "${fontWeight}", italic = false })
       config.font_size = ${toString fontSize}
       config.line_height = ${toString lineHeight}
