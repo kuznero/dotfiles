@@ -122,15 +122,20 @@ in {
             return 0
           fi
 
-          tmux new-session -d -s $SESSION nvim
+          COMMAND="$SHELL"
+          if [ -f flake.nix ]; then
+            COMMAND="nix develop || echo 'No default shell defined'; $SHELL"
+          fi
+
+          tmux new-session -d -s $SESSION "$COMMAND"
 
           COUNTER=2
 
-          tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-rt"
+          tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-rt" "$COMMAND"
           COUNTER=$((COUNTER+1))
 
           if [ -d "docs" ]; then
-            tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-docs"
+            tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-docs" "$COMMAND"
             COUNTER=$((COUNTER+1))
           fi
 
