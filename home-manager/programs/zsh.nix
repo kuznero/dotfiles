@@ -12,6 +12,7 @@ let
     lzg = "lazygit";
     n = "nvim";
     v = "nvim";
+    tm = "tmux";
   };
 in {
   programs.zsh = {
@@ -102,6 +103,45 @@ in {
           builtin cd -- "$cwd"
         fi
         rm -f -- "$tmp"
+      }
+
+      function tt() {
+        if [ -n "$TMUX" ]; then
+          echo "Script is already running inside a tmux session"
+        else
+          SESSION=$1
+
+          if [ -z "$SESSION" ]; then
+            SESSION=$(basename "$(pwd)")
+            SESSION=$(echo "$SESSION" | tr '[:upper:]' '[:lower:]')
+          fi
+
+          if tmux has-session -t "$SESSION" 2>/dev/null; then
+            echo "$SESSION session already exists. Attaching..."
+            tmux attach-session -t "$SESSION"
+            return 0
+          fi
+
+          tmux new-session -d -s $SESSION nvim
+
+          COUNTER=2
+
+          tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-rt"
+          COUNTER=$((COUNTER+1))
+
+          if [ -d "docs" ]; then
+            tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-docs"
+            COUNTER=$((COUNTER+1))
+          fi
+
+          tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-top" btop
+          COUNTER=$((COUNTER+1))
+
+          tmux select-window -t "$SESSION:1"
+          tmux rename-window -t "$SESSION:1" "$SESSION"
+
+          tmux attach-session -t "$SESSION"
+        fi
       }
 
       if [ -n "$NIX_FLAKE_NAME" ]; then
