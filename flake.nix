@@ -172,7 +172,14 @@
               ./home-manager/programs/zsh.nix
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "Mononoki Nerd Font";
+                # fontFamily = "Mononoki Nerd Font";
+                # fontFamily = "0xProto Nerd Font";
+                # fontFamily = "CodeNewRoman Nerd Font";
+                # fontFamily = "Hack Nerd Font";
+                fontFamily = "Hurmit Nerd Font"; # the best coding font
+                # fontFamily = "MesloLG Nerd Font";
+                # fontFamily = "Noto Nerd Font";
+                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
                 fontWeight = "Regular";
                 fontSize = 12.0;
                 lineHeight = 1.0;
