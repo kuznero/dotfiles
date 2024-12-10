@@ -164,6 +164,7 @@
               ./home-manager/programs/obsidian.nix
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/pcloud.nix
+              ./home-manager/programs/security.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
