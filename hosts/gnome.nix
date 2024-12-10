@@ -11,6 +11,7 @@
     gnome.dconf-editor
     gnome.gnome-tweaks
     gnomeExtensions.appindicator
+    gnomeExtensions.clipboard-indicator
 
     kanagawa-gtk-theme
     kanagawa-icon-theme
