@@ -182,7 +182,7 @@
                 # fontFamily = "Noto Nerd Font";
                 # fontFamily = "SpaceMono Nerd Font"; # second best coding font
                 fontWeight = "Regular";
-                fontSize = 12.0;
+                fontSize = 10.0;
                 lineHeight = 1.0;
               })
             ];
