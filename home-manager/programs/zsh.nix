@@ -139,9 +139,6 @@ in {
             COUNTER=$((COUNTER+1))
           fi
 
-          tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-top" btop
-          COUNTER=$((COUNTER+1))
-
           tmux select-window -t "$SESSION:1"
           tmux rename-window -t "$SESSION:1" "$SESSION"
 

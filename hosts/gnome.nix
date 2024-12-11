@@ -8,8 +8,8 @@
   services.gnome.gnome-settings-daemon.enable = true;
 
   environment.systemPackages = with pkgs; [
-    gnome.dconf-editor
-    gnome.gnome-tweaks
+    dconf-editor
+    gnome-tweaks
     gnomeExtensions.appindicator
     gnomeExtensions.clipboard-indicator
 
