@@ -136,6 +136,30 @@
             ];
           };
 
+        miku = # sudo nixos-rebuild switch --flake .#miku --impure
+          let
+            system = "x86_64-linux";
+            user = "miku";
+          in nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs system user; };
+            modules = [
+              {
+                nixpkgs.config.allowUnfree = true;
+                system.stateVersion = "24.11";
+              }
+
+              # basic configuration & users
+              ./hosts/miku/configuration.nix
+              ./users/${user}.nix
+
+              # features
+              ./hosts/fonts.nix
+              ./hosts/gnome.nix
+              ./hosts/logind.nix
+              ./hosts/media.nix
+            ];
+          };
+
       };
 
       homeConfigurations = {
@@ -292,6 +316,38 @@
             ];
           };
 
+        miku = # home-manager switch --flake .#miku
+          let
+            system = "x86_64-linux";
+            user = "miku";
+            pkgs-stable = import inputs.nixpkgs {
+              system = system;
+              config.allowUnfree = true;
+            };
+          in home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = { inherit inputs system user pkgs-stable; };
+            pkgs = nixpkgs-unstable.legacyPackages.${system};
+            modules = [
+              { nixpkgs.config.allowUnfree = true; }
+
+              ./home-manager/${user}.nix
+
+              ./home-manager/programs/chromium.nix
+              ./home-manager/programs/common.nix
+              ./home-manager/programs/fzf.nix
+              ./home-manager/programs/git.nix
+              ./home-manager/programs/tmux.nix
+              ./home-manager/programs/zoxide.nix
+              ./home-manager/programs/zsh.nix
+              (import ./home-manager/programs/wezterm.nix {
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                fontFamily = "Hurmit Nerd Font";
+                fontWeight = "Regular";
+                fontSize = 10.0;
+                lineHeight = 1.0;
+              })
+            ];
+          };
       };
 
     };

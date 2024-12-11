@@ -54,7 +54,7 @@
           "org/gnome/shell/app-switcher".current-workspace-only = true;
 
           "org/gnome/desktop/input-sources" = {
-            sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) ];
+            sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) (mkTuple [ "xkb" "dk" ]) ];
           };
 
           "org/gnome/settings-daemon/plugins/media-keys".custom-keybindings = [
