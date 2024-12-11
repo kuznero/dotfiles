@@ -406,6 +406,14 @@
               semanticTokens = true;
             };
           };
+          terraformls = {
+            enable = true;
+            autostart = true;
+          };
+          tflint = {
+            enable = true;
+            autostart = true;
+          };
           yamlls.enable = true;
         };
       };
@@ -524,10 +532,12 @@
           diagnostics = {
             trail_space.enable = true;
             staticcheck.enable = true;
+            terraform_validate.enable = true;
           };
           formatting = {
             nixfmt.enable = true;
             gofumpt.enable = true;
+            terraform_fmt.enable = true;
           };
         };
       };
@@ -601,6 +611,7 @@
       todo-comments.enable = true;
       treesitter = {
         enable = true;
+        folding = true;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
           go
@@ -613,13 +624,18 @@
           markdown
           nix
           regex
+          terraform
           toml
           vim
           vimdoc
           xml
           yaml
         ];
-        settings.auto_install = true;
+        settings = {
+          auto_install = true;
+          highlight.enable = true;
+          indent.enable = true;
+        };
       };
       treesitter-context.enable = false;
       treesitter-textobjects.enable = true;
