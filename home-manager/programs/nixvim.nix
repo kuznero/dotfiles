@@ -406,6 +406,11 @@
               semanticTokens = true;
             };
           };
+          protols = {
+            enable = true;
+            autostart = true;
+            package = pkgs.protols;
+          };
           terraformls = {
             enable = true;
             autostart = true;
@@ -529,15 +534,39 @@
         enable = true;
         enableLspFormat = true;
         sources = {
+          code_actions = {
+            gomodifytags.enable = true;
+            impl.enable = true;
+            ts_node_action.enable = true;
+          };
           diagnostics = {
-            trail_space.enable = true;
+            buf.enable = true;
+            # protolint.enable = true;
+            golangci_lint.enable = true;
+            hadolint.enable = true;
+            markdownlint.enable = true;
             staticcheck.enable = true;
             terraform_validate.enable = true;
+            tfsec.enable = true;
+            tidy.enable = true;
+            todo_comments.enable = true;
+            trail_space.enable = true;
+            trivy.enable = true;
+            yamllint.enable = true;
           };
           formatting = {
-            nixfmt.enable = true;
+            buf.enable = true;
             gofumpt.enable = true;
+            goimports.enable = true;
+            markdownlint.enable = true;
+            nixfmt.enable = true;
+            nixpkgs_fmt.enable = true;
+            pg_format.enable = true;
+            prettier.enable = true;
+            shfmt.enable = true;
             terraform_fmt.enable = true;
+            tidy.enable = true;
+            yamlfmt.enable = true;
           };
         };
       };
