@@ -14,7 +14,8 @@ let
     v = "nvim";
     tm = "tmux";
   };
-in {
+in
+{
   programs.zsh = {
     inherit shellAliases;
     enable = true;
@@ -113,7 +114,7 @@ in {
 
           if [ -z "$SESSION" ]; then
             SESSION=$(basename "$(pwd)")
-            SESSION=$(echo "$SESSION" | tr '[:upper:]' '[:lower:]')
+            SESSION=$(echo "$SESSION" | tr '.' '-' | tr '[:upper:]' '[:lower:]')
           fi
 
           if tmux has-session -t "$SESSION" 2>/dev/null; then
