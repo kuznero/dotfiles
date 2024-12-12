@@ -1,7 +1,5 @@
-version: '3'
-
+version: "3"
 tasks:
-
   nixos:switch:
     desc: Switches nixos configuration
     dir: "{{.ROOT_DIR}}"
@@ -10,7 +8,6 @@ tasks:
         - NAME
     cmds:
       - sudo nixos-rebuild switch --flake .#{{.NAME}} --impure
-
   home-manager:switch:
     desc: Switches home-manager configuration
     dir: "{{.ROOT_DIR}}"
