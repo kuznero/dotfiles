@@ -406,10 +406,9 @@
               semanticTokens = true;
             };
           };
-          protols = {
+          buf_ls = {
             enable = true;
             autostart = true;
-            package = pkgs.protols;
           };
           terraformls = {
             enable = true;
@@ -541,7 +540,6 @@
           };
           diagnostics = {
             buf.enable = true;
-            # protolint.enable = true;
             golangci_lint.enable = true;
             hadolint.enable = true;
             markdownlint.enable = true;
@@ -555,7 +553,7 @@
             yamllint.enable = true;
           };
           formatting = {
-            buf.enable = true;
+            # buf.enable = true;
             gofumpt.enable = true;
             goimports.enable = true;
             markdownlint.enable = true;
