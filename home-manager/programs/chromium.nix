@@ -6,8 +6,9 @@
     package = pkgs.chromium;
     extensions = [
       "aeblfdkhhhdcdjpifhhbdiojplfjncoa" # 1Password
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
       "bhchdcejhohfmigjafbampogmaanbfkg" # User-Agent Switcher and Manager
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+      "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
     ];
   };
 }
