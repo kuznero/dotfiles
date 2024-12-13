@@ -29,8 +29,16 @@
 
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
-    , nixvim, nixos-wsl, catppuccin }@inputs:
+  outputs =
+    { self
+    , nixpkgs
+    , nixpkgs-unstable
+    , nixos-hardware
+    , home-manager
+    , nixvim
+    , nixos-wsl
+    , catppuccin
+    }@inputs:
     let user = "roku";
     in {
 
@@ -140,7 +148,8 @@
           let
             system = "x86_64-linux";
             user = "miku";
-          in nixpkgs.lib.nixosSystem {
+          in
+          nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs system user; };
             modules = [
               {
@@ -170,7 +179,8 @@
               system = system;
               config.allowUnfree = true;
             };
-          in home-manager.lib.homeManagerConfiguration {
+          in
+          home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -219,7 +229,8 @@
               system = system;
               config.allowUnfree = true;
             };
-          in home-manager.lib.homeManagerConfiguration {
+          in
+          home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -259,7 +270,8 @@
               system = system;
               config.allowUnfree = true;
             };
-          in home-manager.lib.homeManagerConfiguration {
+          in
+          home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -283,9 +295,9 @@
               ./home-manager/programs/zsh.nix
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "Mononoki Nerd Font";
+                fontFamily = "Hurmit Nerd Font";
                 fontWeight = "Regular";
-                fontSize = 18.0;
+                fontSize = 15.0;
                 lineHeight = 1.0;
               })
             ];
@@ -298,7 +310,8 @@
               system = system;
               config.allowUnfree = true;
             };
-          in home-manager.lib.homeManagerConfiguration {
+          in
+          home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -324,7 +337,8 @@
               system = system;
               config.allowUnfree = true;
             };
-          in home-manager.lib.homeManagerConfiguration {
+          in
+          home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [

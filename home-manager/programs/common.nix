@@ -19,6 +19,7 @@
       neofetch
       nerd-fonts.envy-code-r
       nerd-fonts.fantasque-sans-mono
+      nerd-fonts.hurmit
       nerd-fonts.iosevka
       nerd-fonts.iosevka-term
       nerd-fonts.iosevka-term-slab
