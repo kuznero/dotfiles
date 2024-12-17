@@ -418,6 +418,10 @@
             enable = true;
             autostart = true;
           };
+          ts_ls = {
+            enable = true;
+            autostart = true;
+          };
           yamlls.enable = true;
         };
       };
@@ -560,7 +564,7 @@
             nixfmt.enable = true;
             nixpkgs_fmt.enable = true;
             pg_format.enable = true;
-            prettier.enable = true;
+            prettier.enable = false; # due to ts_ls being enabled (lsp)
             shfmt.enable = true;
             terraform_fmt.enable = true;
             tidy.enable = true;
