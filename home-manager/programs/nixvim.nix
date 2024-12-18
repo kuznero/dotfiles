@@ -613,6 +613,7 @@
       };
       persistence.enable = true;
       spectre.enable = true;
+      startify.enable = true;
       telescope = {
         enable = true;
         keymaps = {
@@ -643,6 +644,7 @@
         };
       };
       todo-comments.enable = true;
+      transparent.enable = true;
       treesitter = {
         enable = true;
         folding = true;
@@ -688,7 +690,7 @@
         settings = {
           auto_close = true;
           auto_fold = false;
-          auto_open = false;
+          auto_open = true;
           auto_preview = false;
           auto_refresh = true;
         };
@@ -696,6 +698,7 @@
       ts-autotag.enable = true;
       ts-context-commentstring.enable = true;
       twilight.enable = true;
+      vim-css-color.enable = true;
       web-devicons.enable = true;
       which-key = {
         enable = true;
