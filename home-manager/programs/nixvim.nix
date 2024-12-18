@@ -607,7 +607,10 @@
       nix-develop.enable = true;
       nix.enable = true;
       noice.enable = true;
-      notify.enable = true;
+      notify = {
+        enable = true;
+        timeout = 2000; # default: 5000
+      };
       persistence.enable = true;
       spectre.enable = true;
       telescope = {
