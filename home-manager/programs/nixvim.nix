@@ -275,6 +275,8 @@
 
     # ref: https://nix-community.github.io/nixvim/index.html
     plugins = {
+      aerial.enable = true;
+      airline.enable = true;
       barbar = {
         enable = true;
         settings = {
@@ -367,6 +369,8 @@
           dap-virtual-text = { enable = true; };
         };
       };
+      comment.enable = true;
+      coverage.enable = true;
       dressing.enable = true;
       flash.enable = true;
       floaterm = {
@@ -634,7 +638,6 @@
       };
       persistence.enable = true;
       spectre.enable = true;
-      startify.enable = true;
       telescope = {
         enable = true;
         keymaps = {
