@@ -636,6 +636,7 @@
         enable = true;
         timeout = 2000; # default: 5000
       };
+      nvim-lightbulb.enable = true;
       persistence.enable = true;
       spectre.enable = true;
       telescope = {
