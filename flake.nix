@@ -27,6 +27,8 @@
 
     catppuccin.url = "github:catppuccin/nix";
 
+    ghostty = { url = "github:ghostty-org/ghostty"; };
+
   };
 
   outputs =
@@ -38,6 +40,7 @@
     , nixvim
     , nixos-wsl
     , catppuccin
+    , ghostty
     }@inputs:
     let user = "roku";
     in {
@@ -192,6 +195,7 @@
               ./home-manager/programs/chromium.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
+              ./home-manager/programs/ghostty.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/messengers.nix

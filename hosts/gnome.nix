@@ -54,7 +54,11 @@
           "org/gnome/shell/app-switcher".current-workspace-only = true;
 
           "org/gnome/desktop/input-sources" = {
-            sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "ru" ]) (mkTuple [ "xkb" "dk" ]) ];
+            sources = [
+              (mkTuple [ "xkb" "us" ])
+              (mkTuple [ "xkb" "ru" ])
+              (mkTuple [ "xkb" "dk" ])
+            ];
           };
 
           "org/gnome/settings-daemon/plugins/media-keys".custom-keybindings = [
@@ -66,7 +70,7 @@
           "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
             {
               binding = "<Super>t";
-              command = "wezterm";
+              command = "ghostty";
               name = "Open Terminal";
             };
 
