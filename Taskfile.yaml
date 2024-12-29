@@ -15,4 +15,4 @@ tasks:
       vars:
         - NAME
     cmds:
-      - nix run home-manager/master -- switch --flake .#{{.NAME}}
+      - nix run home-manager/master -- switch --flake .#{{.NAME}} -b backup

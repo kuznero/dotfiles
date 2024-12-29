@@ -195,7 +195,21 @@
               ./home-manager/programs/chromium.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
-              ./home-manager/programs/ghostty.nix
+              (import ./home-manager/programs/ghostty.nix {
+                inputs = inputs;
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                system = system;
+                theme = "catppuccin-mocha";
+                # fontFamily = "Mononoki Nerd Font";
+                # fontFamily = "0xProto Nerd Font";
+                # fontFamily = "CodeNewRoman Nerd Font";
+                # fontFamily = "Hack Nerd Font";
+                fontFamily = "Hurmit Nerd Font"; # the best coding font
+                # fontFamily = "MesloLG Nerd Font";
+                # fontFamily = "Noto Nerd Font";
+                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
+                fontSize = "13";
+              })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/messengers.nix
@@ -210,20 +224,6 @@
               ./home-manager/programs/vscode.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
-              (import ./home-manager/programs/wezterm.nix {
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                # fontFamily = "Mononoki Nerd Font";
-                # fontFamily = "0xProto Nerd Font";
-                # fontFamily = "CodeNewRoman Nerd Font";
-                # fontFamily = "Hack Nerd Font";
-                fontFamily = "Hurmit Nerd Font"; # the best coding font
-                # fontFamily = "MesloLG Nerd Font";
-                # fontFamily = "Noto Nerd Font";
-                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
-                fontWeight = "Regular";
-                fontSize = 10.0;
-                lineHeight = 1.0;
-              })
             ];
           };
 
