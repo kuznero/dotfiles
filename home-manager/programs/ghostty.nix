@@ -1,7 +1,7 @@
 { inputs
 , pkgs
 , system
-, theme ? "catppuccin-mocha"
+, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
 , fontFamily ? "Hurmit Nerd Font"
 , fontSize ? "12"
 , ...
@@ -17,7 +17,13 @@ let
       "./.config/ghostty/config";
 in
 {
-  home.packages = with inputs; [ ghostty.packages.x86_64-linux.default ];
+  home.packages = with inputs;
+    builtins.filter (pkg: pkg != null) [
+      (if system == "x86_64-linux" then
+        ghostty.packages."${system}".default
+      else
+        null)
+    ];
   home.file."${configFile}".text = ''
     theme = ${theme}
     font-family = ${fontFamily}

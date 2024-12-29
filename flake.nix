@@ -199,7 +199,7 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                theme = "catppuccin-mocha";
+                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 # fontFamily = "Mononoki Nerd Font";
                 # fontFamily = "0xProto Nerd Font";
                 # fontFamily = "CodeNewRoman Nerd Font";
@@ -287,6 +287,21 @@
               # ./home-manager/programs/bcompare.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
+              (import ./home-manager/programs/ghostty.nix {
+                inputs = inputs;
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                system = system;
+                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+                # fontFamily = "Mononoki Nerd Font";
+                # fontFamily = "0xProto Nerd Font";
+                # fontFamily = "CodeNewRoman Nerd Font";
+                # fontFamily = "Hack Nerd Font";
+                fontFamily = "Hurmit Nerd Font"; # the best coding font
+                # fontFamily = "MesloLG Nerd Font";
+                # fontFamily = "Noto Nerd Font";
+                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
+                fontSize = "15";
+              })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
               # ./home-manager/programs/messengers.nix
