@@ -346,7 +346,7 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+                theme = "catppuccin-mocha";
                 # fontFamily = "Mononoki Nerd Font";
                 # fontFamily = "0xProto Nerd Font";
                 # fontFamily = "CodeNewRoman Nerd Font";
