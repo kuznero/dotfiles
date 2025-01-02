@@ -3,8 +3,10 @@
 {
   home.packages = with pkgs;
     [
+      bat
       btop
       cmatrix
+      eza
       fd
       ffmpegthumbnailer
       fish

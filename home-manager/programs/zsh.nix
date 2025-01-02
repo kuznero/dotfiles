@@ -84,6 +84,14 @@ in
         # complete -F __start_flux f
       }
 
+      command -v eza >/dev/null 2>&1 && {
+        alias ls='eza'
+      }
+
+      command -v bat >/dev/null 2>&1 && {
+        alias cat='bat'
+      }
+
       command -v fzf >/dev/null 2>&1 && {
         source <(fzf --zsh)
       }
