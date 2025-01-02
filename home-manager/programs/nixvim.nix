@@ -8,6 +8,13 @@
     package = pkgs.neovim-unwrapped;
     extraPackages = with pkgs; [ gotools gofumpt delve ];
 
+    autoCmd = [{
+      event = "FileType";
+      pattern = [ "markdown" ];
+      command = "setlocal wrap";
+      desc = "Enable wrapping on markdown";
+    }];
+
     extraPlugins = [
       (pkgs.vimUtils.buildVimPlugin {
         name = "gp";
