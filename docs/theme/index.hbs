@@ -391,6 +391,11 @@
         <script src="{{ ../path_to_root }}{{this}}"></script>
         {{/each}}
 
+        <script>
+          hljs.registerLanguage('terraform', window.hljsDefineTerraform);
+          hljs.highlightAll();
+        </script>
+
         {{#if is_print}}
         {{#if mathjax_support}}
         <script>

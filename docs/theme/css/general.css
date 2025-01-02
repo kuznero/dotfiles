@@ -1,5 +1,5 @@
 @import "variables.css";
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* Base styles and content styles */
 
@@ -12,11 +12,11 @@
 
 :root {
   /* Browser default font-size is 16px, this way 1 rem = 10px */
-  font-size: 90%;
+  font-size: 96%;
 }
 
 html {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: var(--fg);
   background-color: var(--bg);
   text-size-adjust: none;
@@ -111,9 +111,9 @@ h5 {
   margin-top: 1em;
 }
 
-.header+.header h3,
-.header+.header h4,
-.header+.header h5 {
+.header + .header h3,
+.header + .header h4,
+.header + .header h5 {
   margin-top: 1em;
 }
 
@@ -149,7 +149,9 @@ h6:target::before {
 }
 
 .js:not(.sidebar-resizing) .page-wrapper {
-  transition: margin-left 0.3s ease, transform 0.3s ease;
+  transition:
+    margin-left 0.3s ease,
+    transform 0.3s ease;
   /* Animation: slide away */
 }
 
@@ -177,7 +179,7 @@ h6:target::before {
   font-size: 1.1em;
 }
 
-.content ol>li::marker {
+.content ol > li::marker {
   /* font-weight: bold; */
   color: tomato;
 }
@@ -189,7 +191,7 @@ h6:target::before {
   /* font-size: 1.1em; */
 }
 
-.content ul>li::marker {
+.content ul > li::marker {
   font-weight: bold;
   color: tomato;
 }
@@ -279,8 +281,8 @@ kbd {
   vertical-align: middle;
 }
 
-:not(.footnote-definition)+.footnote-definition,
-.footnote-definition+ :not(.footnote-definition) {
+:not(.footnote-definition) + .footnote-definition,
+.footnote-definition + :not(.footnote-definition) {
   margin-top: 2em;
 }
 
