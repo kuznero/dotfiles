@@ -120,7 +120,7 @@
       {
         mode = "n";
         key = "<leader>t";
-        action = "<cmd>FloatermToggle<CR>";
+        action = "<cmd>Telescope<CR>";
       }
       {
         mode = "n";
@@ -380,12 +380,6 @@
       coverage.enable = true;
       dressing.enable = true;
       flash.enable = true;
-      floaterm = {
-        enable = true;
-        width = 0.8;
-        height = 0.8;
-        keymaps.toggle = "<leader>t";
-      };
       friendly-snippets.enable = true;
       gitsigns.enable = true;
       illuminate.enable = true;
@@ -674,6 +668,129 @@
             options = { desc = "Telescope LSP References"; };
           };
         };
+        settings = {
+          pickers = {
+            colorscheme = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+              enable_preview = true;
+            };
+
+            current_buffer_fuzzy_find = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            vim_options = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            find_files = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            buffers = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            live_grep = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            help_tags = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            keymaps = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            diagnostics = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            autocommands = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            commands = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            marks = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            man_pages = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            git_files = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            git_status = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            git_commits = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+
+            command_history = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "normal";
+            };
+          };
+        };
       };
       todo-comments.enable = true;
       transparent.enable = true;
@@ -764,7 +881,7 @@
             }
             {
               __unkeyed-1 = "<leader>t";
-              group = "Floatterm";
+              group = "Telescope";
             }
             {
               __unkeyed-1 = "<leader>z";
