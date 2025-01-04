@@ -194,6 +194,7 @@
               ./home-manager/programs/bcompare.nix
               ./home-manager/programs/chromium.nix
               ./home-manager/programs/common.nix
+              ./home-manager/programs/filezilla.nix
               ./home-manager/programs/fzf.nix
               (import ./home-manager/programs/ghostty.nix {
                 inputs = inputs;
