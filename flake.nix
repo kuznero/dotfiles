@@ -208,7 +208,7 @@
                 # fontFamily = "MesloLG Nerd Font";
                 # fontFamily = "Noto Nerd Font";
                 # fontFamily = "SpaceMono Nerd Font"; # second best coding font
-                fontSize = "13";
+                fontSize = "12";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
