@@ -8,7 +8,8 @@
       st = "status";
       ci = "commit";
       co = "checkout";
-      l = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=short --branches";
+      l =
+        "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=short --branches";
       br = "branch";
       d = "diff --word-diff=color";
       dt = "difftool";
@@ -22,20 +23,15 @@
     };
     userName = "Roman Kuznetsov";
     userEmail = "${config.home.username}@lix.one";
-    extraConfig =
-    {
-      core = {
-        autocrlf = "input";
-      };
-      push = {
-        default = "simple";
-      };
-      pull = {
-        rebase = false;
-      };
-      color = {
-        ui = true;
-      };
+    extraConfig = {
+      core = { autocrlf = "input"; };
+      color = { ui = true; };
+      diff = { tool = "bc"; };
+      difftool.bc = { trustExitCode = true; };
+      merge = { tool = "bc"; };
+      mergetool.bc = { trustExitCode = true; };
+      pull = { rebase = false; };
+      push = { default = "simple"; };
     };
   };
 }
