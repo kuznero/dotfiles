@@ -283,7 +283,7 @@
     # ref: https://nix-community.github.io/nixvim/index.html
     plugins = {
       aerial.enable = true;
-      airline.enable = true;
+      # airline.enable = true;
       barbar = {
         enable = true;
         settings = {
@@ -316,7 +316,7 @@
           moveNext.key = "<C-.>";
         };
       };
-      bufferline.enable = true;
+      # bufferline.enable = true;
       cmp-buffer.enable = true;
       cmp-nvim-lsp.enable = true;
       cmp-path.enable = true;
