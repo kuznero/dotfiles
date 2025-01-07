@@ -417,6 +417,8 @@
       #       export PATH="$(pwd)/scripts:$PATH"
       #
       #       cat <<EOF >> $temp_dir/.zshrc
+      #       export NIX_FLAKE_NAME="Nix DevEnv"
+      #       export PATH="${toString self}/scripts:$PATH"
       #       alias dev="echo dev"
       #       # extend with custom aliases/functions/etc.
       #       EOF
