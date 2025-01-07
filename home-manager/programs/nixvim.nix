@@ -796,7 +796,7 @@
       transparent.enable = true;
       treesitter = {
         enable = true;
-        folding = true;
+        folding = false;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
           go
