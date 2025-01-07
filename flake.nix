@@ -201,14 +201,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                # fontFamily = "Mononoki Nerd Font";
-                # fontFamily = "0xProto Nerd Font";
-                # fontFamily = "CodeNewRoman Nerd Font";
-                # fontFamily = "Hack Nerd Font";
-                fontFamily = "Hurmit Nerd Font"; # the best coding font
-                # fontFamily = "MesloLG Nerd Font";
-                # fontFamily = "Noto Nerd Font";
-                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
+                fontFamily = "Hurmit Nerd Font";
                 fontSize = "12";
               })
               ./home-manager/programs/git.nix
@@ -292,35 +285,18 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                # fontFamily = "Mononoki Nerd Font";
-                # fontFamily = "0xProto Nerd Font";
-                # fontFamily = "CodeNewRoman Nerd Font";
-                # fontFamily = "Hack Nerd Font";
-                fontFamily = "Hurmit Nerd Font"; # the best coding font
-                # fontFamily = "MesloLG Nerd Font";
-                # fontFamily = "Noto Nerd Font";
-                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
-                fontSize = "15";
+                fontFamily = "Hurmit Nerd Font";
+                fontSize = "16";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
-              # ./home-manager/programs/messengers.nix
               ./home-manager/programs/nixvim.nix
-              # ./home-manager/programs/obsidian.nix
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
-              # ./home-manager/programs/vscode.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
-              (import ./home-manager/programs/wezterm.nix {
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "Hurmit Nerd Font";
-                fontWeight = "Regular";
-                fontSize = 15.0;
-                lineHeight = 1.0;
-              })
             ];
           };
 
@@ -348,14 +324,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                # fontFamily = "Mononoki Nerd Font";
-                # fontFamily = "0xProto Nerd Font";
-                # fontFamily = "CodeNewRoman Nerd Font";
-                # fontFamily = "Hack Nerd Font";
-                fontFamily = "Hurmit Nerd Font"; # the best coding font
-                # fontFamily = "MesloLG Nerd Font";
-                # fontFamily = "Noto Nerd Font";
-                # fontFamily = "SpaceMono Nerd Font"; # second best coding font
+                fontFamily = "Hurmit Nerd Font";
                 fontSize = "11";
               })
               ./home-manager/programs/git.nix
