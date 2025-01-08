@@ -1,12 +1,26 @@
 /* Globals */
 
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/files/fonts/Montserrat-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'HurmitNerdFont';
+  src: url('/files/fonts/HurmitNerdFont-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --sidebar-width: 300px;
   --page-padding: 15px;
   --content-max-width: 950px;
   --menu-bar-height: 50px;
-  --mono-font: monospace;
-  --code-font-size: 1.1em; /* please adjust the ace font size accordingly in editor.js */
+  --mono-font: "HurmitNerdFont", monospace;
+  --code-font-size: 0.9em; /* please adjust the ace font size accordingly in editor.js */
   --code-line-height: 1.6em;
 }
 
