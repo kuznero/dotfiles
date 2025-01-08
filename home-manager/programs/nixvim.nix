@@ -266,6 +266,8 @@
       hlsearch = true;
       ignorecase = true;
       incsearch = true;
+      list = true;
+      listchars = "tab:⇥ ,trail:.,nbsp:␣,space:.,eol:󱞣";
       number = true;
       relativenumber = true;
       shiftwidth = 2;
