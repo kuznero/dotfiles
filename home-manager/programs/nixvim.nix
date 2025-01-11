@@ -499,10 +499,10 @@
           transformExplicit = false;
           transformImplicit = ''
             function(text)
-                text = text:gsub(" ", "-")
-                text = text:lower()
-                text = os.date('%Y-%m-%d_')..text
-                return(text)
+              text = text:gsub(" ", "-")
+              text = text:lower()
+              text = os.date('%Y-%m-%d_')..text
+              return(text)
             end
           '';
         };
@@ -644,10 +644,34 @@
       spectre.enable = true;
       telescope = {
         enable = true;
+        extensions = {
+          live-grep-args = {
+            enable = true;
+            settings = {
+              auto_quoting = true;
+              mappings = {
+                i = {
+                  "<C-i>" = {
+                    __raw = ''
+                      require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " })'';
+                  };
+                  "<C-k>" = {
+                    __raw = ''
+                      require("telescope-live-grep-args.actions").quote_prompt()'';
+                  };
+                  "<C-s>" = {
+                    __raw = ''require("telescope.actions").to_fuzzy_refine'';
+                  };
+                };
+              };
+              theme = "ivy";
+            };
+          };
+        };
         keymaps = {
           "<leader>/" = {
-            action = "live_grep";
-            options = { desc = "Telescope Live Grep"; };
+            action = "live_grep_args";
+            options = { desc = "Telescope Live Grep Args"; };
           };
           "<leader><leader>" = {
             action = "find_files";
@@ -670,13 +694,14 @@
             options = { desc = "Telescope LSP References"; };
           };
         };
+        # themes: dropdown, cursor, ivy
         settings = {
           pickers = {
             colorscheme = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
               enable_preview = true;
             };
 
@@ -684,112 +709,119 @@
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             vim_options = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             find_files = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             buffers = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             live_grep = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
+            };
+
+            live_grep_args = {
+              theme = "ivy";
+              sort_mru = true;
+              sort_lastused = true;
+              initial_mode = "insert";
             };
 
             help_tags = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             keymaps = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             diagnostics = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             autocommands = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             commands = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             marks = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             man_pages = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             git_files = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             git_status = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             git_commits = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
 
             command_history = {
               theme = "ivy";
               sort_mru = true;
               sort_lastused = true;
-              initial_mode = "normal";
+              initial_mode = "insert";
             };
           };
         };
@@ -798,7 +830,7 @@
       transparent.enable = true;
       treesitter = {
         enable = true;
-        folding = false;
+        folding = true;
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
           go
