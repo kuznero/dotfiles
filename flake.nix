@@ -287,7 +287,7 @@
                 system = system;
                 theme = "catppuccin-mocha";
                 fontFamily = "Hurmit Nerd Font";
-                fontSize = "16";
+                fontSize = "18";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix

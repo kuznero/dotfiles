@@ -1,7 +1,12 @@
 { inputs, config, pkgs, ... }:
 
+# NOTE: after installing nixvim, start it, and run `checkhealth` command to ensure no errors.
+# NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
+
 {
   imports = [ inputs.nixvim.homeManagerModules.nixvim ];
+
+  home.packages = with pkgs; [ chafa gomodifytags impl ueberzugpp viu ];
 
   programs.nixvim = {
     enable = true;
@@ -14,87 +19,6 @@
       command = "setlocal wrap";
       desc = "Enable wrapping on markdown";
     }];
-
-    extraPlugins = [
-      (pkgs.vimUtils.buildVimPlugin {
-        name = "gp";
-        src = pkgs.fetchFromGitHub {
-          owner = "Robitx";
-          repo = "gp.nvim";
-          rev = "2372d5323c6feaa2e9c19f7ccb537c615d878e18";
-          hash = "sha256-QUZrFU/+TPBEU8yi9gmyRYjI/u7DP88AxcS0RMk7Jvk=";
-        };
-      })
-    ];
-
-    extraConfigLua = ''
-      require("gp").setup({
-        -- openai_api_key = os.getenv("OPENAI_API_KEY"),
-        providers = {
-          -- anthropic = {
-          --   endpoint = "https://api.anthropic.com/v1/messages",
-          --   secret = os.getenv("ANTHROPIC_API_KEY"),
-          -- },
-          -- copilot = {
-          --   endpoint = "https://api.githubcopilot.com/chat/completions",
-          --   secret = {
-          --     "bash",
-          --     "-c",
-          --     "cat /home/${config.home.username}/.config/github-copilot/hosts.json | sed -e 's/.*oauth_token...//;s/\".*//'",
-          --   },
-          -- },
-          ollama = {
-            endpoint = "http://localhost:11434/v1/chat/completions",
-          },
-          -- openai = {
-          --   endpoint = "https://api.openai.com/v1/chat/completions",
-          --   secret = vim.fn.getenv("OPENAI_API_KEY"),
-          -- },
-        },
-        default_command_agent = "Qwen2.5Coder",
-        default_chat_agent = "Qwen2.5Coder",
-        agents = {
-          -- {
-          --   name = "Codellama",
-          --   chat = true,
-          --   command = true,
-          --   provider = "ollama",
-          --   model = { model = "codellama" },
-          --   system_prompt = "I am an AI meticulously crafted to provide programming guidance and code assistance. "
-          --     .. "To best serve you as a computer programmer, please provide detailed inquiries and code snippets when necessary, "
-          --     .. "and expect precise, technical responses tailored to your development needs.\n",
-          -- },
-          {
-            name = "Qwen2.5Coder",
-            chat = true,
-            command = true,
-            provider = "ollama",
-            model = { model = "qwen2.5-coder:1.5b" },
-            system_prompt = "You are a general AI assistant.\n\n"
-              .. "The user provided the additional info about how they would like you to respond:\n\n"
-              .. "- If you're unsure don't guess and say you don't know instead.\n"
-              .. "- Ask question if you need clarification to provide better answer.\n"
-              .. "- Think deeply and carefully from first principles step by step.\n"
-              .. "- Zoom out first to see the big picture and then zoom in to details.\n"
-              .. "- Use Socratic method to improve your thinking and coding skills.\n"
-              .. "- Don't elide any code from your output if the answer requires coding.\n"
-              .. "- Take a deep breath; You've got this!\n",
-          },
-        },
-        hooks = {
-          CodeReview = function(gp, params)
-            local template = "I have the following code from {{filename}}:\n\n"
-              .. "```{{filetype}}\n{{selection}}\n```\n\n"
-              .. "Please analyze for code smells and suggest improvements."
-            local agent = gp.get_chat_agent()
-            gp.Prompt(params, gp.Target.enew("markdown"), agent, template)
-          end,
-          BufferChatNew = function(gp, _)
-            vim.api.nvim_command("%" .. gp.config.cmd_prefix .. "ChatNew")
-          end,
-        },
-      })
-    '';
 
     globals = {
       mapleader = "\\";
@@ -127,149 +51,23 @@
         key = "<leader>z";
         action = "<cmd>Twilight<CR>";
       }
-
-      # gp.nvim keymaps (normal mode)
-      {
-        mode = "n";
-        key = "<C-g><C-t>";
-        action = "<cmd>GpChatNew tabnew<CR>";
-        options = { desc = "New Chat tabnew"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g><C-v>";
-        action = "<cmd>GpChatNew vsplit<cr>";
-        options = { desc = "New Chat vsplit"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g><C-x>";
-        action = "<cmd>GpChatNew split<cr>";
-        options = { desc = "New Chat split"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>a";
-        action = "<cmd>GpAppend<cr>";
-        options = { desc = "Append (after)"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>b";
-        action = "<cmd>GpPrepend<cr>";
-        options = { desc = "Prepend (before)"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>c";
-        action = "<cmd>GpChatNew<cr>";
-        options = { desc = "New Chat"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>f";
-        action = "<cmd>GpChatFinder<cr>";
-        options = { desc = "Chat Finder"; };
-      }
-      #     ["<C-g>g"] = { name = "generate into new .." },
-      {
-        mode = "n";
-        key = "<C-g>ge";
-        action = "<cmd>GpEnew<cr>";
-        options = { desc = "GpEnew"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>gn";
-        action = "<cmd>GpNew<cr>";
-        options = { desc = "GpNew"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>gp";
-        action = "<cmd>GpPopup<cr>";
-        options = { desc = "Popup"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>gt";
-        action = "<cmd>GpTabnew<cr>";
-        options = { desc = "GpTabnew"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>gv";
-        action = "<cmd>GpVnew<cr>";
-        options = { desc = "GpVnew"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>n";
-        action = "<cmd>GpNextAgent<cr>";
-        options = { desc = "Next Agent"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>r";
-        action = "<cmd>GpRewrite<cr>";
-        options = { desc = "Inline Rewrite"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>s";
-        action = "<cmd>GpStop<cr>";
-        options = { desc = "GpStop"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>t";
-        action = "<cmd>GpChatToggle<cr>";
-        options = { desc = "Toggle Chat"; };
-      }
-      {
-        mode = "n";
-        key = "<C-g>x";
-        action = "<cmd>GpContext<cr>";
-        options = { desc = "Toggle GpContext"; };
-      }
     ];
 
     editorconfig.enable = true;
-    colorschemes = {
-      # ayu.enable = true;
-      # base16.enable = true;
-      catppuccin.enable = true;
-      # cyberdream.enable = true;
-      # dracula-nvim.enable = true;
-      # everforest.enable = true;
-      # gruvbox.enable = true;
-      # kanagawa.enable = true;
-      # melange.enable = true;
-      # modus.enable = true;
-      # nightfox.enable = true;
-      # nord.enable = true;
-      # one.enable = true;
-      # onedark.enable = true;
-      # oxocarbon.enable = true;
-      # palette.enable = true;
-      # poimandres.enable = true;
-      # rose-pine.enable = true;
-      # tokyonight.enable = true;
-      # vscode.enable = true;
-    };
+    colorschemes = { catppuccin.enable = true; };
 
     opts = {
       autoindent = true;
       breakindent = true;
-      cursorline = false;
+      cursorline = true;
       expandtab = true;
       hlsearch = true;
       ignorecase = true;
       incsearch = true;
-      list = false;
+      list = true;
       listchars = "tab:⇥ ,trail:.,nbsp:␣,space:.,eol:󱞣";
       number = true;
-      relativenumber = true;
+      relativenumber = false;
       shiftwidth = 2;
       smartcase = true;
       smartindent = true;
@@ -285,7 +83,6 @@
     # ref: https://nix-community.github.io/nixvim/index.html
     plugins = {
       aerial.enable = true;
-      # airline.enable = true;
       barbar = {
         enable = true;
         settings = {
@@ -318,10 +115,6 @@
           moveNext.key = "<C-.>";
         };
       };
-      # bufferline.enable = true;
-      cmp-buffer.enable = true;
-      cmp-nvim-lsp.enable = true;
-      cmp-path.enable = true;
       cmp = {
         enable = true;
         autoEnableSources = true;
@@ -330,13 +123,6 @@
             { name = "nvim_lsp"; }
             { name = "nvim_lsp_signature_help"; }
             { name = "nvim_lsp_document_symbol"; }
-            { name = "luasnip"; } # For luasnip users.
-            { name = "path"; }
-            { name = "buffer"; }
-            { name = "cmdline"; }
-            { name = "spell"; }
-            { name = "dictionary"; }
-            { name = "treesitter"; }
           ];
           mapping = {
             "<C-Space>" = "cmp.mapping.complete()";
@@ -350,43 +136,37 @@
           };
         };
       };
-      cmp_luasnip.enable = true;
       conform-nvim.enable = true;
-      dap = {
-        enable = true;
-        adapters = { };
-        signs = {
-          dapBreakpoint = {
-            text = "●";
-            texthl = "DapBreakpoint";
-          };
-          dapBreakpointCondition = {
-            text = "●";
-            texthl = "DapBreakpointCondition";
-          };
-          dapLogPoint = {
-            text = "◆";
-            texthl = "DapLogPoint";
-          };
-        };
-        extensions = {
-          dap-go = {
-            enable = true;
-            delve.path = "${pkgs.delve}/bin/dlv";
-          };
-          dap-ui = { enable = true; };
-          dap-virtual-text = { enable = true; };
-        };
-      };
+      # dap = {
+      #   enable = true;
+      #   adapters = { };
+      #   signs = {
+      #     dapBreakpoint = {
+      #       text = "●";
+      #       texthl = "DapBreakpoint";
+      #     };
+      #     dapBreakpointCondition = {
+      #       text = "●";
+      #       texthl = "DapBreakpointCondition";
+      #     };
+      #     dapLogPoint = {
+      #       text = "◆";
+      #       texthl = "DapLogPoint";
+      #     };
+      #   };
+      #   extensions = {
+      #     dap-go = {
+      #       enable = true;
+      #       delve.path = "${pkgs.delve}/bin/dlv";
+      #     };
+      #     dap-ui = { enable = true; };
+      #     dap-virtual-text = { enable = true; };
+      #   };
+      # };
       comment.enable = true;
       coverage.enable = true;
       dressing.enable = true;
-      flash.enable = true;
-      friendly-snippets.enable = true;
       gitsigns.enable = true;
-      illuminate.enable = true;
-      indent-blankline.enable = true;
-      lazy.enable = true;
       lazygit.enable = true;
       lint.enable = true;
       lsp = {
@@ -395,8 +175,8 @@
           gopls = {
             enable = true;
             autostart = true;
-            package =
-              null; # ref: https://github.com/nix-community/nixvim/discussions/1442
+            # ref: https://github.com/nix-community/nixvim/discussions/1442
+            package = null;
             extraOptions.settings.gopls = {
               buildFlags = [ "-tags=unit,integration" ];
               gofumpt = true;
@@ -457,6 +237,7 @@
         enable = true;
         lspServersToEnable = "all";
       };
+      mini = { enable = true; };
       mkdnflow = {
         enable = true;
         modules = {
@@ -568,7 +349,7 @@
           code_actions = {
             gomodifytags.enable = true;
             impl.enable = true;
-            ts_node_action.enable = true;
+            # ts_node_action.enable = true;
           };
           diagnostics = {
             buf.enable = true;
@@ -577,7 +358,6 @@
             markdownlint.enable = true;
             staticcheck.enable = true;
             terraform_validate.enable = true;
-            tfsec.enable = true;
             tidy.enable = true;
             todo_comments.enable = true;
             trail_space.enable = true;
@@ -600,7 +380,91 @@
           };
         };
       };
-      lualine.enable = true;
+      lualine = {
+        enable = true;
+        settings = {
+          options = {
+            disabled_filetypes = {
+              __unkeyed-1 = "startify";
+              __unkeyed-2 = "neo-tree";
+              statusline = [ "dap-repl" ];
+              winbar = [ "aerial" "dap-repl" "neotest-summary" ];
+            };
+            globalstatus = true;
+          };
+          sections = {
+            lualine_a = [ "mode" ];
+            lualine_b = [ "branch" ];
+            lualine_c = [ "filename" "diff" ];
+            lualine_x = [
+              "diagnostics"
+              {
+                __unkeyed-1 = {
+                  __raw = ''
+                    function()
+                        local msg = ""
+                        local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+                        local clients = vim.lsp.get_active_clients()
+                        if next(clients) == nil then
+                            return msg
+                        end
+                        for _, client in ipairs(clients) do
+                            local filetypes = client.config.filetypes
+                            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                                return client.name
+                            end
+                        end
+                        return msg
+                    end
+                  '';
+                };
+                color = { fg = "#ffffff"; };
+                icon = "";
+              }
+              "encoding"
+              "fileformat"
+              "filetype"
+            ];
+            lualine_y = [{
+              __unkeyed-1 = "aerial";
+              colored = true;
+              cond = {
+                __raw = ''
+                  function()
+                    local buf_size_limit = 1024 * 1024
+                    if vim.api.nvim_buf_get_offset(0, vim.api.nvim_buf_line_count(0)) > buf_size_limit then
+                      return false
+                    end
+
+                    return true
+                  end
+                '';
+              };
+              dense = false;
+              dense_sep = ".";
+              depth = { __raw = "nil"; };
+              sep = " ) ";
+            }];
+            lualine_z = [{ __unkeyed-1 = "location"; }];
+          };
+          tabline = {
+            lualine_a = [{
+              __unkeyed-1 = "buffers";
+              symbols = { alternate_file = ""; };
+            }];
+            lualine_z = [ "tabs" ];
+          };
+          winbar = {
+            lualine_c = [{ __unkeyed-1 = "navic"; }];
+            lualine_x = [{
+              __unkeyed-1 = "filename";
+              newfile_status = true;
+              path = 3;
+              shorting_target = 150;
+            }];
+          };
+        };
+      };
       neo-tree = {
         enable = true;
         autoCleanAfterSessionRestore = true;
@@ -632,15 +496,13 @@
           };
         };
       };
-      nix-develop.enable = true;
       nix.enable = true;
+      fzf-lua.enable = true;
       noice.enable = true;
       notify = {
         enable = true;
         timeout = 2000; # default: 5000
       };
-      nvim-lightbulb.enable = true;
-      persistence.enable = true;
       spectre.enable = true;
       telescope = {
         enable = true;
@@ -827,7 +689,6 @@
         };
       };
       todo-comments.enable = true;
-      transparent.enable = true;
       treesitter = {
         enable = true;
         folding = true;
@@ -873,7 +734,6 @@
         settings = {
           auto_close = true;
           auto_fold = false;
-          auto_open = true;
           auto_preview = false;
           auto_refresh = true;
         };
