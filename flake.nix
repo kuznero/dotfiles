@@ -205,6 +205,7 @@
                 fontSize = "12";
               })
               ./home-manager/programs/git.nix
+              ./home-manager/programs/input-leap.nix
               ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/messengers.nix
               ./home-manager/programs/nixvim.nix
@@ -213,7 +214,6 @@
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/security.nix
               ./home-manager/programs/spotify.nix
-              ./home-manager/programs/synergy.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
@@ -331,7 +331,6 @@
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/nixvim.nix
-              ./home-manager/programs/synergy.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
