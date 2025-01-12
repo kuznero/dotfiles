@@ -200,9 +200,9 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+                theme = "catppuccin-mocha";
                 fontFamily = "Hurmit Nerd Font";
-                fontSize = "12";
+                fontSize = "13";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/input-leap.nix
