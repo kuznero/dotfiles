@@ -837,6 +837,7 @@
           win = { border = "single"; };
         };
       };
+      zig.enable = true;
     };
   };
 }
