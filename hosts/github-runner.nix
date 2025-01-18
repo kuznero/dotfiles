@@ -46,7 +46,12 @@ let
       "CAP_WAKE_ALARM"
     ];
 
-    DynamicUser = "yes";
+    DynamicUser = "no";
+    User = "github-runner";
+    Group = "github-runner";
+
+    BindPaths = [ "/var/run/docker.sock" ];
+
     Environment = "PATH=/run/wrappers/bin:/run/current-system/sw/bin";
     NoNewPrivileges = "yes";
 
@@ -75,8 +80,18 @@ let
     RestrictRealtime = "no";
     RestrictSUIDSGID = "yes";
   };
-in {
+in
+{
   environment.systemPackages = with pkgs; [ coreutils-full ];
+
+  users.groups.github-runner = { };
+
+  users.users.github-runner = {
+    isSystemUser = true;
+    description = "GitHub Runner";
+    group = "github-runner";
+    extraGroups = [ "docker" ];
+  };
 
   services.github-runners."${config.networking.hostName}-1" = {
     enable = true;
