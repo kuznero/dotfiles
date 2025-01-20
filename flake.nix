@@ -202,7 +202,7 @@
                 system = system;
                 theme = "catppuccin-mocha";
                 fontFamily = "Hurmit Nerd Font";
-                fontSize = "13";
+                fontSize = "12";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/input-leap.nix
