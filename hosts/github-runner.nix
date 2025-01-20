@@ -130,32 +130,4 @@ in
   #
   # systemd.services."github-runners-${config.networking.hostName}-1".path =
   #   [ "/run/wrappers" "/run/current-system/sw/bin" ];
-  #
-  # services.github-runners."${config.networking.hostName}-2" = {
-  #   enable = true;
-  #   ephemeral = true;
-  #   replace = true;
-  #   tokenFile = "/data/github-runner.conf";
-  #   url = "https://github.com/lix-one";
-  #   extraLabels = [ "${config.networking.hostName}" ];
-  #   # extraPackages = with pkgs; [ cachix ];
-  #   serviceOverrides = runnerServiceOverrides;
-  # };
-  #
-  # systemd.services."github-runners-${config.networking.hostName}-2".path =
-  #   [ "/run/wrappers" "/run/current-system/sw/bin" ];
-  #
-  # services.github-runners."${config.networking.hostName}-3" = {
-  #   enable = true;
-  #   ephemeral = true;
-  #   replace = true;
-  #   tokenFile = "/data/github-runner.conf";
-  #   url = "https://github.com/lix-one";
-  #   extraLabels = [ "${config.networking.hostName}" ];
-  #   # extraPackages = with pkgs; [ cachix ];
-  #   serviceOverrides = runnerServiceOverrides;
-  # };
-  #
-  # systemd.services."github-runners-${config.networking.hostName}-3".path =
-  #   [ "/run/wrappers" "/run/current-system/sw/bin" ];
 }
