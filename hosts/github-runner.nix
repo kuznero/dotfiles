@@ -1,6 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
+  amountOfRunners = 10;
   runnerServiceOverrides = {
     CapabilityBoundingSet = [
       "CAP_AUDIT_CONTROL"
@@ -93,45 +94,68 @@ in
     extraGroups = [ "docker" ];
   };
 
-  services.github-runners."${config.networking.hostName}-1" = {
-    enable = true;
-    ephemeral = true;
-    replace = true;
-    tokenFile = "/data/github-runner.conf";
-    url = "https://github.com/lix-one";
-    extraLabels = [ "${config.networking.hostName}" ];
-    # extraPackages = with pkgs; [ cachix ];
-    serviceOverrides = runnerServiceOverrides;
-  };
+  services.github-runners = lib.listToAttrs (map
+    (n: rec {
+      name = "${config.networking.hostName}-${toString n}";
+      value = {
+        enable = true;
+        ephemeral = true;
+        replace = true;
+        tokenFile = "/data/github-runner.conf";
+        url = "https://github.com/lix-one";
+        extraLabels = [ "${config.networking.hostName}" ];
+        # extraPackages = with pkgs; [ cachix ];
+        serviceOverrides = runnerServiceOverrides;
+      };
+    })
+    (lib.range 1 amountOfRunners));
 
-  systemd.services."github-runners-${config.networking.hostName}-1".path =
-    [ "/run/wrappers" "/run/current-system/sw/bin" ];
+  systemd.services = lib.listToAttrs (map
+    (n: rec {
+      name = "github-runners-${config.networking.hostName}-${toString n}";
+      value = { path = [ "/run/wrappers" "/run/current-system/sw/bin" ]; };
+    })
+    (lib.range 1 amountOfRunners));
 
-  services.github-runners."${config.networking.hostName}-2" = {
-    enable = true;
-    ephemeral = true;
-    replace = true;
-    tokenFile = "/data/github-runner.conf";
-    url = "https://github.com/lix-one";
-    extraLabels = [ "${config.networking.hostName}" ];
-    # extraPackages = with pkgs; [ cachix ];
-    serviceOverrides = runnerServiceOverrides;
-  };
-
-  systemd.services."github-runners-${config.networking.hostName}-2".path =
-    [ "/run/wrappers" "/run/current-system/sw/bin" ];
-
-  services.github-runners."${config.networking.hostName}-3" = {
-    enable = true;
-    ephemeral = true;
-    replace = true;
-    tokenFile = "/data/github-runner.conf";
-    url = "https://github.com/lix-one";
-    extraLabels = [ "${config.networking.hostName}" ];
-    # extraPackages = with pkgs; [ cachix ];
-    serviceOverrides = runnerServiceOverrides;
-  };
-
-  systemd.services."github-runners-${config.networking.hostName}-3".path =
-    [ "/run/wrappers" "/run/current-system/sw/bin" ];
+  # services.github-runners."${config.networking.hostName}-1" = {
+  #   enable = true;
+  #   ephemeral = true;
+  #   replace = true;
+  #   tokenFile = "/data/github-runner.conf";
+  #   url = "https://github.com/lix-one";
+  #   extraLabels = [ "${config.networking.hostName}" ];
+  #   # extraPackages = with pkgs; [ cachix ];
+  #   serviceOverrides = runnerServiceOverrides;
+  # };
+  #
+  # systemd.services."github-runners-${config.networking.hostName}-1".path =
+  #   [ "/run/wrappers" "/run/current-system/sw/bin" ];
+  #
+  # services.github-runners."${config.networking.hostName}-2" = {
+  #   enable = true;
+  #   ephemeral = true;
+  #   replace = true;
+  #   tokenFile = "/data/github-runner.conf";
+  #   url = "https://github.com/lix-one";
+  #   extraLabels = [ "${config.networking.hostName}" ];
+  #   # extraPackages = with pkgs; [ cachix ];
+  #   serviceOverrides = runnerServiceOverrides;
+  # };
+  #
+  # systemd.services."github-runners-${config.networking.hostName}-2".path =
+  #   [ "/run/wrappers" "/run/current-system/sw/bin" ];
+  #
+  # services.github-runners."${config.networking.hostName}-3" = {
+  #   enable = true;
+  #   ephemeral = true;
+  #   replace = true;
+  #   tokenFile = "/data/github-runner.conf";
+  #   url = "https://github.com/lix-one";
+  #   extraLabels = [ "${config.networking.hostName}" ];
+  #   # extraPackages = with pkgs; [ cachix ];
+  #   serviceOverrides = runnerServiceOverrides;
+  # };
+  #
+  # systemd.services."github-runners-${config.networking.hostName}-3".path =
+  #   [ "/run/wrappers" "/run/current-system/sw/bin" ];
 }
