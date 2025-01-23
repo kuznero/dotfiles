@@ -135,21 +135,17 @@ in
           fi
 
           COMMAND="$SHELL"
-          if [ -f flake.nix ]; then
-            COMMAND="nix develop || echo 'No default shell defined'; $SHELL"
-          fi
-
           tmux new-session -d -s $SESSION "$COMMAND"
 
-          COUNTER=2
-
-          tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-rt" "$COMMAND"
-          COUNTER=$((COUNTER+1))
-
-          if [ -d "docs" ]; then
-            tmux new-window -t "$SESSION:$COUNTER" -n "$SESSION-docs" "$COMMAND"
+          COUNTER=1
+          WINDOWS=("ops" "matrix")
+          for name in "${WINDOWS[@]}"; do
             COUNTER=$((COUNTER+1))
-          fi
+            tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
+          done
+
+          tmux split-window -v -t "$SESSION:$COUNTER"
+          tmux select-pane -t "$SESSION:$COUNTER.1"
 
           tmux select-window -t "$SESSION:1"
           tmux rename-window -t "$SESSION:1" "$SESSION"
