@@ -1,0 +1,235 @@
+version: "3"
+
+vars:
+
+  REGISTRY_IMAGE: "registry:2"
+  REGISTRY_NAME: playground
+  REGISTRY_PORT: 5001
+
+  KIND_CLUSTER_NODE_IMAGE: "kindest/node:v1.31.0@sha256:53df588e04085fd41ae12de0c3fe4c72f7013bba32a20e7325357a1ac94ba865"
+  KIND_CLUSTER_NAME: playground
+  KIND_CLUSTER_CONFIG: "{{.TASKFILE_DIR}}/config.yaml"
+
+  CILIUM_VERSION:
+    sh: "cat {{.TASKFILE_DIR}}/cilium/Chart.yaml | grep '^version: ' | awk '{print $NF}'"
+  CILIUM_IMAGE: "quay.io/cilium/cilium"
+  CILIUM_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/cilium"
+  CILIUM_ENVOY_VERSION:
+    sh: 'cat {{.TASKFILE_DIR}}/cilium/values.yaml | grep -A1 ''cilium/cilium-envoy'' | grep ''tag: '' | awk ''{print $NF}'' | tr -d ''"'' | cut -c2-'
+  CILIUM_ENVOY_IMAGE: "quay.io/cilium/cilium-envoy"
+  CILIUM_ENVOY_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/cilium-envoy"
+  CILIUM_OPERATOR_IMAGE: "quay.io/cilium/operator"
+  CILIUM_OPERATOR_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/operator"
+  CILIUM_OPERATOR_GENERIC_IMAGE: "quay.io/cilium/operator-generic"
+  CILIUM_OPERATOR_GENERIC_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/operator-generic"
+
+  FLUXCD_HELM_CONTROLLER_IMAGE: docker.io/fluxcd/helm-controller:v1.1.0
+  FLUXCD_HELM_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/helm-controller:v1.1.0"
+  FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE: docker.io/fluxcd/image-automation-controller:v0.39.0
+  FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/image-automation-controller:v0.39.0"
+  FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE: docker.io/fluxcd/image-reflector-controller:v0.33.0
+  FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/image-reflector-controller:v0.33.0"
+  FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE: docker.io/fluxcd/kustomize-controller:v1.4.0
+  FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/kustomize-controller:v1.4.0"
+  FLUXCD_NOTIFICATION_CONTROLLER_IMAGE: docker.io/fluxcd/notification-controller:v1.4.0
+  FLUXCD_NOTIFICATION_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/notification-controller:v1.4.0"
+  FLUXCD_SOURCE_CONTROLLER_IMAGE: docker.io/fluxcd/source-controller:v1.4.1
+  FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/source-controller:v1.4.1"
+
+tasks:
+
+  registry:start:
+    desc: Starts container registry
+    silent: true
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - |
+        #!/usr/bin/env bash
+        docker run \
+          -d --restart=always \
+          -p "127.0.0.1:{{.REGISTRY_PORT}}:5000" \
+          --network bridge \
+          --name "{{.REGISTRY_NAME}}" \
+          --volume "{{.REGISTRY_NAME}}-data:/var/lib/registry" \
+          "{{.REGISTRY_IMAGE}}"
+    status:
+      - |
+        #!/usr/bin/env bash
+        if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' "{{.REGISTRY_NAME}}" 2>/dev/null || true)" != 'true' ]; then
+          exit 1
+        fi
+
+  registry:stop:
+    desc: Stops container registry
+    silent: true
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - docker rm -f "{{.REGISTRY_NAME}}"
+    status:
+      - |
+        #!/usr/bin/env bash
+        if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' "{{.REGISTRY_NAME}}" 2>/dev/null || true)" == 'true' ]; then
+          exit 1
+        fi
+
+  images:pull:
+    desc: Pulls all required container images
+    silent: true
+    deps: ["registry:start"]
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - |
+        set -e
+        docker pull "{{.REGISTRY_IMAGE}}"
+        docker pull "{{.KIND_CLUSTER_NODE_IMAGE}}"
+        # cilium
+        docker pull "{{.CILIUM_IMAGE}}:v{{.CILIUM_VERSION}}"
+        docker tag "{{.CILIUM_IMAGE}}:v{{.CILIUM_VERSION}}" "{{.CILIUM_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
+        docker push "{{.CILIUM_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
+        # cilium envoy
+        docker pull "{{.CILIUM_ENVOY_IMAGE}}:v{{.CILIUM_ENVOY_VERSION}}"
+        docker tag "{{.CILIUM_ENVOY_IMAGE}}:v{{.CILIUM_ENVOY_VERSION}}" "{{.CILIUM_ENVOY_IMAGE_LOCAL}}:v{{.CILIUM_ENVOY_VERSION}}"
+        docker push "{{.CILIUM_ENVOY_IMAGE_LOCAL}}:v{{.CILIUM_ENVOY_VERSION}}"
+        # cilium operator
+        docker pull "{{.CILIUM_OPERATOR_IMAGE}}:v{{.CILIUM_VERSION}}"
+        docker tag "{{.CILIUM_OPERATOR_IMAGE}}:v{{.CILIUM_VERSION}}" "{{.CILIUM_OPERATOR_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
+        docker push "{{.CILIUM_OPERATOR_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
+        # cilium operator-generic
+        docker pull "{{.CILIUM_OPERATOR_GENERIC_IMAGE}}:v{{.CILIUM_VERSION}}"
+        docker tag "{{.CILIUM_OPERATOR_GENERIC_IMAGE}}:v{{.CILIUM_VERSION}}" "{{.CILIUM_OPERATOR_GENERIC_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
+        docker push "{{.CILIUM_OPERATOR_GENERIC_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
+        # fluxcd helm controller
+        docker pull "{{.FLUXCD_HELM_CONTROLLER_IMAGE}}"
+        docker tag "{{.FLUXCD_HELM_CONTROLLER_IMAGE}}" "{{.FLUXCD_HELM_CONTROLLER_IMAGE_LOCAL}}"
+        docker push "{{.FLUXCD_HELM_CONTROLLER_IMAGE_LOCAL}}"
+        # fluxcd image automation controller
+        docker pull "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE}}"
+        docker tag "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE}}" "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE_LOCAL}}"
+        docker push "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE_LOCAL}}"
+        # fluxcd image reflector controller
+        docker pull "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE}}"
+        docker tag "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE}}" "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE_LOCAL}}"
+        docker push "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE_LOCAL}}"
+        # fluxcd kustomize controller
+        docker pull "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE}}"
+        docker tag "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE}}" "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE_LOCAL}}"
+        docker push "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE_LOCAL}}"
+        # fluxcd notification controller
+        docker pull "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE}}"
+        docker tag "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE}}" "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE_LOCAL}}"
+        docker push "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE_LOCAL}}"
+        # fluxcd source controller
+        docker pull "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE}}"
+        docker tag "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE}}" "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL}}"
+        docker push "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL}}"
+
+  kind:start:
+    desc: Starts kind cluster
+    silent: true
+    deps: ["registry:start"]
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - |
+        #!/usr/bin/env bash
+
+        set -e
+
+        # starts up kind cluster
+        kind create cluster --name "{{.KIND_CLUSTER_NAME}}" --image "{{.KIND_CLUSTER_NODE_IMAGE}}" --config "{{.KIND_CLUSTER_CONFIG}}"
+
+        # ref: https://kind.sigs.k8s.io/docs/user/local-registry/
+
+        # configured local container registry
+        REGISTRY_DIR="/etc/containerd/certs.d/localhost:{{.REGISTRY_PORT}}"
+        for node in $(kind get nodes --name "{{.KIND_CLUSTER_NAME}}"); do
+          docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
+          cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
+        [host."http://{{.REGISTRY_NAME}}:5000"]
+        EOF
+        done
+
+        # configures network between kind cluster and container registry
+        if [ "$(docker inspect -f='{{`{{json .NetworkSettings.Networks.kind}}`}}' "{{.REGISTRY_NAME}}")" = 'null' ]; then
+          docker network connect "kind" "{{.REGISTRY_NAME}}"
+        fi
+
+        # document local registry
+        cat <<EOF | kubectl apply -f -
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: local-registry-hosting
+          namespace: kube-public
+        data:
+          localRegistryHosting.v1: |
+            host: "localhost:{{.REGISTRY_PORT}}"
+            help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
+        EOF
+
+        # install cilium CNI
+        helm install cilium "{{.TASKFILE_DIR}}/cilium" \
+          --kube-context "kind-{{.KIND_CLUSTER_NAME}}" \
+          --namespace kube-system \
+          --set image.repository={{.CILIUM_IMAGE_LOCAL}} \
+          --set envoy.image.repository={{.CILIUM_ENVOY_IMAGE_LOCAL}} \
+          --set envoy.image.digest="" \
+          --set envoy.image.useDigest=false \
+          --set operator.image.repository={{.CILIUM_OPERATOR_IMAGE_LOCAL}} \
+          --set ipam.mode=kubernetes
+
+        # wait before cilium is fully up and running
+        cilium status --context "kind-{{.KIND_CLUSTER_NAME}}" --wait
+
+        # wait for core-dns and other pods to get up and running
+        kubectl --context "kind-{{.KIND_CLUSTER_NAME}}" wait --for=condition=Ready pods --all-namespaces --all --timeout=300s
+    status:
+      - |
+        #!/usr/bin/env bash
+        STARTED=$(kind get clusters 2>&1 | grep -E '^{{.KIND_CLUSTER_NAME}}$' | wc -l)
+        if [[ "$STARTED" -eq 0 ]]; then
+          exit 1
+        fi
+
+  kind:stop:
+    desc: Stops kind cluster
+    silent: true
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - kind delete cluster --name "{{.KIND_CLUSTER_NAME}}"
+    status:
+      - |
+        #!/usr/bin/env bash
+        STARTED=$(kind get clusters 2>&1 | grep -E '^{{.KIND_CLUSTER_NAME}}$' | wc -l)
+        if [[ "$STARTED" -ne 0 ]]; then
+          exit 1
+        fi
+
+  fluxcd:bootstrap:
+    desc: Bootstrap FluxCD control plane
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - |
+        flux bootstrap git \
+          --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
+          --branch=main \
+          --silent \
+          --ssh-hostkey-algos=rsa-sha2-512,rsa-sha2-256 \
+          --private-key-file=$HOME/.ssh/flux \
+          --path=fluxcd/clusters/local \
+          --registry localhost:5001/fluxcd
+
+  start:
+    desc: Starts local registry and kind cluster with images populated
+    silent: true
+    cmds:
+      - task: kind:start
+      - task: fluxcd:bootstrap
+    dir: "{{.ROOT_DIR}}"
+
+  stop:
+    desc: Stops local registry and kind cluster
+    silent: true
+    cmds:
+      - task: kind:stop
+      - task: registry:stop
+    dir: "{{.ROOT_DIR}}"

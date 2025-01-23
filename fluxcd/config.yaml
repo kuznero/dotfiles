@@ -1,0 +1,15 @@
+# ref: https://kind.sigs.k8s.io/docs/user/configuration/
+# ref: https://docs.cilium.io/en/latest/installation/kind/
+#
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"
+networking:
+  disableDefaultCNI: true
