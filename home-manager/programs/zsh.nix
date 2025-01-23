@@ -50,7 +50,7 @@ in
         source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh;
       fi
 
-      ${lib.fileContents ./zsh.rc}
+      ${lib.fileContents ./zshrc}
     '';
   };
 }

@@ -10,6 +10,10 @@ if [[ "$TERM_PROGRAM" = vscode ]]; then
   alias v=code;
 fi
 
+command -v nix >/dev/null 2>&1 && {
+  alias dev='nix develop'
+}
+
 command -v k9s >/dev/null 2>&1 && {
   alias k9='k9s --request-timeout=10s --headless --command namespaces'
 }
