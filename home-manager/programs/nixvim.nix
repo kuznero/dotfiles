@@ -358,7 +358,10 @@
             hadolint.enable = true;
             markdownlint.enable = true;
             staticcheck.enable = true;
-            terraform_validate.enable = true;
+            terraform_validate = {
+              enable = true;
+              package = pkgs.terraform;
+            };
             tidy.enable = true;
             todo_comments.enable = true;
             trail_space.enable = true;
@@ -375,7 +378,10 @@
             pg_format.enable = true;
             prettier.enable = false; # due to ts_ls being enabled (lsp)
             shfmt.enable = true;
-            terraform_fmt.enable = true;
+            terraform_fmt = {
+              enable = true;
+              package = pkgs.terraform;
+            };
             tidy.enable = true;
             yamlfmt.enable = true;
           };
