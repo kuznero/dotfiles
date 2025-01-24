@@ -19,6 +19,16 @@ let
   };
 in
 {
+  home.file = {
+    ".config/startship.toml".source = ./dotfiles/.config/starship.toml;
+  };
+
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
+    package = pkgs.starship;
+  };
+
   programs.zsh = {
     inherit shellAliases;
     enable = true;
@@ -32,13 +42,6 @@ in
       expireDuplicatesFirst = true;
     };
 
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "fzf" "git" "git-extras" "man" "systemd" "tmux" ];
-      # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-      theme = "af-magic";
-    };
-
     initExtraBeforeCompInit = ''
       command -v brew >/dev/null 2>&1 && {
         FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
@@ -50,7 +53,7 @@ in
         source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh;
       fi
 
-      ${lib.fileContents ./zshrc}
+      ${lib.fileContents ./dotfiles/.zshrc}
     '';
   };
 }
