@@ -374,7 +374,6 @@
             goimports.enable = true;
             markdownlint.enable = true;
             nixfmt.enable = true;
-            nixpkgs_fmt.enable = true;
             pg_format.enable = true;
             prettier.enable = false; # due to ts_ls being enabled (lsp)
             shfmt.enable = true;
