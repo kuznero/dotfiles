@@ -60,6 +60,7 @@
       autoindent = true;
       breakindent = true;
       cursorline = true;
+      endofline = false;
       expandtab = true;
       hlsearch = true;
       ignorecase = true;
