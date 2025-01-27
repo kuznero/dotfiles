@@ -36,6 +36,9 @@ vars:
   FLUXCD_SOURCE_CONTROLLER_IMAGE: docker.io/fluxcd/source-controller:v1.4.1
   FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/source-controller:v1.4.1"
 
+  CAPACITOR_IMAGE: ghcr.io/gimlet-io/capacitor:v0.4.8
+  CAPACITOR_IMAGE_LOCAL: localhost:5001/gimlet-io/capacitor:v0.4.8
+
 tasks:
 
   registry:start:
@@ -122,6 +125,10 @@ tasks:
         docker pull "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE}}"
         docker tag "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE}}" "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL}}"
         docker push "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL}}"
+        # capacitor
+        docker pull "{{.CAPACITOR_IMAGE}}"
+        docker tag "{{.CAPACITOR_IMAGE}}" "{{.CAPACITOR_IMAGE_LOCAL}}"
+        docker push "{{.CAPACITOR_IMAGE_LOCAL}}"
 
   kind:start:
     desc: Starts kind cluster
@@ -204,25 +211,51 @@ tasks:
           exit 1
         fi
 
+  sops:bootstrap:
+    desc: Bootstrap Age private key (SOPS)
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - |
+        mkdir -p ~/.config/sops/age
+        if [ ! -f ~/.config/sops/age/keys.txt ]; then
+          cp clusters/local/age.agekey ~/.config/sops/age/keys.txt
+          chmod 0600 ~/.config/sops/age/keys.txt
+        fi
+        kubectl create namespace flux-system --save-config --dry-run=client -o yaml | kubectl apply -f -
+        cat clusters/local/age.agekey | kubectl create secret generic sops-age -n=flux-system \
+          --from-file=age.agekey=/dev/stdin \
+          --save-config --dry-run=client -o yaml | kubectl apply -f -
+
   fluxcd:bootstrap:
     desc: Bootstrap FluxCD control plane
     dir: "{{.ROOT_DIR}}"
     cmds:
       - |
-        flux bootstrap git \
+        flux create secret git flux-system \
           --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
-          --branch=main \
-          --silent \
-          --ssh-hostkey-algos=rsa-sha2-512,rsa-sha2-256 \
           --private-key-file=$HOME/.ssh/flux \
-          --path=fluxcd/clusters/local \
-          --registry localhost:5001/fluxcd
+          --ssh-key-algorithm=rsa
+        kubectl apply -f clusters/local/flux-system/gotk-components.yaml
+        kubectl wait --timeout 5m -A --for condition=Ready pods --all
+        kubectl wait --for=condition=Established crd gitrepositories.source.toolkit.fluxcd.io
+        kubectl wait --for=condition=Established crd kustomizations.kustomize.toolkit.fluxcd.io
+        kubectl apply -f clusters/local/flux-system/gotk-sync.yaml
+
+  # flux bootstrap git \
+  #   --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
+  #   --branch=main \
+  #   --silent \
+  #   --ssh-hostkey-algos=rsa-sha2-512,rsa-sha2-256 \
+  #   --private-key-file=$HOME/.ssh/flux \
+  #   --path=fluxcd/clusters/local \
+  #   --registry localhost:5001/fluxcd
 
   start:
     desc: Starts local registry and kind cluster with images populated
     silent: true
     cmds:
       - task: kind:start
+      - task: sops:bootstrap
       - task: fluxcd:bootstrap
     dir: "{{.ROOT_DIR}}"
 

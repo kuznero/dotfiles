@@ -1,0 +1,18 @@
+# ref: https://github.com/google/yamlfmt/blob/main/docs/config-file.md
+#
+
+extensions:
+  - yaml
+  - yml
+
+include:
+  - .
+
+exclude:
+  - cilium
+
+formatter:
+  type: basic
+  drop_merge_tag: true
+  eof_newline: true
+  retain_line_breaks_single: true

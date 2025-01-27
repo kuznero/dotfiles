@@ -19,11 +19,13 @@
           config = { allowUnfree = true; };
         };
         ci-inputs = with pkgs-unstable; [
+          age
           cilium-cli
           docker-client
           docker-compose
           fluxcd
           gitFull
+          gnupg
           go-task
           kind
           kubectl
@@ -33,8 +35,8 @@
         ];
         dev-inputs = ci-inputs
           ++ (with pkgs-unstable; [ k9s lazydocker lazygit zsh ]);
-      in
-      {
+      in {
+        formatter = pkgs-unstable.nixfmt-classic;
         devShells = {
           default = pkgs-unstable.mkShell {
             hardeningDisable = [ "fortify" ];
