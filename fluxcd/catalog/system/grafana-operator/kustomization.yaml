@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - crds/grafana.integreatly.org_grafanadashboards.yaml
+  - crds/grafana.integreatly.org_grafanadatasources.yaml
+  - crds/grafana.integreatly.org_grafanafolders.yaml
+  - crds/grafana.integreatly.org_grafanas.yaml
+  - network-policies.yaml
+  - releases.yaml

@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-issuers
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: system-namespace
+    - name: cert-manager
+  interval: 10m0s
+  timeout: 5m0s
+  path: ./fluxcd/catalog/system/cluster-issuers
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster

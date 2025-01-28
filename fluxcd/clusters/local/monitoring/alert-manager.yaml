@@ -1,0 +1,40 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: alert-manager
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: monitoring-namespace
+    - name: prometheus-operator
+  interval: 10m0s
+  timeout: 5m0s
+  path: ./fluxcd/catalog/monitoring/alert-manager
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: alertmanager-alertmanager
+      namespace: monitoring
+  patches:
+    - patch: |
+        apiVersion: monitoring.coreos.com/v1
+        kind: Alertmanager
+        metadata:
+          name: alertmanager
+          namespace: monitoring
+        spec:
+          externalUrl: http://localhost:7080/monitoring/alertmanager
+          replicas: 1
+      target:
+        kind: Alertmanager
+        name: alertmanager
+        namespace: monitoring

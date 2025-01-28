@@ -1,0 +1,50 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: csi-driver-allow-any
+  namespace: system
+spec:
+  podSelector:
+    matchLabels:
+      app: secrets-store-csi-driver
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - {}
+  egress:
+    - {}
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: csi-driver-upgrade-job-allow-to-any
+  namespace: system
+spec:
+  podSelector:
+    matchLabels:
+      job-name: secrets-store-csi-driver-upgrade-crds
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []
+  egress:
+    - {}
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: csi-driver-keep-job-allow-to-any
+  namespace: system
+spec:
+  podSelector:
+    matchLabels:
+      job-name: secrets-store-csi-driver-keep-crds
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []
+  egress:
+    - {}

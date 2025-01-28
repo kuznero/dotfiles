@@ -1,0 +1,44 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: ingress-controller
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: system-namespace
+  interval: 10m0s
+  timeout: 5m0s
+  path: ./fluxcd/catalog/system/ingress-controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: ingress-nginx
+      namespace: system
+  patches:
+    - patch: |-
+        apiVersion: helm.toolkit.fluxcd.io/v2beta1
+        kind: HelmRelease
+        metadata:
+          name: ingress-nginx
+          namespace: system
+        spec:
+          values:
+            controller:
+              service:
+                type: NodePort
+                nodePorts:
+                  http: "30080"
+                  https: "30443"
+      target:
+        kind: HelmRelease
+        name: ingress-nginx
+        namespace: system

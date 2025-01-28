@@ -1,0 +1,34 @@
+# ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#alertmanagerspec
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  externalUrl: http://localhost:7080/monitoring/alertmanager
+  replicas: 1
+  image: ${REGISTRY}prometheus/alertmanager:v0.26.0
+  alertmanagerConfigSelector:
+    matchLabels:
+      alertmanagerConfig: alertmanager
+  alertmanagerConfigNamespaceSelector:
+    matchExpressions:
+      - key: kubernetes.io/metadata.name
+        operator: In
+        values:
+          - flux-system
+          - monitoring
+          - system
+  storage:
+    volumeClaimTemplate:
+      spec:
+        resources:
+          requests:
+            storage: 5Gi
+  resources:
+    limits:
+      cpu: "0"
+      memory: "0"
+    requests:
+      cpu: "0"
+      memory: "0"

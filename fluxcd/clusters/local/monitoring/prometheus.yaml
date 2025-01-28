@@ -1,0 +1,42 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: prometheus
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: monitoring-namespace
+    - name: prometheus-operator
+    - name: alert-manager
+    - name: ingress-controller
+  interval: 10m0s
+  timeout: 5m0s
+  path: ./fluxcd/catalog/monitoring/prometheus
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: prometheus-prometheus
+      namespace: monitoring
+  patches:
+    - patch: |-
+        apiVersion: monitoring.coreos.com/v1
+        kind: Prometheus
+        metadata:
+          name: prometheus
+          namespace: monitoring
+        spec:
+          image: ${REGISTRY}prometheus/prometheus:v2.47.2
+          version: v2.47.2
+      target:
+        kind: Prometheus
+        name: prometheus
+        namespace: monitoring

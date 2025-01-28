@@ -1,0 +1,70 @@
+image:
+  # -- Target image repository.
+  repository: quay.io/jetstack/cert-manager-csi-driver
+  # -- Target image version tag.
+  tag: v0.5.0
+  # -- Kubernetes imagePullPolicy on csi-driver.
+  pullPolicy: IfNotPresent
+
+# -- Optional secrets used for pulling the csi-driver container image
+imagePullSecrets: []
+#- name: Secret with Registry credentials
+
+nodeDriverRegistrarImage:
+  # -- Target image repository.
+  repository: k8s.gcr.io/sig-storage/csi-node-driver-registrar
+  # -- Target image version tag.
+  tag: v2.5.0
+  # -- Kubernetes imagePullPolicy on node-driver.
+  pullPolicy: IfNotPresent
+
+livenessProbeImage:
+  # -- Target image repository.
+  repository: k8s.gcr.io/sig-storage/livenessprobe
+  # -- Target image version tag.
+  tag: v2.6.0
+  # -- Kubernetes imagePullPolicy on liveness probe.
+  pullPolicy: IfNotPresent
+
+app:
+  # -- Verbosity of cert-manager-csi-driver logging.
+  logLevel: 1 # 1-5
+  # -- Options for CSI driver
+  driver:
+    # -- Name of the driver which will be registered with Kubernetes.
+    name: csi.cert-manager.io
+    # -- If enabled, will use CSI token request for creating
+    # CertificateRequests. CertificateRequests will be created via mounting
+    # pod's service accounts.
+    useTokenRequest: false
+    # -- Configures the hostPath directory that the driver will write and mount volumes from.
+    csiDataDir: /tmp/cert-manager-csi-driver
+  # -- Options for the liveness container.
+  livenessProbe:
+    # -- The port that will expose the livness of the csi-driver
+    port: 9809
+  # -- Overrides path to root kubelet directory in case of a non-standard k8s install.
+  kubeletRootDir: /var/lib/kubelet
+
+resources: {}
+  # -- Kubernetes pod resource limits for cert-manager-csi-driver
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # -- Kubernetes pod memory resource requests for cert-manager-csi-driver
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+  # -- Kubernetes node selector: node labels for pod assignment
+  # Allow scheduling of DaemonSet on linux nodes only
+  # kubernetes.io/os: linux
+
+tolerations: []
+  # -- Kubernetes pod tolerations for cert-manager-csi-driver
+  # Allow scheduling of DaemonSet on all nodes
+  # - operator: "Exists"
+
+# -- Optional priority class to be used for the csi-driver pods.
+priorityClassName: ""
