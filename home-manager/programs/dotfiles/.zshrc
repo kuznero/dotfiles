@@ -90,7 +90,7 @@ function tt() {
     tmux new-session -d -s $SESSION "$COMMAND"
 
     COUNTER=1
-    WINDOWS=("ops" "matrix")
+    WINDOWS=("ops")
     for name in "${WINDOWS[@]}"; do
       COUNTER=$((COUNTER+1))
       tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
