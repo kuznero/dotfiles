@@ -1,8 +1,5 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    yabai
-    skhd
-  ];
+  home.packages = with pkgs; [ yabai skhd ];
 }

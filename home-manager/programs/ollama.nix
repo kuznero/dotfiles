@@ -1,8 +1,6 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    ollama
-  ];
+  home.packages = with pkgs; [ ollama ];
 }
 

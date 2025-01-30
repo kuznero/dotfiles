@@ -31,6 +31,7 @@
       nerd-fonts.monaspace
       nerd-fonts.monofur
       nerd-fonts.mononoki
+      nerd-fonts.space-mono
       nerd-fonts.ubuntu
       nerd-fonts.ubuntu-mono
       nerd-fonts.ubuntu-sans

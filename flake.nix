@@ -31,19 +31,17 @@
 
   };
 
-  outputs =
-    { self
-    , nixpkgs
-    , nixpkgs-unstable
-    , nixos-hardware
-    , home-manager
-    , nixvim
-    , nixos-wsl
-    , catppuccin
-    , ghostty
-    }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
+    , nixvim, nixos-wsl, catppuccin, ghostty }@inputs:
     let user = "roku";
     in {
+
+      formatter.x86_64-linux = let
+        pkgs-unstable = import nixpkgs-unstable {
+          system = "x86_64-linux";
+          config = { allowUnfree = true; };
+        };
+      in pkgs-unstable.nixfmt-classic;
 
       nixosConfigurations = {
         moon = # sudo nixos-rebuild switch --flake .#moon --impure
@@ -151,8 +149,7 @@
           let
             system = "x86_64-linux";
             user = "miku";
-          in
-          nixpkgs.lib.nixosSystem {
+          in nixpkgs.lib.nixosSystem {
             specialArgs = { inherit inputs system user; };
             modules = [
               {
@@ -182,8 +179,7 @@
               system = system;
               config.allowUnfree = true;
             };
-          in
-          home-manager.lib.homeManagerConfiguration {
+          in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -201,7 +197,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Hurmit Nerd Font";
+                fontFamily = "SpaceMono Nerd Font";
                 fontSize = "12";
               })
               ./home-manager/programs/git.nix
@@ -229,8 +225,7 @@
               system = system;
               config.allowUnfree = true;
             };
-          in
-          home-manager.lib.homeManagerConfiguration {
+          in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -255,7 +250,7 @@
               ./home-manager/programs/zsh.nix
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "Iosevka Nerd Font";
+                fontFamily = "SpaceMono Nerd Font";
                 fontWeight = "ExtraLight";
                 fontSize = 12.0;
                 lineHeight = 1.0;
@@ -270,8 +265,7 @@
               system = system;
               config.allowUnfree = true;
             };
-          in
-          home-manager.lib.homeManagerConfiguration {
+          in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -286,7 +280,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                fontFamily = "Hurmit Nerd Font";
+                fontFamily = "SpaceMono Nerd Font";
                 fontSize = "16";
               })
               ./home-manager/programs/git.nix
@@ -308,8 +302,7 @@
               system = system;
               config.allowUnfree = true;
             };
-          in
-          home-manager.lib.homeManagerConfiguration {
+          in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -325,13 +318,14 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                fontFamily = "Hurmit Nerd Font";
+                fontFamily = "SpaceMono Nerd Font";
                 fontSize = "11";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/obsidian.nix
+              ./home-manager/programs/ollama.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
@@ -346,8 +340,7 @@
               system = system;
               config.allowUnfree = true;
             };
-          in
-          home-manager.lib.homeManagerConfiguration {
+          in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = { inherit inputs system user pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
@@ -364,7 +357,7 @@
               ./home-manager/programs/zsh.nix
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "Hurmit Nerd Font";
+                fontFamily = "SpaceMono Nerd Font";
                 fontWeight = "Regular";
                 fontSize = 10.0;
                 lineHeight = 1.0;

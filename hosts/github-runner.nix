@@ -81,8 +81,7 @@ let
     RestrictRealtime = "no";
     RestrictSUIDSGID = "yes";
   };
-in
-{
+in {
   environment.systemPackages = with pkgs; [ coreutils-full ];
 
   users.groups.github-runner = { };
@@ -94,28 +93,24 @@ in
     extraGroups = [ "docker" ];
   };
 
-  services.github-runners = lib.listToAttrs (map
-    (n: rec {
-      name = "${config.networking.hostName}-${toString n}";
-      value = {
-        enable = true;
-        ephemeral = true;
-        replace = true;
-        tokenFile = "/data/github-runner.conf";
-        url = "https://github.com/lix-one";
-        extraLabels = [ "${config.networking.hostName}" ];
-        # extraPackages = with pkgs; [ cachix ];
-        serviceOverrides = runnerServiceOverrides;
-      };
-    })
-    (lib.range 1 amountOfRunners));
+  services.github-runners = lib.listToAttrs (map (n: rec {
+    name = "${config.networking.hostName}-${toString n}";
+    value = {
+      enable = true;
+      ephemeral = true;
+      replace = true;
+      tokenFile = "/data/github-runner.conf";
+      url = "https://github.com/lix-one";
+      extraLabels = [ "${config.networking.hostName}" ];
+      # extraPackages = with pkgs; [ cachix ];
+      serviceOverrides = runnerServiceOverrides;
+    };
+  }) (lib.range 1 amountOfRunners));
 
-  systemd.services = lib.listToAttrs (map
-    (n: rec {
-      name = "github-runners-${config.networking.hostName}-${toString n}";
-      value = { path = [ "/run/wrappers" "/run/current-system/sw/bin" ]; };
-    })
-    (lib.range 1 amountOfRunners));
+  systemd.services = lib.listToAttrs (map (n: rec {
+    name = "github-runners-${config.networking.hostName}-${toString n}";
+    value = { path = [ "/run/wrappers" "/run/current-system/sw/bin" ]; };
+  }) (lib.range 1 amountOfRunners));
 
   # services.github-runners."${config.networking.hostName}-1" = {
   #   enable = true;

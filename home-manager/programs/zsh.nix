@@ -17,8 +17,7 @@ let
     tml = "tmux ls";
     tmk = "tmux kill-server";
   };
-in
-{
+in {
   home.file = {
     ".config/startship.toml".source = ./dotfiles/.config/starship.toml;
   };

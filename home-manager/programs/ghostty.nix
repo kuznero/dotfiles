@@ -1,22 +1,14 @@
-{ inputs
-, pkgs
-, system
-, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
-, fontFamily ? "Hurmit Nerd Font"
-, fontSize ? "12"
-, ...
-}:
+{ inputs, pkgs, system, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
+, fontFamily ? "SpaceMono Nerd Font", fontSize ? "12", ... }:
 
 let
-  configFile =
-    if builtins.match ".*-darwin" system != null then
-      "./Library/Application Support/com.mitchellh.ghostty/config"
-    else if builtins.match ".*-linux" system != null then
-      "./.config/ghostty/config"
-    else
-      "./.config/ghostty/config";
-in
-{
+  configFile = if builtins.match ".*-darwin" system != null then
+    "./Library/Application Support/com.mitchellh.ghostty/config"
+  else if builtins.match ".*-linux" system != null then
+    "./.config/ghostty/config"
+  else
+    "./.config/ghostty/config";
+in {
   home.packages = with inputs;
     builtins.filter (pkg: pkg != null) [
       (if system == "x86_64-linux" then

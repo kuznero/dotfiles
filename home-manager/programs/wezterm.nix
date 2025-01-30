@@ -1,10 +1,5 @@
-{ pkgs
-, fontFamily ? "Iosevka Nerd Font"
-, fontWeight ? "ExtraLight"
-, fontSize ? 12.0
-, lineHeight ? 1.0
-, ...
-}:
+{ pkgs, fontFamily ? "Iosevka Nerd Font", fontWeight ? "ExtraLight"
+, fontSize ? 12.0, lineHeight ? 1.0, ... }:
 
 {
   programs.wezterm = {
