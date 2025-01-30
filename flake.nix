@@ -142,6 +142,7 @@
               # features
               ./hosts/docker.nix
               ./hosts/gnupg.nix
+              ./hosts/ollama.nix
             ];
           };
 
