@@ -12,3 +12,5 @@ spec:
     major: 17
   storage:
     size: 1Gi
+  monitoring:
+    enablePodMonitor: true

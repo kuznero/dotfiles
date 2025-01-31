@@ -8,6 +8,8 @@ metadata:
     dashboards: grafana
 spec:
 
+  version: "11.5.0"
+
   client:
     preferIngress: false
 

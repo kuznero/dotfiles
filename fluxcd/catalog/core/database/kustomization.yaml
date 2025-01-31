@@ -4,3 +4,4 @@ resources:
   - network-policies.yaml
   - image-catalog.yaml
   - database.yaml
+  # - grafana-dashboard.yaml
