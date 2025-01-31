@@ -8,99 +8,48 @@ vars:
 
   KIND_CLUSTER_NODE_IMAGE: "kindest/node:v1.31.0@sha256:53df588e04085fd41ae12de0c3fe4c72f7013bba32a20e7325357a1ac94ba865"
   KIND_CLUSTER_NAME: playground
-  KIND_CLUSTER_CONFIG: "{{.ROOT_DIR}}/config.yaml"
+  KIND_CLUSTER_CONFIG: "{{.TASKFILE_DIR}}/config.yaml"
 
-  CILIUM_VERSION:
-    sh: "cat {{.ROOT_DIR}}/charts/cilium/cilium/Chart.yaml | grep '^version: ' | awk '{print $NF}'"
-  CILIUM_IMAGE: "quay.io/cilium/cilium"
-  CILIUM_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/cilium"
-  CILIUM_ENVOY_VERSION:
-    sh: 'cat {{.ROOT_DIR}}/charts/cilium/cilium/values.yaml | grep -A1 ''cilium/cilium-envoy'' | grep ''tag: '' | awk ''{print $NF}'' | tr -d ''"'' | cut -c2-'
-  CILIUM_ENVOY_IMAGE: "quay.io/cilium/cilium-envoy"
-  CILIUM_ENVOY_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/cilium-envoy"
-  CILIUM_OPERATOR_IMAGE: "quay.io/cilium/operator"
-  CILIUM_OPERATOR_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/operator"
-  CILIUM_OPERATOR_GENERIC_IMAGE: "quay.io/cilium/operator-generic"
-  CILIUM_OPERATOR_GENERIC_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/cilium/operator-generic"
-
-  FLUXCD_HELM_CONTROLLER_IMAGE: docker.io/fluxcd/helm-controller:v1.1.0
-  FLUXCD_HELM_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/helm-controller:v1.1.0"
-  FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE: docker.io/fluxcd/image-automation-controller:v0.39.0
-  FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/image-automation-controller:v0.39.0"
-  FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE: docker.io/fluxcd/image-reflector-controller:v0.33.0
-  FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/image-reflector-controller:v0.33.0"
-  FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE: docker.io/fluxcd/kustomize-controller:v1.4.0
-  FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/kustomize-controller:v1.4.0"
-  FLUXCD_NOTIFICATION_CONTROLLER_IMAGE: docker.io/fluxcd/notification-controller:v1.4.0
-  FLUXCD_NOTIFICATION_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/notification-controller:v1.4.0"
-  FLUXCD_SOURCE_CONTROLLER_IMAGE: docker.io/fluxcd/source-controller:v1.4.1
-  FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL: "localhost:{{.REGISTRY_PORT}}/fluxcd/source-controller:v1.4.1"
-
-  CAPACITOR_IMAGE: ghcr.io/gimlet-io/capacitor:v0.4.8
-  CAPACITOR_IMAGE_LOCAL: localhost:5001/gimlet-io/capacitor:v0.4.8
-
-  CSI_SECRETS_STORE_DRIVER_IMAGE: registry.k8s.io/csi-secrets-store/driver:v1.3.4
-  CSI_SECRETS_STORE_DRIVER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/csi-secrets-store/driver:v1.3.4
-  CSI_SECRETS_STORE_DRIVER_CRDS_IMAGE: registry.k8s.io/csi-secrets-store/driver-crds:v1.3.4
-  CSI_SECRETS_STORE_DRIVER_CRDS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/csi-secrets-store/driver-crds:v1.3.4
-  SIG_STORAGE_CSI_NODE_DRIVER_REGISTRAR_IMAGE: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.8.0
-  SIG_STORAGE_CSI_NODE_DRIVER_REGISTRAR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/sig-storage/csi-node-driver-registrar:v2.8.0
-  SIG_STORAGE_LIVENESSPROBE_IMAGE: registry.k8s.io/sig-storage/livenessprobe:v2.10.0
-  SIG_STORAGE_LIVENESSPROBE_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/sig-storage/livenessprobe:v2.10.0
-
-  CERT_MANAGER_CONTROLLER_IMAGE: quay.io/jetstack/cert-manager-controller:v1.13.2
-  CERT_MANAGER_CONTROLLER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/jetstack/cert-manager-controller:v1.13.2
-  CERT_MANAGER_ACMESOLVER_IMAGE: quay.io/jetstack/cert-manager-acmesolver:v1.13.2
-  CERT_MANAGER_ACMESOLVER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/jetstack/cert-manager-acmesolver:v1.13.2
-  CERT_MANAGER_CAINJECTOR_IMAGE: quay.io/jetstack/cert-manager-cainjector:v1.13.2
-  CERT_MANAGER_CAINJECTOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/jetstack/cert-manager-cainjector:v1.13.2
-  CERT_MANAGER_WEBHOOK_IMAGE: quay.io/jetstack/cert-manager-webhook:v1.13.2
-  CERT_MANAGER_WEBHOOK_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/jetstack/cert-manager-webhook:v1.13.2
-  CERT_MANAGER_CTL_IMAGE: quay.io/jetstack/cert-manager-ctl:v1.13.2
-  CERT_MANAGER_CTL_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/jetstack/cert-manager-ctl:v1.13.2
-  CERT_MANAGER_CSI_DRIVER_IMAGE: quay.io/jetstack/cert-manager-csi-driver:v0.5.0
-  CERT_MANAGER_CSI_DRIVER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/jetstack/cert-manager-csi-driver:v0.5.0
-
-  METRICS_SERVER_IMAGE: registry.k8s.io/metrics-server/metrics-server:v0.6.4
-  METRICS_SERVER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/metrics-server/metrics-server:v0.6.4
-
-  GRAFANA_OPERATOR_IMAGE: quay.io/grafana-operator/grafana-operator:v5.4.2
-  GRAFANA_OPERATOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/grafana-operator/grafana-operator:v5.4.2
-
-  INGRESS_NGINX_IMAGE: registry.k8s.io/ingress-nginx/controller:v1.9.4@sha256:5b161f051d017e55d358435f295f5e9a297e66158f136321d9b04520ec6c48a3
-  INGRESS_NGINX_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/controller:v1.9.4
-  INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0@sha256:a7943503b45d552785aa3b5e457f169a5661fb94d82b8a3373bcd9ebaf9aac80
-  INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0
-  INGRESS_NGINX_OPENTELEMETRY_IMAGE: registry.k8s.io/ingress-nginx/opentelemetry:v20230721-3e2062ee5@sha256:13bee3f5223883d3ca62fee7309ad02d22ec00ff0d7033e3e9aca7a9f60fd472
-  INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/opentelemetry:v20230721-3e2062ee5
-
-  GRAFANA_IMAGE: grafana/grafana:10.1.5
-  GRAFANA_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/grafana/grafana:10.1.5
-  KIWIGRID_K8S_SIDECAR_IMAGE: quay.io/kiwigrid/k8s-sidecar:1.25.2
-  KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/kiwigrid/k8s-sidecar:1.25.2
-  KUBE_STATE_METRICS_IMAGE: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1
-  KUBE_STATE_METRICS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/kube-state-metrics/kube-state-metrics:v2.10.1
-  PROMETHEUS_CONFIG_RELOADER_IMAGE: quay.io/prometheus-operator/prometheus-config-reloader:v0.69.1
-  PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus-operator/prometheus-config-reloader:v0.69.1
-  PROMETHEUS_OPERATOR_IMAGE: quay.io/prometheus-operator/prometheus-operator:v0.69.1
-  PROMETHEUS_OPERATOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus-operator/prometheus-operator:v0.69.1
-  PROMETHEUS_ALERTMANAGER_IMAGE: quay.io/prometheus/alertmanager:v0.26.0
-  PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/alertmanager:v0.26.0
-  PROMETHEUS_NODE_EXPORTER_IMAGE: quay.io/prometheus/node-exporter:v1.6.1
-  PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/node-exporter:v1.6.1
-  PROMETHEUS_IMAGE: quay.io/prometheus/prometheus:v2.47.2
-  PROMETHEUS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/prometheus:v2.47.2
-  PROMETHEUS_PUSH_GATEWAY_IMAGE: quay.io/prometheus/pushgateway:v1.6.2
-  PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/pushgateway:v1.6.2
-  THANOS_IMAGE: quay.io/thanos/thanos:v0.32.5
-  THANOS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/thanos/thanos:v0.32.5
+  # METRICS_SERVER_IMAGE: registry.k8s.io/metrics-server/metrics-server:v0.6.4
+  # METRICS_SERVER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/metrics-server/metrics-server:v0.6.4
+  #
+  # GRAFANA_OPERATOR_IMAGE: quay.io/grafana-operator/grafana-operator:v5.4.2
+  # GRAFANA_OPERATOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/grafana-operator/grafana-operator:v5.4.2
+  #
+  # INGRESS_NGINX_IMAGE: registry.k8s.io/ingress-nginx/controller:v1.9.4@sha256:5b161f051d017e55d358435f295f5e9a297e66158f136321d9b04520ec6c48a3
+  # INGRESS_NGINX_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/controller:v1.9.4
+  # INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0@sha256:a7943503b45d552785aa3b5e457f169a5661fb94d82b8a3373bcd9ebaf9aac80
+  # INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0
+  # INGRESS_NGINX_OPENTELEMETRY_IMAGE: registry.k8s.io/ingress-nginx/opentelemetry:v20230721-3e2062ee5@sha256:13bee3f5223883d3ca62fee7309ad02d22ec00ff0d7033e3e9aca7a9f60fd472
+  # INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/opentelemetry:v20230721-3e2062ee5
+  #
+  # GRAFANA_IMAGE: grafana/grafana:10.1.5
+  # GRAFANA_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/grafana/grafana:10.1.5
+  # KIWIGRID_K8S_SIDECAR_IMAGE: quay.io/kiwigrid/k8s-sidecar:1.25.2
+  # KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/kiwigrid/k8s-sidecar:1.25.2
+  # KUBE_STATE_METRICS_IMAGE: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1
+  # KUBE_STATE_METRICS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/kube-state-metrics/kube-state-metrics:v2.10.1
+  # PROMETHEUS_CONFIG_RELOADER_IMAGE: quay.io/prometheus-operator/prometheus-config-reloader:v0.69.1
+  # PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus-operator/prometheus-config-reloader:v0.69.1
+  # PROMETHEUS_OPERATOR_IMAGE: quay.io/prometheus-operator/prometheus-operator:v0.69.1
+  # PROMETHEUS_OPERATOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus-operator/prometheus-operator:v0.69.1
+  # PROMETHEUS_ALERTMANAGER_IMAGE: quay.io/prometheus/alertmanager:v0.26.0
+  # PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/alertmanager:v0.26.0
+  # PROMETHEUS_NODE_EXPORTER_IMAGE: quay.io/prometheus/node-exporter:v1.6.1
+  # PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/node-exporter:v1.6.1
+  # PROMETHEUS_IMAGE: quay.io/prometheus/prometheus:v2.47.2
+  # PROMETHEUS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/prometheus:v2.47.2
+  # PROMETHEUS_PUSH_GATEWAY_IMAGE: quay.io/prometheus/pushgateway:v1.6.2
+  # PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/pushgateway:v1.6.2
+  # THANOS_IMAGE: quay.io/thanos/thanos:v0.32.5
+  # THANOS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/thanos/thanos:v0.32.5
 
 tasks:
 
   registry:start:
     desc: Starts container registry
     silent: true
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
         #!/usr/bin/env bash
@@ -121,7 +70,7 @@ tasks:
   registry:stop:
     desc: Stops container registry
     silent: true
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - docker rm -f "{{.REGISTRY_NAME}}"
     status:
@@ -135,162 +84,95 @@ tasks:
     desc: Pulls all required container images
     silent: true
     deps: ["registry:start"]
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
         set -e
         docker pull "{{.REGISTRY_IMAGE}}"
         docker pull "{{.KIND_CLUSTER_NODE_IMAGE}}"
         # cilium
-        docker pull "{{.CILIUM_IMAGE}}:v{{.CILIUM_VERSION}}"
-        docker tag "{{.CILIUM_IMAGE}}:v{{.CILIUM_VERSION}}" "{{.CILIUM_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
-        docker push "{{.CILIUM_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
-        # cilium envoy
-        docker pull "{{.CILIUM_ENVOY_IMAGE}}:v{{.CILIUM_ENVOY_VERSION}}"
-        docker tag "{{.CILIUM_ENVOY_IMAGE}}:v{{.CILIUM_ENVOY_VERSION}}" "{{.CILIUM_ENVOY_IMAGE_LOCAL}}:v{{.CILIUM_ENVOY_VERSION}}"
-        docker push "{{.CILIUM_ENVOY_IMAGE_LOCAL}}:v{{.CILIUM_ENVOY_VERSION}}"
-        # cilium operator
-        docker pull "{{.CILIUM_OPERATOR_IMAGE}}:v{{.CILIUM_VERSION}}"
-        docker tag "{{.CILIUM_OPERATOR_IMAGE}}:v{{.CILIUM_VERSION}}" "{{.CILIUM_OPERATOR_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
-        docker push "{{.CILIUM_OPERATOR_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
-        # cilium operator-generic
-        docker pull "{{.CILIUM_OPERATOR_GENERIC_IMAGE}}:v{{.CILIUM_VERSION}}"
-        docker tag "{{.CILIUM_OPERATOR_GENERIC_IMAGE}}:v{{.CILIUM_VERSION}}" "{{.CILIUM_OPERATOR_GENERIC_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
-        docker push "{{.CILIUM_OPERATOR_GENERIC_IMAGE_LOCAL}}:v{{.CILIUM_VERSION}}"
-        # fluxcd helm controller
-        docker pull "{{.FLUXCD_HELM_CONTROLLER_IMAGE}}"
-        docker tag "{{.FLUXCD_HELM_CONTROLLER_IMAGE}}" "{{.FLUXCD_HELM_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.FLUXCD_HELM_CONTROLLER_IMAGE_LOCAL}}"
-        # fluxcd image automation controller
-        docker pull "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE}}"
-        docker tag "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE}}" "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.FLUXCD_IMAGE_AUTOMATION_CONTROLLER_IMAGE_LOCAL}}"
-        # fluxcd image reflector controller
-        docker pull "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE}}"
-        docker tag "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE}}" "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.FLUXCD_IMAGE_REFLECTOR_CONTROLLER_IMAGE_LOCAL}}"
-        # fluxcd kustomize controller
-        docker pull "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE}}"
-        docker tag "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE}}" "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.FLUXCD_KUSTOMIZE_CONTROLLER_IMAGE_LOCAL}}"
-        # fluxcd notification controller
-        docker pull "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE}}"
-        docker tag "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE}}" "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.FLUXCD_NOTIFICATION_CONTROLLER_IMAGE_LOCAL}}"
-        # fluxcd source controller
-        docker pull "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE}}"
-        docker tag "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE}}" "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.FLUXCD_SOURCE_CONTROLLER_IMAGE_LOCAL}}"
-        # capacitor
-        docker pull "{{.CAPACITOR_IMAGE}}"
-        docker tag "{{.CAPACITOR_IMAGE}}" "{{.CAPACITOR_IMAGE_LOCAL}}"
-        docker push "{{.CAPACITOR_IMAGE_LOCAL}}"
-        # csi secrets store driver
-        docker pull "{{.CSI_SECRETS_STORE_DRIVER_IMAGE}}"
-        docker tag "{{.CSI_SECRETS_STORE_DRIVER_IMAGE}}" "{{.CSI_SECRETS_STORE_DRIVER_IMAGE_LOCAL}}"
-        docker push "{{.CSI_SECRETS_STORE_DRIVER_IMAGE_LOCAL}}"
-        # csi secrets store driver crds
-        docker pull "{{.CSI_SECRETS_STORE_DRIVER_CRDS_IMAGE}}"
-        docker tag "{{.CSI_SECRETS_STORE_DRIVER_CRDS_IMAGE}}" "{{.CSI_SECRETS_STORE_DRIVER_CRDS_IMAGE_LOCAL}}"
-        docker push "{{.CSI_SECRETS_STORE_DRIVER_CRDS_IMAGE_LOCAL}}"
-        # sig storage csi node driver registrar
-        docker pull "{{.SIG_STORAGE_CSI_NODE_DRIVER_REGISTRAR_IMAGE}}"
-        docker tag "{{.SIG_STORAGE_CSI_NODE_DRIVER_REGISTRAR_IMAGE}}" "{{.SIG_STORAGE_CSI_NODE_DRIVER_REGISTRAR_IMAGE_LOCAL}}"
-        docker push "{{.SIG_STORAGE_CSI_NODE_DRIVER_REGISTRAR_IMAGE_LOCAL}}"
-        # sig storage livenessprobe
-        docker pull "{{.SIG_STORAGE_LIVENESSPROBE_IMAGE}}"
-        docker tag "{{.SIG_STORAGE_LIVENESSPROBE_IMAGE}}" "{{.SIG_STORAGE_LIVENESSPROBE_IMAGE_LOCAL}}"
-        docker push "{{.SIG_STORAGE_LIVENESSPROBE_IMAGE_LOCAL}}"
-        # cert manager controller
-        docker pull "{{.CERT_MANAGER_CONTROLLER_IMAGE}}"
-        docker tag "{{.CERT_MANAGER_CONTROLLER_IMAGE}}" "{{.CERT_MANAGER_CONTROLLER_IMAGE_LOCAL}}"
-        docker push "{{.CERT_MANAGER_CONTROLLER_IMAGE_LOCAL}}"
-        # cert manager acmesolver
-        docker pull "{{.CERT_MANAGER_ACMESOLVER_IMAGE}}"
-        docker tag "{{.CERT_MANAGER_ACMESOLVER_IMAGE}}" "{{.CERT_MANAGER_ACMESOLVER_IMAGE_LOCAL}}"
-        docker push "{{.CERT_MANAGER_ACMESOLVER_IMAGE_LOCAL}}"
-        # cert manager cainjector
-        docker pull "{{.CERT_MANAGER_CAINJECTOR_IMAGE}}"
-        docker tag "{{.CERT_MANAGER_CAINJECTOR_IMAGE}}" "{{.CERT_MANAGER_CAINJECTOR_IMAGE_LOCAL}}"
-        docker push "{{.CERT_MANAGER_CAINJECTOR_IMAGE_LOCAL}}"
-        # cert manager webhook
-        docker pull "{{.CERT_MANAGER_WEBHOOK_IMAGE}}"
-        docker tag "{{.CERT_MANAGER_WEBHOOK_IMAGE}}" "{{.CERT_MANAGER_WEBHOOK_IMAGE_LOCAL}}"
-        docker push "{{.CERT_MANAGER_WEBHOOK_IMAGE_LOCAL}}"
-        # cert manager ctl
-        docker pull "{{.CERT_MANAGER_CTL_IMAGE}}"
-        docker tag "{{.CERT_MANAGER_CTL_IMAGE}}" "{{.CERT_MANAGER_CTL_IMAGE_LOCAL}}"
-        docker push "{{.CERT_MANAGER_CTL_IMAGE_LOCAL}}"
+        images=($(helm template charts/cilium/cilium -f charts/cilium/cilium/values.yaml | grep 'image: ' | awk '{print $NF}' | tr -d '"' | uniq | tr '\n' ' '))
+        # fluxcd
+        images+=($(cat clusters/local/flux-system/gotk-components.yaml | grep 'image: ' | awk '{print $NF}' | sed 's/localhost:5001/docker.io/' | uniq | tr '\n' ' '))
+        # secrets store csi driver
+        images+=($(helm template ./charts/secrets-store-csi-driver/secrets-store-csi-driver | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
+        # cert manager
+        images+=($(helm template ./charts/jetstack/cert-manager | grep 'quay.io' | sed 's/=/: "/' | awk -F'"' '{print $2}' | uniq))
         # cert manager csi driver
-        docker pull "{{.CERT_MANAGER_CSI_DRIVER_IMAGE}}"
-        docker tag "{{.CERT_MANAGER_CSI_DRIVER_IMAGE}}" "{{.CERT_MANAGER_CSI_DRIVER_IMAGE_LOCAL}}"
-        docker push "{{.CERT_MANAGER_CSI_DRIVER_IMAGE_LOCAL}}"
-        # metrics server
-        docker pull "{{.METRICS_SERVER_IMAGE}}"
-        docker tag "{{.METRICS_SERVER_IMAGE}}" "{{.METRICS_SERVER_IMAGE_LOCAL}}"
-        docker push "{{.METRICS_SERVER_IMAGE_LOCAL}}"
-        # grafana operator
-        docker pull "{{.GRAFANA_OPERATOR_IMAGE}}"
-        docker tag "{{.GRAFANA_OPERATOR_IMAGE}}" "{{.GRAFANA_OPERATOR_IMAGE_LOCAL}}"
-        docker push "{{.GRAFANA_OPERATOR_IMAGE_LOCAL}}"
-        # ingress nginx
-        docker pull "{{.INGRESS_NGINX_IMAGE}}"
-        docker tag "{{.INGRESS_NGINX_IMAGE}}" "{{.INGRESS_NGINX_IMAGE_LOCAL}}"
-        docker push "{{.INGRESS_NGINX_IMAGE_LOCAL}}"
-        # ingress nginx kube webhook certgen
-        docker pull "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE}}"
-        docker tag "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE}}" "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL}}"
-        docker push "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL}}"
-        # ingress nginx opentelemetry
-        docker pull "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE}}"
-        docker tag "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE}}" "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL}}"
-        docker push "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL}}"
-        # grafana
-        docker pull "{{.GRAFANA_IMAGE}}"
-        docker tag "{{.GRAFANA_IMAGE}}" "{{.GRAFANA_IMAGE_LOCAL}}"
-        docker push "{{.GRAFANA_IMAGE_LOCAL}}"
-        # kiwigrid k8s sidecar
-        docker pull "{{.KIWIGRID_K8S_SIDECAR_IMAGE}}"
-        docker tag "{{.KIWIGRID_K8S_SIDECAR_IMAGE}}" "{{.KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL}}"
-        docker push "{{.KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL}}"
-        # kube state metrics
-        docker pull "{{.KUBE_STATE_METRICS_IMAGE}}"
-        docker tag "{{.KUBE_STATE_METRICS_IMAGE}}" "{{.KUBE_STATE_METRICS_IMAGE_LOCAL}}"
-        docker push "{{.KUBE_STATE_METRICS_IMAGE_LOCAL}}"
-        # prometheus config reloader
-        docker pull "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE}}"
-        docker tag "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE}}" "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL}}"
-        docker push "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL}}"
-        # prometheus operator
-        docker pull "{{.PROMETHEUS_OPERATOR_IMAGE}}"
-        docker tag "{{.PROMETHEUS_OPERATOR_IMAGE}}" "{{.PROMETHEUS_OPERATOR_IMAGE_LOCAL}}"
-        docker push "{{.PROMETHEUS_OPERATOR_IMAGE_LOCAL}}"
-        # prometheus alertmanager
-        docker pull "{{.PROMETHEUS_ALERTMANAGER_IMAGE}}"
-        docker tag "{{.PROMETHEUS_ALERTMANAGER_IMAGE}}" "{{.PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL}}"
-        docker push "{{.PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL}}"
-        # prometheus node exporter
-        docker pull "{{.PROMETHEUS_NODE_EXPORTER_IMAGE}}"
-        docker tag "{{.PROMETHEUS_NODE_EXPORTER_IMAGE}}" "{{.PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL}}"
-        docker push "{{.PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL}}"
-        # prometheus
-        docker pull "{{.PROMETHEUS_IMAGE}}"
-        docker tag "{{.PROMETHEUS_IMAGE}}" "{{.PROMETHEUS_IMAGE_LOCAL}}"
-        docker push "{{.PROMETHEUS_IMAGE_LOCAL}}"
-        # prometheus push gateway
-        docker pull "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE}}"
-        docker tag "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE}}" "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL}}"
-        docker push "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL}}"
-        # thanos
-        docker pull "{{.THANOS_IMAGE}}"
-        docker tag "{{.THANOS_IMAGE}}" "{{.THANOS_IMAGE_LOCAL}}"
-        docker push "{{.THANOS_IMAGE_LOCAL}}"
+        images+=($(helm template ./charts/jetstack/cert-manager-csi-driver | grep 'image: ' | awk -F'"' '{print $2}'))
+        for image in "${images[@]}"; do
+          remote_image="${image}"
+          local_image=$(echo "${remote_image}" | awk -F'@' '{print $1}' | sed 's/quay.io/localhost:{{.REGISTRY_PORT}}/' | sed 's/docker.io/localhost:{{.REGISTRY_PORT}}/' | sed 's/registry.k8s.io/localhost:{{.REGISTRY_PORT}}/')
+          docker pull "${remote_image}"
+          docker tag "${remote_image}" "${local_image}"
+          docker push "${local_image}"
+        done
+        # # metrics server
+        # docker pull "{{.METRICS_SERVER_IMAGE}}"
+        # docker tag "{{.METRICS_SERVER_IMAGE}}" "{{.METRICS_SERVER_IMAGE_LOCAL}}"
+        # docker push "{{.METRICS_SERVER_IMAGE_LOCAL}}"
+        # # grafana operator
+        # docker pull "{{.GRAFANA_OPERATOR_IMAGE}}"
+        # docker tag "{{.GRAFANA_OPERATOR_IMAGE}}" "{{.GRAFANA_OPERATOR_IMAGE_LOCAL}}"
+        # docker push "{{.GRAFANA_OPERATOR_IMAGE_LOCAL}}"
+        # # ingress nginx
+        # docker pull "{{.INGRESS_NGINX_IMAGE}}"
+        # docker tag "{{.INGRESS_NGINX_IMAGE}}" "{{.INGRESS_NGINX_IMAGE_LOCAL}}"
+        # docker push "{{.INGRESS_NGINX_IMAGE_LOCAL}}"
+        # # ingress nginx kube webhook certgen
+        # docker pull "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE}}"
+        # docker tag "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE}}" "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL}}"
+        # docker push "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL}}"
+        # # ingress nginx opentelemetry
+        # docker pull "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE}}"
+        # docker tag "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE}}" "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL}}"
+        # docker push "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL}}"
+        # # grafana
+        # docker pull "{{.GRAFANA_IMAGE}}"
+        # docker tag "{{.GRAFANA_IMAGE}}" "{{.GRAFANA_IMAGE_LOCAL}}"
+        # docker push "{{.GRAFANA_IMAGE_LOCAL}}"
+        # # kiwigrid k8s sidecar
+        # docker pull "{{.KIWIGRID_K8S_SIDECAR_IMAGE}}"
+        # docker tag "{{.KIWIGRID_K8S_SIDECAR_IMAGE}}" "{{.KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL}}"
+        # docker push "{{.KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL}}"
+        # # kube state metrics
+        # docker pull "{{.KUBE_STATE_METRICS_IMAGE}}"
+        # docker tag "{{.KUBE_STATE_METRICS_IMAGE}}" "{{.KUBE_STATE_METRICS_IMAGE_LOCAL}}"
+        # docker push "{{.KUBE_STATE_METRICS_IMAGE_LOCAL}}"
+        # # prometheus config reloader
+        # docker pull "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE}}"
+        # docker tag "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE}}" "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL}}"
+        # docker push "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL}}"
+        # # prometheus operator
+        # docker pull "{{.PROMETHEUS_OPERATOR_IMAGE}}"
+        # docker tag "{{.PROMETHEUS_OPERATOR_IMAGE}}" "{{.PROMETHEUS_OPERATOR_IMAGE_LOCAL}}"
+        # docker push "{{.PROMETHEUS_OPERATOR_IMAGE_LOCAL}}"
+        # # prometheus alertmanager
+        # docker pull "{{.PROMETHEUS_ALERTMANAGER_IMAGE}}"
+        # docker tag "{{.PROMETHEUS_ALERTMANAGER_IMAGE}}" "{{.PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL}}"
+        # docker push "{{.PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL}}"
+        # # prometheus node exporter
+        # docker pull "{{.PROMETHEUS_NODE_EXPORTER_IMAGE}}"
+        # docker tag "{{.PROMETHEUS_NODE_EXPORTER_IMAGE}}" "{{.PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL}}"
+        # docker push "{{.PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL}}"
+        # # prometheus
+        # docker pull "{{.PROMETHEUS_IMAGE}}"
+        # docker tag "{{.PROMETHEUS_IMAGE}}" "{{.PROMETHEUS_IMAGE_LOCAL}}"
+        # docker push "{{.PROMETHEUS_IMAGE_LOCAL}}"
+        # # prometheus push gateway
+        # docker pull "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE}}"
+        # docker tag "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE}}" "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL}}"
+        # docker push "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL}}"
+        # # thanos
+        # docker pull "{{.THANOS_IMAGE}}"
+        # docker tag "{{.THANOS_IMAGE}}" "{{.THANOS_IMAGE_LOCAL}}"
+        # docker push "{{.THANOS_IMAGE_LOCAL}}"
 
   kind:start:
     desc: Starts kind cluster
     silent: true
     deps: ["registry:start"]
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
         #!/usr/bin/env bash
@@ -330,15 +212,13 @@ tasks:
         EOF
 
         # install cilium CNI
-        helm install cilium "{{.ROOT_DIR}}/charts/cilium/cilium" \
-          --kube-context "kind-{{.KIND_CLUSTER_NAME}}" \
+        helm template charts/cilium/cilium \
           --namespace kube-system \
-          --set image.repository={{.CILIUM_IMAGE_LOCAL}} \
-          --set envoy.image.repository={{.CILIUM_ENVOY_IMAGE_LOCAL}} \
           --set envoy.image.digest="" \
           --set envoy.image.useDigest=false \
-          --set operator.image.repository={{.CILIUM_OPERATOR_IMAGE_LOCAL}} \
-          --set ipam.mode=kubernetes
+          --set ipam.mode=kubernetes | \
+        sed 's/quay.io/localhost:{{.REGISTRY_PORT}}/' | \
+        kubectl --context "kind-{{.KIND_CLUSTER_NAME}}" apply -f -
 
         # wait before cilium is fully up and running
         cilium status --context "kind-{{.KIND_CLUSTER_NAME}}" --wait
@@ -356,7 +236,7 @@ tasks:
   kind:stop:
     desc: Stops kind cluster
     silent: true
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - kind delete cluster --name "{{.KIND_CLUSTER_NAME}}"
     status:
@@ -369,7 +249,7 @@ tasks:
 
   sops:bootstrap:
     desc: Bootstrap Age private key (SOPS)
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
         mkdir -p ~/.config/sops/age
@@ -384,7 +264,7 @@ tasks:
 
   fluxcd:bootstrap:
     desc: Bootstrap FluxCD control plane
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
         flux create secret git flux-system \
@@ -413,7 +293,7 @@ tasks:
       - task: kind:start
       - task: sops:bootstrap
       - task: fluxcd:bootstrap
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"
 
   stop:
     desc: Stops local registry and kind cluster
@@ -421,4 +301,4 @@ tasks:
     cmds:
       - task: kind:stop
       - task: registry:stop
-    dir: "{{.ROOT_DIR}}"
+    dir: "{{.TASKFILE_DIR}}"

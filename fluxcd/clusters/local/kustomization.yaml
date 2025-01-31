@@ -3,21 +3,20 @@ kind: Kustomization
 resources:
   # flux extensions
   - flux-system/secrets.yaml
-  - flux-system/capacitor.yaml
   # namespaces
   - system/namespace.yaml
   - monitoring/namespace.yaml
   # addons
   - system/secrets-store-csi-driver.yaml
   - system/cert-manager.yaml
-  - system/cluster-issuers.yaml
-  - system/metrics-server.yaml
-  - system/grafana-operator.yaml
-  - system/ingress-controller.yaml
-  - system/prometheus-operator.yaml
-  # monitoring
-  - monitoring/alert-manager.yaml
-  - monitoring/prometheus.yaml
-  - monitoring/grafana.yaml
-  - monitoring/grafana-datasources.yaml
-  - monitoring/grafana-dashboards.yaml
+  # - system/cluster-issuers.yaml
+  # - system/metrics-server.yaml
+  # - system/grafana-operator.yaml
+  # - system/ingress-controller.yaml
+  # - system/prometheus-operator.yaml
+  # # monitoring
+  # - monitoring/alert-manager.yaml
+  # - monitoring/prometheus.yaml
+  # - monitoring/grafana.yaml
+  # - monitoring/grafana-datasources.yaml
+  # - monitoring/grafana-dashboards.yaml

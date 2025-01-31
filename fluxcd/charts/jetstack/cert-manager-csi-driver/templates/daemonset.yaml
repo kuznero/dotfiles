@@ -2,8 +2,13 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "cert-manager-csi-driver.name" . }}
+  namespace: {{ .Release.Namespace | quote }}
   labels:
-{{ include "cert-manager-csi-driver.labels" . | indent 4 }}
+    {{ include "cert-manager-csi-driver.labels" . | nindent 4 }}
+  {{- with .Values.daemonSetAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -12,17 +17,29 @@ spec:
     metadata:
       labels:
         app: {{ include "cert-manager-csi-driver.name" . }}
+        {{- include "cert-manager-csi-driver.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        kubectl.kubernetes.io/default-container: cert-manager-csi-driver
+        {{- if .Values.podAnnotations }}
+          {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "cert-manager-csi-driver.name" . }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
       containers:
 
         - name: node-driver-registrar
-          image: "{{ .Values.nodeDriverRegistrarImage.repository }}:{{ .Values.nodeDriverRegistrarImage.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ template "image" (tuple .Values.nodeDriverRegistrarImage $.Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.nodeDriverRegistrarImage.pullPolicy }}
           args:
             - -v={{ .Values.app.logLevel }}
             - --csi-address=/plugin/csi.sock
@@ -39,24 +56,26 @@ spec:
               mountPath: /registration
 
         - name: liveness-probe
-          image: "{{ .Values.livenessProbeImage.repository }}:{{ .Values.livenessProbeImage.tag }}"
+          image: "{{ template "image" (tuple .Values.livenessProbeImage $.Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.livenessProbeImage.pullPolicy }}
           args:
             - --csi-address=/plugin/csi.sock
             - --probe-timeout=3s
             - --health-port={{.Values.app.livenessProbe.port}}
             - -v={{ .Values.app.logLevel }}
-          imagePullPolicy: {{ .Values.livenessProbeImage.pullPolicy }}
           volumeMounts:
             - name: plugin-dir
               mountPath: /plugin
 
         - name: cert-manager-csi-driver
           securityContext:
+            readOnlyRootFilesystem: true
             privileged: true
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            runAsUser: 0
+          image: "{{ template "image" (tuple .Values.image $.Chart.AppVersion) }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args :
             - --log-level={{ .Values.app.logLevel }}
@@ -65,6 +84,11 @@ spec:
             - --endpoint=$(CSI_ENDPOINT)
             - --data-root=csi-data-dir
             - --use-token-request={{ .Values.app.driver.useTokenRequest }}
+{{- if .Values.metrics.enabled }}
+            - --metrics-bind-address=:{{ .Values.metrics.port }}
+{{- else }}
+            - --metrics-bind-address=0
+{{- end }}
           env:
             - name: NODE_ID
               valueFrom:
@@ -84,24 +108,32 @@ spec:
           ports:
             - containerPort: {{.Values.app.livenessProbe.port}}
               name: healthz
+{{- if .Values.metrics.enabled }}
+            - containerPort: {{ .Values.metrics.port }}
+              name: http-metrics
+{{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
               port: healthz
             initialDelaySeconds: 5
             timeoutSeconds: 5
+          {{- with .Values.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
 
-      {{- if .Values.nodeSelector }}
-      nodeSelector: {{-  toYaml .Values.nodeSelector | nindent 8 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml .Values.tolerations | nindent 8 }}
-
-      {{- with .Values.priorityClassName }}
-      priorityClassName: {{ . | quote }}
+        {{- toYaml . | nindent 8 }}
       {{- end }}
 
       volumes:
@@ -113,11 +145,11 @@ spec:
           hostPath:
             path: {{ .Values.app.kubeletRootDir }}/pods
             type: Directory
-        - hostPath:
+        - name: registration-dir
+          hostPath:
             path: {{ .Values.app.kubeletRootDir }}/plugins_registry
             type: Directory
-          name: registration-dir
-        - hostPath:
+        - name: csi-data-dir
+          hostPath:
             path: {{ .Values.app.driver.csiDataDir }}
             type: DirectoryOrCreate
-          name: csi-data-dir
