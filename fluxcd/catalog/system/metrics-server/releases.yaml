@@ -25,8 +25,14 @@ spec:
       - --cert-dir=/tmp
       - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
       - --kubelet-insecure-tls
-      - --metric-resolution=10s
       - --kubelet-use-node-status-port
+    resources:
+      limits:
+        cpu: "0"
+        memory: "0"
+      requests:
+        cpu: "0"
+        memory: "0"
     livenessProbe:
       httpGet:
         path: /livez

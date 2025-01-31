@@ -5,7 +5,7 @@
 schedulerName: "{{ . }}"
 {{- end }}
 serviceAccountName: {{ include "grafana.serviceAccountName" . }}
-automountServiceAccountToken: {{ .Values.serviceAccount.autoMount }}
+automountServiceAccountToken: {{ .Values.automountServiceAccountToken }}
 {{- with .Values.securityContext }}
 securityContext:
   {{- toYaml . | nindent 2 }}
@@ -14,10 +14,17 @@ securityContext:
 hostAliases:
   {{- toYaml . | nindent 2 }}
 {{- end }}
+{{- if .Values.dnsPolicy }}
+dnsPolicy: {{ .Values.dnsPolicy }}
+{{- end }}
+{{- with .Values.dnsConfig }}
+dnsConfig:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 {{- with .Values.priorityClassName }}
 priorityClassName: {{ . }}
 {{- end }}
-{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.extraInitContainers (and .Values.sidecar.datasources.enabled .Values.sidecar.datasources.initDatasources) (and .Values.sidecar.notifiers.enabled .Values.sidecar.notifiers.initNotifiers)) }}
+{{- if ( or .Values.persistence.enabled .Values.dashboards .Values.extraInitContainers (and .Values.sidecar.alerts.enabled .Values.sidecar.alerts.initAlerts) (and .Values.sidecar.datasources.enabled .Values.sidecar.datasources.initDatasources) (and .Values.sidecar.notifiers.enabled .Values.sidecar.notifiers.initNotifiers)) }}
 initContainers:
 {{- end }}
 {{- if ( and .Values.persistence.enabled .Values.initChownData.enabled ) }}
@@ -98,6 +105,79 @@ initContainers:
         readOnly: {{ .readOnly }}
       {{- end }}
 {{- end }}
+{{- if and .Values.sidecar.alerts.enabled .Values.sidecar.alerts.initAlerts }}
+  - name: {{ include "grafana.name" . }}-init-sc-alerts
+    {{- $registry := .Values.global.imageRegistry | default .Values.sidecar.image.registry -}}
+    {{- if .Values.sidecar.image.sha }}
+    image: "{{ $registry }}/{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}@sha256:{{ .Values.sidecar.image.sha }}"
+    {{- else }}
+    image: "{{ $registry }}/{{ .Values.sidecar.image.repository }}:{{ .Values.sidecar.image.tag }}"
+    {{- end }}
+    imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+    env:
+      {{- range $key, $value := .Values.sidecar.alerts.env }}
+      - name: "{{ $key }}"
+        value: "{{ $value }}"
+      {{- end }}
+      {{- if .Values.sidecar.alerts.ignoreAlreadyProcessed }}
+      - name: IGNORE_ALREADY_PROCESSED
+        value: "true"
+      {{- end }}
+      - name: METHOD
+        value: "LIST"
+      - name: LABEL
+        value: "{{ .Values.sidecar.alerts.label }}"
+      {{- with .Values.sidecar.alerts.labelValue }}
+      - name: LABEL_VALUE
+        value: {{ quote . }}
+      {{- end }}
+      {{- if or .Values.sidecar.logLevel .Values.sidecar.alerts.logLevel }}
+      - name: LOG_LEVEL
+        value: {{ default .Values.sidecar.logLevel .Values.sidecar.alerts.logLevel }}
+      {{- end }}
+      - name: FOLDER
+        value: "/etc/grafana/provisioning/alerting"
+      - name: RESOURCE
+        value: {{ quote .Values.sidecar.alerts.resource }}
+      {{- with .Values.sidecar.enableUniqueFilenames }}
+      - name: UNIQUE_FILENAMES
+        value: "{{ . }}"
+      {{- end }}
+      {{- with .Values.sidecar.alerts.searchNamespace }}
+      - name: NAMESPACE
+        value: {{ . | join "," | quote }}
+      {{- end }}
+      {{- with .Values.sidecar.alerts.skipTlsVerify }}
+      - name: SKIP_TLS_VERIFY
+        value: {{ quote . }}
+      {{- end }}
+      {{- with .Values.sidecar.alerts.script }}
+      - name: SCRIPT
+        value: {{ quote . }}
+      {{- end }}
+    {{- with .Values.sidecar.livenessProbe }}
+    livenessProbe:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.sidecar.readinessProbe }}
+    readinessProbe:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.sidecar.resources }}
+    resources:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.sidecar.securityContext }}
+    securityContext:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    volumeMounts:
+      - name: sc-alerts-volume
+        mountPath: "/etc/grafana/provisioning/alerting"
+      {{- with .Values.sidecar.alerts.extraMounts }}
+      {{- toYaml . | trim | nindent 6 }}
+      {{- end }}
+{{- end }}
 {{- if and .Values.sidecar.datasources.enabled .Values.sidecar.datasources.initDatasources }}
   - name: {{ include "grafana.name" . }}-init-sc-datasources
     {{- $registry := .Values.global.imageRegistry | default .Values.sidecar.image.registry -}}
@@ -111,6 +191,11 @@ initContainers:
       {{- range $key, $value := .Values.sidecar.datasources.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
+      {{- end }}
+      {{- range $key, $value := .Values.sidecar.datasources.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+          {{- tpl (toYaml $value) $ | nindent 10 }}
       {{- end }}
       {{- if .Values.sidecar.datasources.ignoreAlreadyProcessed }}
       - name: IGNORE_ALREADY_PROCESSED
@@ -233,7 +318,7 @@ imagePullSecrets:
 enableServiceLinks: {{ .Values.enableServiceLinks }}
 {{- end }}
 containers:
-{{- if .Values.sidecar.alerts.enabled }}
+{{- if and .Values.sidecar.alerts.enabled (not .Values.sidecar.alerts.initAlerts) }}
   - name: {{ include "grafana.name" . }}-sc-alerts
     {{- $registry := .Values.global.imageRegistry | default .Values.sidecar.image.registry -}}
     {{- if .Values.sidecar.image.sha }}
@@ -317,6 +402,18 @@ containers:
       - name: WATCH_CLIENT_TIMEOUT
         value: "{{ .Values.sidecar.alerts.watchClientTimeout }}"
       {{- end }}
+      {{- if .Values.sidecar.alerts.maxTotalRetries }}
+      - name: REQ_RETRY_TOTAL
+        value: "{{ .Values.sidecar.alerts.maxTotalRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.alerts.maxConnectRetries }}
+      - name: REQ_RETRY_CONNECT
+        value: "{{ .Values.sidecar.alerts.maxConnectRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.alerts.maxReadRetries }}
+      - name: REQ_RETRY_READ
+        value: "{{ .Values.sidecar.alerts.maxReadRetries }}"
+      {{- end }}
     {{- with .Values.sidecar.livenessProbe }}
     livenessProbe:
       {{- toYaml . | nindent 6 }}
@@ -338,7 +435,7 @@ containers:
         mountPath: "/etc/grafana/provisioning/alerting"
       {{- with .Values.sidecar.alerts.extraMounts }}
       {{- toYaml . | trim | nindent 6 }}
-      {{- end }}        
+      {{- end }}
 {{- end}}
 {{- if .Values.sidecar.dashboards.enabled }}
   - name: {{ include "grafana.name" . }}-sc-dashboard
@@ -353,6 +450,11 @@ containers:
       {{- range $key, $value := .Values.sidecar.dashboards.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
+      {{- end }}
+      {{- range $key, $value := .Values.sidecar.dashboards.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+          {{- tpl (toYaml $value) $ | nindent 10 }}
       {{- end }}
       {{- if .Values.sidecar.dashboards.ignoreAlreadyProcessed }}
       - name: IGNORE_ALREADY_PROCESSED
@@ -428,6 +530,18 @@ containers:
       - name: WATCH_CLIENT_TIMEOUT
         value: {{ .Values.sidecar.dashboards.watchClientTimeout | quote }}
       {{- end }}
+      {{- if .Values.sidecar.dashboards.maxTotalRetries }}
+      - name: REQ_RETRY_TOTAL
+        value: "{{ .Values.sidecar.dashboards.maxTotalRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.dashboards.maxConnectRetries }}
+      - name: REQ_RETRY_CONNECT
+        value: "{{ .Values.sidecar.dashboards.maxConnectRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.dashboards.maxReadRetries }}
+      - name: REQ_RETRY_READ
+        value: "{{ .Values.sidecar.dashboards.maxReadRetries }}"
+      {{- end }}
     {{- with .Values.sidecar.livenessProbe }}
     livenessProbe:
       {{- toYaml . | nindent 6 }}
@@ -451,7 +565,7 @@ containers:
       {{- toYaml . | trim | nindent 6 }}
       {{- end }}
 {{- end}}
-{{- if .Values.sidecar.datasources.enabled }}
+{{- if and .Values.sidecar.datasources.enabled (not .Values.sidecar.datasources.initDatasources) }}
   - name: {{ include "grafana.name" . }}-sc-datasources
     {{- $registry := .Values.global.imageRegistry | default .Values.sidecar.image.registry -}}
     {{- if .Values.sidecar.image.sha }}
@@ -464,6 +578,11 @@ containers:
       {{- range $key, $value := .Values.sidecar.datasources.env }}
       - name: "{{ $key }}"
         value: "{{ $value }}"
+      {{- end }}
+      {{- range $key, $value := .Values.sidecar.datasources.envValueFrom }}
+      - name: {{ $key | quote }}
+        valueFrom:
+          {{- tpl (toYaml $value) $ | nindent 10 }}
       {{- end }}
       {{- if .Values.sidecar.datasources.ignoreAlreadyProcessed }}
       - name: IGNORE_ALREADY_PROCESSED
@@ -535,6 +654,18 @@ containers:
       - name: WATCH_CLIENT_TIMEOUT
         value: "{{ .Values.sidecar.datasources.watchClientTimeout }}"
       {{- end }}
+      {{- if .Values.sidecar.datasources.maxTotalRetries }}
+      - name: REQ_RETRY_TOTAL
+        value: "{{ .Values.sidecar.datasources.maxTotalRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.datasources.maxConnectRetries }}
+      - name: REQ_RETRY_CONNECT
+        value: "{{ .Values.sidecar.datasources.maxConnectRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.datasources.maxReadRetries }}
+      - name: REQ_RETRY_READ
+        value: "{{ .Values.sidecar.datasources.maxReadRetries }}"
+      {{- end }}
     {{- with .Values.sidecar.livenessProbe }}
     livenessProbe:
       {{- toYaml . | nindent 6 }}
@@ -554,6 +685,9 @@ containers:
     volumeMounts:
       - name: sc-datasources-volume
         mountPath: "/etc/grafana/provisioning/datasources"
+      {{- with .Values.sidecar.datasources.extraMounts }}
+      {{- toYaml . | trim | nindent 6 }}
+      {{- end }}
 {{- end}}
 {{- if .Values.sidecar.notifiers.enabled }}
   - name: {{ include "grafana.name" . }}-sc-notifiers
@@ -639,6 +773,18 @@ containers:
       - name: WATCH_CLIENT_TIMEOUT
         value: "{{ .Values.sidecar.notifiers.watchClientTimeout }}"
       {{- end }}
+      {{- if .Values.sidecar.notifiers.maxTotalRetries }}
+      - name: REQ_RETRY_TOTAL
+        value: "{{ .Values.sidecar.notifiers.maxTotalRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.notifiers.maxConnectRetries }}
+      - name: REQ_RETRY_CONNECT
+        value: "{{ .Values.sidecar.notifiers.maxConnectRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.notifiers.maxReadRetries }}
+      - name: REQ_RETRY_READ
+        value: "{{ .Values.sidecar.notifiers.maxReadRetries }}"
+      {{- end }}
     {{- with .Values.sidecar.livenessProbe }}
     livenessProbe:
       {{- toYaml . | nindent 6 }}
@@ -658,6 +804,9 @@ containers:
     volumeMounts:
       - name: sc-notifiers-volume
         mountPath: "/etc/grafana/provisioning/notifiers"
+      {{- with .Values.sidecar.notifiers.extraMounts }}
+      {{- toYaml . | trim | nindent 6 }}
+      {{- end }}
 {{- end}}
 {{- if .Values.sidecar.plugins.enabled }}
   - name: {{ include "grafana.name" . }}-sc-plugins
@@ -743,6 +892,18 @@ containers:
       - name: WATCH_CLIENT_TIMEOUT
         value: "{{ .Values.sidecar.plugins.watchClientTimeout }}"
       {{- end }}
+      {{- if .Values.sidecar.plugins.maxTotalRetries }}
+      - name: REQ_RETRY_TOTAL
+        value: "{{ .Values.sidecar.plugins.maxTotalRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.plugins.maxConnectRetries }}
+      - name: REQ_RETRY_CONNECT
+        value: "{{ .Values.sidecar.plugins.maxConnectRetries }}"
+      {{- end }}
+      {{- if .Values.sidecar.plugins.maxReadRetries }}
+      - name: REQ_RETRY_READ
+        value: "{{ .Values.sidecar.plugins.maxReadRetries }}"
+      {{- end }}
     {{- with .Values.sidecar.livenessProbe }}
     livenessProbe:
       {{- toYaml . | nindent 6 }}
@@ -762,6 +923,9 @@ containers:
     volumeMounts:
       - name: sc-plugins-volume
         mountPath: "/etc/grafana/provisioning/plugins"
+      {{- with .Values.sidecar.plugins.extraMounts }}
+      {{- toYaml . | trim | nindent 6 }}
+      {{- end }}
 {{- end}}
   - name: {{ .Chart.Name }}
     {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
@@ -825,24 +989,45 @@ containers:
       {{- end }}
       {{- end }}
       {{- with .Values.datasources }}
+      {{- $datasources := . }}
       {{- range (keys . | sortAlpha) }}
+      {{- if (or (hasKey (index $datasources .) "secret")) }} {{/*check if current datasource should be handeled as secret */}}
+      - name: config-secret
+        mountPath: "/etc/grafana/provisioning/datasources/{{ . }}"
+        subPath: {{ . | quote }}
+      {{- else }}
       - name: config
         mountPath: "/etc/grafana/provisioning/datasources/{{ . }}"
         subPath: {{ . | quote }}
       {{- end }}
       {{- end }}
+      {{- end }}
       {{- with .Values.notifiers }}
+      {{- $notifiers := . }}
       {{- range (keys . | sortAlpha) }}
+      {{- if (or (hasKey (index $notifiers .) "secret")) }} {{/*check if current notifier should be handeled as secret */}}
+      - name: config-secret
+        mountPath: "/etc/grafana/provisioning/notifiers/{{ . }}"
+        subPath: {{ . | quote }}
+      {{- else }}
       - name: config
         mountPath: "/etc/grafana/provisioning/notifiers/{{ . }}"
         subPath: {{ . | quote }}
       {{- end }}
       {{- end }}
+      {{- end }}
       {{- with .Values.alerting }}
+      {{- $alertingmap := .}}
       {{- range (keys . | sortAlpha) }}
+      {{- if (or (hasKey (index $.Values.alerting .) "secret") (hasKey (index $.Values.alerting .) "secretFile")) }} {{/*check if current alerting entry should be handeled as secret */}}
+      - name: config-secret
+        mountPath: "/etc/grafana/provisioning/alerting/{{ . }}"
+        subPath: {{ . | quote }}
+      {{- else }}
       - name: config
         mountPath: "/etc/grafana/provisioning/alerting/{{ . }}"
         subPath: {{ . | quote }}
+      {{- end }}
       {{- end }}
       {{- end }}
       {{- with .Values.dashboardProviders }}
@@ -903,6 +1088,9 @@ containers:
       - name: {{ .Values.gossipPortName }}-udp
         containerPort: 9094
         protocol: UDP
+      - name: profiling
+        containerPort: 6060
+        protocol: TCP
     env:
       - name: POD_IP
         valueFrom:
@@ -943,9 +1131,17 @@ containers:
       {{- end }}
       {{- if .Values.imageRenderer.enabled }}
       - name: GF_RENDERING_SERVER_URL
+        {{- if .Values.imageRenderer.serverURL }}
+        value: {{ .Values.imageRenderer.serverURL | quote }}
+        {{- else }}
         value: http://{{ include "grafana.fullname" . }}-image-renderer.{{ include "grafana.namespace" . }}:{{ .Values.imageRenderer.service.port }}/render
+        {{- end }}
       - name: GF_RENDERING_CALLBACK_URL
+        {{- if .Values.imageRenderer.renderingCallbackURL }}
+        value: {{ .Values.imageRenderer.renderingCallbackURL | quote }}
+        {{- else }}
         value: {{ .Values.imageRenderer.grafanaProtocol }}://{{ include "grafana.fullname" . }}.{{ include "grafana.namespace" . }}:{{ .Values.service.port }}/{{ .Values.imageRenderer.grafanaSubPath }}
+        {{- end }}
       {{- end }}
       - name: GF_PATHS_DATA
         value: {{ (get .Values "grafana.ini").paths.data }}
@@ -978,11 +1174,17 @@ containers:
       - secretRef:
           name: {{ tpl .name $ }}
           optional: {{ .optional | default false }}
+        {{- if .prefix }}
+        prefix: {{ tpl .prefix $ }}
+        {{- end }}
       {{- end }}
       {{- range .Values.envFromConfigMaps }}
       - configMapRef:
           name: {{ tpl .name $ }}
           optional: {{ .optional | default false }}
+        {{- if .prefix }}
+        prefix: {{ tpl .prefix $ }}
+        {{- end }}
       {{- end }}
     {{- end }}
     {{- with .Values.livenessProbe }}
@@ -1024,10 +1226,19 @@ volumes:
   - name: config
     configMap:
       name: {{ include "grafana.fullname" . }}
+  {{- $createConfigSecret := eq (include "grafana.shouldCreateConfigSecret" .) "true" -}}
+  {{- if and .Values.createConfigmap $createConfigSecret }}
+  - name: config-secret
+    secret:
+      secretName: {{ include "grafana.fullname" . }}-config-secret
+  {{- end }}
   {{- range .Values.extraConfigmapMounts }}
   - name: {{ tpl .name $root }}
     configMap:
       name: {{ tpl .configMap $root }}
+      {{- with .optional }}
+      optional: {{ . }}
+      {{- end }}
       {{- with .items }}
       items:
         {{- toYaml . | nindent 8 }}
@@ -1133,6 +1344,9 @@ volumes:
     secret:
       secretName: {{ .secretName }}
       defaultMode: {{ .defaultMode }}
+      {{- with .optional }}
+      optional: {{ . }}
+      {{- end }}
       {{- with .items }}
       items:
         {{- toYaml . | nindent 8 }}
@@ -1157,10 +1371,13 @@ volumes:
       {{ toYaml .hostPath | nindent 6 }}
     {{- else if .csi }}
     csi:
-      {{- toYaml .data | nindent 6 }}
+      {{- toYaml .csi | nindent 6 }}
     {{- else if .configMap }}
     configMap:
       {{- toYaml .configMap | nindent 6 }}
+    {{- else if .emptyDir }}
+    emptyDir:
+      {{- toYaml .emptyDir | nindent 6 }}
     {{- else }}
     emptyDir: {}
     {{- end }}
@@ -1173,4 +1390,3 @@ volumes:
   {{- tpl (toYaml .) $root | nindent 2 }}
   {{- end }}
 {{- end }}
-

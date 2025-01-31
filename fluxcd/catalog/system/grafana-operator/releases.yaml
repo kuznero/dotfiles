@@ -17,7 +17,7 @@ spec:
   values:
     fullnameOverride: grafana-operator
     image:
-      repository: ${REGISTRY}grafana-operator/grafana-operator
+      repository: ${REGISTRY}grafana/grafana-operator
     namespaceScope: false
     leaderElect: false
     watchNamespaces: ""

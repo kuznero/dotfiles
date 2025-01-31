@@ -10,40 +10,6 @@ vars:
   KIND_CLUSTER_NAME: playground
   KIND_CLUSTER_CONFIG: "{{.TASKFILE_DIR}}/config.yaml"
 
-  # METRICS_SERVER_IMAGE: registry.k8s.io/metrics-server/metrics-server:v0.6.4
-  # METRICS_SERVER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/metrics-server/metrics-server:v0.6.4
-  #
-  # GRAFANA_OPERATOR_IMAGE: quay.io/grafana-operator/grafana-operator:v5.4.2
-  # GRAFANA_OPERATOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/grafana-operator/grafana-operator:v5.4.2
-  #
-  # INGRESS_NGINX_IMAGE: registry.k8s.io/ingress-nginx/controller:v1.9.4@sha256:5b161f051d017e55d358435f295f5e9a297e66158f136321d9b04520ec6c48a3
-  # INGRESS_NGINX_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/controller:v1.9.4
-  # INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE: registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0@sha256:a7943503b45d552785aa3b5e457f169a5661fb94d82b8a3373bcd9ebaf9aac80
-  # INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0
-  # INGRESS_NGINX_OPENTELEMETRY_IMAGE: registry.k8s.io/ingress-nginx/opentelemetry:v20230721-3e2062ee5@sha256:13bee3f5223883d3ca62fee7309ad02d22ec00ff0d7033e3e9aca7a9f60fd472
-  # INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/ingress-nginx/opentelemetry:v20230721-3e2062ee5
-  #
-  # GRAFANA_IMAGE: grafana/grafana:10.1.5
-  # GRAFANA_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/grafana/grafana:10.1.5
-  # KIWIGRID_K8S_SIDECAR_IMAGE: quay.io/kiwigrid/k8s-sidecar:1.25.2
-  # KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/kiwigrid/k8s-sidecar:1.25.2
-  # KUBE_STATE_METRICS_IMAGE: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.10.1
-  # KUBE_STATE_METRICS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/kube-state-metrics/kube-state-metrics:v2.10.1
-  # PROMETHEUS_CONFIG_RELOADER_IMAGE: quay.io/prometheus-operator/prometheus-config-reloader:v0.69.1
-  # PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus-operator/prometheus-config-reloader:v0.69.1
-  # PROMETHEUS_OPERATOR_IMAGE: quay.io/prometheus-operator/prometheus-operator:v0.69.1
-  # PROMETHEUS_OPERATOR_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus-operator/prometheus-operator:v0.69.1
-  # PROMETHEUS_ALERTMANAGER_IMAGE: quay.io/prometheus/alertmanager:v0.26.0
-  # PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/alertmanager:v0.26.0
-  # PROMETHEUS_NODE_EXPORTER_IMAGE: quay.io/prometheus/node-exporter:v1.6.1
-  # PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/node-exporter:v1.6.1
-  # PROMETHEUS_IMAGE: quay.io/prometheus/prometheus:v2.47.2
-  # PROMETHEUS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/prometheus:v2.47.2
-  # PROMETHEUS_PUSH_GATEWAY_IMAGE: quay.io/prometheus/pushgateway:v1.6.2
-  # PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/prometheus/pushgateway:v1.6.2
-  # THANOS_IMAGE: quay.io/thanos/thanos:v0.32.5
-  # THANOS_IMAGE_LOCAL: localhost:{{.REGISTRY_PORT}}/thanos/thanos:v0.32.5
-
 tasks:
 
   registry:start:
@@ -96,77 +62,37 @@ tasks:
         images+=($(cat clusters/local/flux-system/gotk-components.yaml | grep 'image: ' | awk '{print $NF}' | sed 's/localhost:5001/docker.io/' | uniq | tr '\n' ' '))
         # secrets store csi driver
         images+=($(helm template ./charts/secrets-store-csi-driver/secrets-store-csi-driver | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
+        # ingress nginx
+        images+=($(helm template ./charts/ingress-nginx/ingress-nginx | grep 'image: ' | awk '{print $2}' | uniq))
         # cert manager
         images+=($(helm template ./charts/jetstack/cert-manager | grep 'quay.io' | sed 's/=/: "/' | awk -F'"' '{print $2}' | uniq))
         # cert manager csi driver
         images+=($(helm template ./charts/jetstack/cert-manager-csi-driver | grep 'image: ' | awk -F'"' '{print $2}'))
+        # cloud native pg + cluster + pgAdmin4
+        images+=($(helm template ./charts/cnpg/cloudnative-pg | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
+        images+=($(helm template --set 'version.postgresql="17.2"' ./charts/cnpg/cluster | grep 'image' | grep -v PullPolicy | awk '{print $2}' | sed 's/alpine:/docker.io\/alpine:/' | sed 's/"17.2"/17.2/'))
+        images+=("docker.io/dpage/pgadmin4:8.14.0")
+        # metrics server
+        images+=($(helm template ./charts/metrics-server/metrics-server | grep 'image: ' | awk '{print $2}' | uniq))
+        # grafana operator + grafana
+        images+=($(helm template ./charts/grafana-operator/grafana-operator | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
+        images+=("docker.io/grafana/grafana:11.5.0")
+        # prometheus operator + prometheus + alertmanager
+        images+=($(helm template --set grafana.enabled=false --set alertmanager.enabled=false --set prometheus.enabled=false ./charts/prometheus-community/kube-prometheus-stack | grep 'image: ' | tr -d '"' | awk '{print $2}' | uniq))
+        images+=("quay.io/prometheus-operator/prometheus-config-reloader:v0.79.2")
+        images+=("quay.io/prometheus/prometheus:v3.1.0")
+        images+=("quay.io/prometheus/alertmanager:v0.28.0")
         for image in "${images[@]}"; do
           remote_image="${image}"
-          local_image=$(echo "${remote_image}" | awk -F'@' '{print $1}' | sed 's/quay.io/localhost:{{.REGISTRY_PORT}}/' | sed 's/docker.io/localhost:{{.REGISTRY_PORT}}/' | sed 's/registry.k8s.io/localhost:{{.REGISTRY_PORT}}/')
+          local_image=$(echo "${remote_image}" | awk -F'@' '{print $1}')
+          local_image=$(echo "${local_image}" | sed 's/quay.io/localhost:{{.REGISTRY_PORT}}/')
+          local_image=$(echo "${local_image}" | sed 's/docker.io/localhost:{{.REGISTRY_PORT}}/')
+          local_image=$(echo "${local_image}" | sed 's/registry.k8s.io/localhost:{{.REGISTRY_PORT}}/')
+          local_image=$(echo "${local_image}" | sed 's/ghcr.io/localhost:{{.REGISTRY_PORT}}/')
           docker pull "${remote_image}"
           docker tag "${remote_image}" "${local_image}"
           docker push "${local_image}"
         done
-        # # metrics server
-        # docker pull "{{.METRICS_SERVER_IMAGE}}"
-        # docker tag "{{.METRICS_SERVER_IMAGE}}" "{{.METRICS_SERVER_IMAGE_LOCAL}}"
-        # docker push "{{.METRICS_SERVER_IMAGE_LOCAL}}"
-        # # grafana operator
-        # docker pull "{{.GRAFANA_OPERATOR_IMAGE}}"
-        # docker tag "{{.GRAFANA_OPERATOR_IMAGE}}" "{{.GRAFANA_OPERATOR_IMAGE_LOCAL}}"
-        # docker push "{{.GRAFANA_OPERATOR_IMAGE_LOCAL}}"
-        # # ingress nginx
-        # docker pull "{{.INGRESS_NGINX_IMAGE}}"
-        # docker tag "{{.INGRESS_NGINX_IMAGE}}" "{{.INGRESS_NGINX_IMAGE_LOCAL}}"
-        # docker push "{{.INGRESS_NGINX_IMAGE_LOCAL}}"
-        # # ingress nginx kube webhook certgen
-        # docker pull "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE}}"
-        # docker tag "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE}}" "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL}}"
-        # docker push "{{.INGRESS_NGINX_KUBE_WEBHOOK_CERTGEN_IMAGE_LOCAL}}"
-        # # ingress nginx opentelemetry
-        # docker pull "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE}}"
-        # docker tag "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE}}" "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL}}"
-        # docker push "{{.INGRESS_NGINX_OPENTELEMETRY_IMAGE_LOCAL}}"
-        # # grafana
-        # docker pull "{{.GRAFANA_IMAGE}}"
-        # docker tag "{{.GRAFANA_IMAGE}}" "{{.GRAFANA_IMAGE_LOCAL}}"
-        # docker push "{{.GRAFANA_IMAGE_LOCAL}}"
-        # # kiwigrid k8s sidecar
-        # docker pull "{{.KIWIGRID_K8S_SIDECAR_IMAGE}}"
-        # docker tag "{{.KIWIGRID_K8S_SIDECAR_IMAGE}}" "{{.KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL}}"
-        # docker push "{{.KIWIGRID_K8S_SIDECAR_IMAGE_LOCAL}}"
-        # # kube state metrics
-        # docker pull "{{.KUBE_STATE_METRICS_IMAGE}}"
-        # docker tag "{{.KUBE_STATE_METRICS_IMAGE}}" "{{.KUBE_STATE_METRICS_IMAGE_LOCAL}}"
-        # docker push "{{.KUBE_STATE_METRICS_IMAGE_LOCAL}}"
-        # # prometheus config reloader
-        # docker pull "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE}}"
-        # docker tag "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE}}" "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL}}"
-        # docker push "{{.PROMETHEUS_CONFIG_RELOADER_IMAGE_LOCAL}}"
-        # # prometheus operator
-        # docker pull "{{.PROMETHEUS_OPERATOR_IMAGE}}"
-        # docker tag "{{.PROMETHEUS_OPERATOR_IMAGE}}" "{{.PROMETHEUS_OPERATOR_IMAGE_LOCAL}}"
-        # docker push "{{.PROMETHEUS_OPERATOR_IMAGE_LOCAL}}"
-        # # prometheus alertmanager
-        # docker pull "{{.PROMETHEUS_ALERTMANAGER_IMAGE}}"
-        # docker tag "{{.PROMETHEUS_ALERTMANAGER_IMAGE}}" "{{.PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL}}"
-        # docker push "{{.PROMETHEUS_ALERTMANAGER_IMAGE_LOCAL}}"
-        # # prometheus node exporter
-        # docker pull "{{.PROMETHEUS_NODE_EXPORTER_IMAGE}}"
-        # docker tag "{{.PROMETHEUS_NODE_EXPORTER_IMAGE}}" "{{.PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL}}"
-        # docker push "{{.PROMETHEUS_NODE_EXPORTER_IMAGE_LOCAL}}"
-        # # prometheus
-        # docker pull "{{.PROMETHEUS_IMAGE}}"
-        # docker tag "{{.PROMETHEUS_IMAGE}}" "{{.PROMETHEUS_IMAGE_LOCAL}}"
-        # docker push "{{.PROMETHEUS_IMAGE_LOCAL}}"
-        # # prometheus push gateway
-        # docker pull "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE}}"
-        # docker tag "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE}}" "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL}}"
-        # docker push "{{.PROMETHEUS_PUSH_GATEWAY_IMAGE_LOCAL}}"
-        # # thanos
-        # docker pull "{{.THANOS_IMAGE}}"
-        # docker tag "{{.THANOS_IMAGE}}" "{{.THANOS_IMAGE_LOCAL}}"
-        # docker push "{{.THANOS_IMAGE_LOCAL}}"
 
   kind:start:
     desc: Starts kind cluster
@@ -285,6 +211,43 @@ tasks:
   #   --private-key-file=$HOME/.ssh/flux \
   #   --path=fluxcd/clusters/local \
   #   --registry localhost:5001/fluxcd
+
+  pgadmin:install:
+    desc: Install pgAdmin4 to access core/postgres database
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        # fix network policy
+        cat <<EOF | kubectl apply -f -
+        kind: NetworkPolicy
+        apiVersion: networking.k8s.io/v1
+        metadata:
+          name: pgadmin-allow-any
+          namespace: core
+        spec:
+          podSelector:
+            matchLabels:
+              app: postgres-pgadmin4
+          policyTypes:
+            - Ingress
+            - Egress
+          ingress:
+            - {}
+          egress:
+            - {}
+        EOF
+        # install pgadmin4 to access postgres database in core namespace
+        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: localhost:5001\/dpage/' | sed 's/:latest/:8.14.0/' | \
+        kubectl apply -f -
+
+  pgadmin:uninstall:
+    desc: Uninstall pgAdmin4 to access core/postgres database
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        kubectl delete netpol pgadmin-allow-any -n core
+        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: localhost:5001\/dpage/' | sed 's/:latest/:8.14.0/' | \
+        kubectl delete -f -
 
   start:
     desc: Starts local registry and kind cluster with images populated

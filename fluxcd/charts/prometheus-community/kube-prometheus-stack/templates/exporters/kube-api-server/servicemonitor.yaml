@@ -3,7 +3,11 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "kube-prometheus-stack.fullname" . }}-apiserver
+  {{- if .Values.prometheus.prometheusSpec.ignoreNamespaceSelectors }}
+  namespace: default
+  {{- else }}
   namespace: {{ template "kube-prometheus-stack.namespace" . }}
+  {{- end }}
   labels:
     app: {{ template "kube-prometheus-stack.name" . }}-apiserver
   {{- with .Values.kubeApiServer.serviceMonitor.additionalLabels }}
@@ -35,6 +39,10 @@ spec:
       serverName: {{ .Values.kubeApiServer.tlsConfig.serverName }}
       insecureSkipVerify: {{ .Values.kubeApiServer.tlsConfig.insecureSkipVerify }}
   jobLabel: {{ .Values.kubeApiServer.serviceMonitor.jobLabel }}
+  {{- with .Values.kubeApiServer.serviceMonitor.targetLabels }}
+  targetLabels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   namespaceSelector:
     matchNames:
     - default

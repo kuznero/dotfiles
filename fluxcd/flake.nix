@@ -29,6 +29,7 @@
           go-task
           kind
           kubectl
+          kubectl-cnpg
           kubernetes-helm
           shellcheck
           sops

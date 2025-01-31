@@ -7,7 +7,7 @@ spec:
   dependsOn:
     - name: monitoring-namespace
     - name: prometheus-operator
-    - name: alert-manager
+    - name: alertmanager
     - name: ingress-controller
   interval: 10m0s
   timeout: 5m0s
@@ -34,8 +34,8 @@ spec:
           name: prometheus
           namespace: monitoring
         spec:
-          image: ${REGISTRY}prometheus/prometheus:v2.47.2
-          version: v2.47.2
+          image: ${REGISTRY}prometheus/prometheus:v3.1.0
+          version: v3.1.0
       target:
         kind: Prometheus
         name: prometheus

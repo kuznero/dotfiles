@@ -1,0 +1,43 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: core-namespace
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  timeout: 5m0s
+  path: ./fluxcd/catalog/core/namespace
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster
+  patches:
+    - patch: |-
+        apiVersion: v1
+        kind: LimitRange
+        metadata:
+          name: cpu-limit-range
+          namespace: core
+        spec:
+          limits: []
+      target:
+        kind: LimitRange
+        name: cpu-limit-range
+        namespace: core
+    - patch: |-
+        apiVersion: v1
+        kind: LimitRange
+        metadata:
+          name: mem-limit-range
+          namespace: core
+        spec:
+          limits: []
+      target:
+        kind: LimitRange
+        name: mem-limit-range
+        namespace: core

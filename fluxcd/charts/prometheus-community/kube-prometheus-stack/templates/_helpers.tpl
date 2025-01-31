@@ -24,9 +24,14 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{- end -}}
 {{- end -}}
 
-{{/* Fullname suffixed with operator */}}
+{{/* Fullname suffixed with -operator */}}
+{{/* Adding 9 to 26 truncation of kube-prometheus-stack.fullname */}}
 {{- define "kube-prometheus-stack.operator.fullname" -}}
+{{- if .Values.prometheusOperator.fullnameOverride -}}
+{{- .Values.prometheusOperator.fullnameOverride | trunc 35 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-operator" (include "kube-prometheus-stack.fullname" .) -}}
+{{- end }}
 {{- end }}
 
 {{/* Prometheus custom resource instance name */}}
@@ -52,16 +57,20 @@ The longest name that gets created adds and extra 37 characters, so truncation s
 {{- end }}
 {{- end }}
 
-{{/* Fullname suffixed with thanos-ruler */}}
-{{- define "kube-prometheus-stack.thanosRuler.fullname" -}}
-{{- printf "%s-thanos-ruler" (include "kube-prometheus-stack.fullname" .) -}}
+{{/* ThanosRuler custom resource instance name */}}
+{{/* Subtracting 1 from 26 truncation of kube-prometheus-stack.fullname */}}
+{{- define "kube-prometheus-stack.thanosRuler.crname" -}}
+{{- if .Values.cleanPrometheusOperatorObjectNames }}
+{{- include "kube-prometheus-stack.fullname" . }}
+{{- else }}
+{{- print (include "kube-prometheus-stack.fullname" . | trunc 25 | trimSuffix "-") "-thanos-ruler" -}}
+{{- end }}
 {{- end }}
 
 {{/* Shortened name suffixed with thanos-ruler */}}
 {{- define "kube-prometheus-stack.thanosRuler.name" -}}
 {{- default (printf "%s-thanos-ruler" (include "kube-prometheus-stack.name" .)) .Values.thanosRuler.name -}}
 {{- end }}
-
 
 {{/* Create chart name and version as used by the chart label. */}}
 {{- define "kube-prometheus-stack.chartref" -}}
@@ -91,6 +100,15 @@ heritage: {{ $.Release.Service | quote }}
 {{- end -}}
 {{- end -}}
 
+{{/* Create the name of kube-prometheus-stack service account to use */}}
+{{- define "kube-prometheus-stack.operator.admissionWebhooks.serviceAccountName" -}}
+{{- if .Values.prometheusOperator.serviceAccount.create -}}
+    {{ default (printf "%s-webhook" (include "kube-prometheus-stack.operator.fullname" .)) .Values.prometheusOperator.admissionWebhooks.deployment.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.prometheusOperator.admissionWebhooks.deployment.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
 {{/* Create the name of prometheus service account to use */}}
 {{- define "kube-prometheus-stack.prometheus.serviceAccountName" -}}
 {{- if .Values.prometheus.serviceAccount.create -}}
@@ -107,6 +125,7 @@ heritage: {{ $.Release.Service | quote }}
 {{- else -}}
     {{ default "default" .Values.alertmanager.serviceAccount.name }}
 {{- end -}}
+
 {{- end -}}
 
 {{/* Create the name of thanosRuler service account to use */}}
@@ -137,6 +156,17 @@ Use the grafana namespace override for multi-namespace deployments in combined c
     {{- .Values.grafana.namespaceOverride -}}
   {{- else -}}
     {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Allow kube-state-metrics job name to be overridden
+*/}}
+{{- define "kube-prometheus-stack-kube-state-metrics.name" -}}
+  {{- if index .Values "kube-state-metrics" "nameOverride" -}}
+    {{- index .Values "kube-state-metrics" "nameOverride" -}}
+  {{- else -}}
+    {{- print "kube-state-metrics" -}}
   {{- end -}}
 {{- end -}}
 
@@ -277,3 +307,27 @@ global:
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{- define "kube-prometheus-stack.operator.admission-webhook.dnsNames" }}
+{{- $fullname := include "kube-prometheus-stack.operator.fullname" . }}
+{{- $namespace := include "kube-prometheus-stack.namespace" . }}
+{{- $fullname }}
+{{ $fullname }}.{{ $namespace }}.svc
+{{- if .Values.prometheusOperator.admissionWebhooks.deployment.enabled }}
+{{ $fullname }}-webhook
+{{ $fullname }}-webhook.{{ $namespace }}.svc
+{{- end }}
+{{- end }}
+
+{{/* To help configure the kubelet servicemonitor for http or https. */}}
+{{- define "kube-prometheus-stack.kubelet.scheme" }}
+{{- if .Values.kubelet.serviceMonitor.https }}https{{ else }}http{{ end }}
+{{- end }}
+{{- define "kube-prometheus-stack.kubelet.authConfig" }}
+{{- if .Values.kubelet.serviceMonitor.https }}
+tlsConfig:
+  caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  insecureSkipVerify: {{ .Values.kubelet.serviceMonitor.insecureSkipVerify }}
+bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+{{- end }}
+{{- end }}

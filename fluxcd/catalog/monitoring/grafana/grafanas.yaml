@@ -37,7 +37,7 @@ spec:
         spec:
           containers:
             - name: grafana
-              image: ${REGISTRY}grafana/grafana:10.1.5
+              image: ${REGISTRY}grafana/grafana:11.5.0
               env:
                 - name: GF_USERS_DEFAULT_THEME
                   value: light
