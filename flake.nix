@@ -5,7 +5,7 @@
 
     nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-24.11"; };
 
-    nixpkgs-unstable = { url = "github:NixOS/nixpkgs?ref=master"; };
+    nixpkgs-unstable = { url = "github:nixos/nixpkgs/nixos-unstable"; };
 
     # ref: https://github.com/NixOS/nixos-hardware/tree/master
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
@@ -142,7 +142,6 @@
               # features
               ./hosts/docker.nix
               ./hosts/gnupg.nix
-              ./hosts/ollama.nix
             ];
           };
 
@@ -314,19 +313,10 @@
               ./home-manager/programs/bcompare.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
-              (import ./home-manager/programs/ghostty.nix {
-                inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                system = system;
-                theme = "catppuccin-mocha";
-                fontFamily = "SpaceMono Nerd Font";
-                fontSize = "11";
-              })
               ./home-manager/programs/git.nix
-              ./home-manager/programs/jetbrains.nix
+              # ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/obsidian.nix
-              ./home-manager/programs/ollama.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix

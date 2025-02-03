@@ -508,7 +508,7 @@
       noice.enable = true;
       notify = {
         enable = true;
-        timeout = 2000; # default: 5000
+        settings.timeout = 2000; # default: 5000
       };
       spectre.enable = true;
       telescope = {
