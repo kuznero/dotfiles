@@ -18,16 +18,6 @@ let
     tmk = "tmux kill-server";
   };
 in {
-  home.file = {
-    ".config/startship.toml".source = ./dotfiles/.config/starship.toml;
-  };
-
-  programs.starship = {
-    enable = true;
-    enableZshIntegration = true;
-    package = pkgs.starship;
-  };
-
   programs.zsh = {
     inherit shellAliases;
     enable = true;
@@ -39,6 +29,13 @@ in {
       ignoreDups = false;
       ignoreSpace = true;
       expireDuplicatesFirst = true;
+    };
+
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "fzf" "git" "git-extras" "man" "systemd" "tmux" ];
+      # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+      theme = "af-magic";
     };
 
     initExtraBeforeCompInit = ''
