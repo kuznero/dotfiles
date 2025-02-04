@@ -15,8 +15,6 @@ spec:
     createNamespace: true
   interval: 5m0s
   values:
-    image:
-      repository: ${REGISTRY}metrics-server/metrics-server
     replicas: 2
     podDisruptionBudget:
       enabled: true

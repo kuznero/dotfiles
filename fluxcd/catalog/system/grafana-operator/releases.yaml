@@ -16,8 +16,6 @@ spec:
   interval: 5m0s
   values:
     fullnameOverride: grafana-operator
-    image:
-      repository: ${REGISTRY}grafana/grafana-operator
     namespaceScope: false
     leaderElect: false
     watchNamespaces: ""

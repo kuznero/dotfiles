@@ -29,14 +29,12 @@ spec:
         patch:
           image:
             digest: ""
-            registry: ${REGISTRY//\//}
       podAnnotations:
         prometheus.io/port: "10254"
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
       image:
         digest: ""
-        registry: ${REGISTRY//\//}
       electionID: ingress-controller-leader-nginx
       ingressClass: nginx
       ingressClassResource:

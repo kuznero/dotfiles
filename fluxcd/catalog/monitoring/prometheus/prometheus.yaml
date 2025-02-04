@@ -15,7 +15,7 @@ spec:
       - namespace: monitoring
         name: alertmanager-operated
         port: web
-  image: ${REGISTRY}prometheus/prometheus:v3.1.0
+  image: quay.io/prometheus/prometheus:v3.1.0
   listenLocal: false
   logFormat: logfmt
   logLevel: info

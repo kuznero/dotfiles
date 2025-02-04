@@ -24,14 +24,7 @@ spec:
       admissionWebhooks:
         certManager:
           enabled: true
-        patch:
-          image:
-            registry: ${REGISTRY%/}
-      image:
-        registry: ${REGISTRY%/}
       prometheusConfigReloader:
-        image:
-          registry: ${REGISTRY%/}
         resources:
           requests:
             cpu: "0"
@@ -40,7 +33,6 @@ spec:
             cpu: "0"
             memory: "0"
       thanosImage:
-        registry: ${REGISTRY%/}
         repository: thanos/thanos
     prometheus:
       enabled: false
@@ -49,14 +41,11 @@ spec:
       # podLabels:
       #   app.kubernetes.io/name: node-exporter
       image:
-        registry: ${REGISTRY%/}
         repository: prometheus/node-exporter
       nodeSelector:
         kubernetes.io/os: linux
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
-      image:
-        registry: ${REGISTRY%/}
     kubeControllerManager:
       serviceMonitor:
         insecureSkipVerify: true

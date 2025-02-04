@@ -4,94 +4,73 @@ vars:
 
   REGISTRY_IMAGE: "registry:2"
   REGISTRY_NAME: playground
-  REGISTRY_PORT: 5001
+  REGISTRY_PORT: 5000
 
-  KIND_CLUSTER_NODE_IMAGE: "kindest/node:v1.31.0@sha256:53df588e04085fd41ae12de0c3fe4c72f7013bba32a20e7325357a1ac94ba865"
+  REMOTE_REGISTRIES: "docker-io=https://registry-1.docker.io quay-io=https://quay.io registry-k8s-io=https://registry.k8s.io ghcr-io=https://ghcr.io"
+
   KIND_CLUSTER_NAME: playground
   KIND_CLUSTER_CONFIG: "{{.TASKFILE_DIR}}/config.yaml"
 
 tasks:
 
+  # ref: https://distribution.github.io/distribution/about/configuration/
+  #
+
   registry:start:
-    desc: Starts container registry
+    desc: Starts a number of container registries in mirroring mode
     silent: true
     dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
         #!/usr/bin/env bash
-        docker run \
-          -d --restart=always \
-          -p "127.0.0.1:{{.REGISTRY_PORT}}:5000" \
-          --network bridge \
-          --name "{{.REGISTRY_NAME}}" \
-          --volume "{{.REGISTRY_NAME}}-data:/var/lib/registry" \
-          "{{.REGISTRY_IMAGE}}"
-    status:
-      - |
-        #!/usr/bin/env bash
-        if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' "{{.REGISTRY_NAME}}" 2>/dev/null || true)" != 'true' ]; then
-          exit 1
-        fi
+        docker network create kind || true
+        regs=($(echo "{{.REMOTE_REGISTRIES}}" | tr ' ' '\n'))
+        port={{.REGISTRY_PORT}}
+        for reg in "${regs[@]}"; do
+          reg_name="{{.REGISTRY_NAME}}-$(echo $reg | awk -F'=' '{print $1}')"
+          reg_url=$(echo "${reg}" | awk -F'=' '{print $2}')
+          vol_name="${reg_name}-data"
+          docker run -d --restart=always --network kind \
+            --name "${reg_name}" \
+            -p "127.0.0.1:${port}:5000" \
+            --volume "{{.TASKFILE_DIR}}/certs/ca-zscaler.crt:/etc/ssl/certs/ca-zscaler.crt:ro" \
+            --volume "${vol_name}:/var/lib/registry" \
+            --env "REGISTRY_PROXY_REMOTEURL=${reg_url}" \
+            --env "REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry" \
+            --env "REGISTRY_STORAGE_DELETE_ENABLED=true" \
+            --env "REGISTRY_VALIDATION_DISABLED=true" \
+            "{{.REGISTRY_IMAGE}}" || true
+          port=$((port+1))
+        done
 
   registry:stop:
     desc: Stops container registry
     silent: true
     dir: "{{.TASKFILE_DIR}}"
     cmds:
-      - docker rm -f "{{.REGISTRY_NAME}}"
-    status:
       - |
         #!/usr/bin/env bash
-        if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' "{{.REGISTRY_NAME}}" 2>/dev/null || true)" == 'true' ]; then
-          exit 1
-        fi
+        regs=($(echo "{{.REMOTE_REGISTRIES}}" | tr ' ' '\n'))
+        port={{.REGISTRY_PORT}}
+        for reg in "${regs[@]}"; do
+          reg_name="{{.REGISTRY_NAME}}-$(echo $reg | awk -F'=' '{print $1}')"
+          if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' "${reg_name}" 2>/dev/null || true)" == 'true' ]; then
+            docker rm -f "${reg_name}"
+          fi
+        done
 
-  images:pull:
-    desc: Pulls all required container images
+  registry:flush:
+    desc: Flushes container registry
     silent: true
-    deps: ["registry:start"]
     dir: "{{.TASKFILE_DIR}}"
     cmds:
       - |
-        set -e
-        docker pull "{{.REGISTRY_IMAGE}}"
-        docker pull "{{.KIND_CLUSTER_NODE_IMAGE}}"
-        # cilium
-        images=($(helm template charts/cilium/cilium -f charts/cilium/cilium/values.yaml | grep 'image: ' | awk '{print $NF}' | tr -d '"' | uniq | tr '\n' ' '))
-        # fluxcd
-        images+=($(cat clusters/local/flux-system/gotk-components.yaml | grep 'image: ' | awk '{print $NF}' | sed 's/localhost:5001/docker.io/' | uniq | tr '\n' ' '))
-        # secrets store csi driver
-        images+=($(helm template ./charts/secrets-store-csi-driver/secrets-store-csi-driver | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
-        # ingress nginx
-        images+=($(helm template ./charts/ingress-nginx/ingress-nginx | grep 'image: ' | awk '{print $2}' | uniq))
-        # cert manager
-        images+=($(helm template ./charts/jetstack/cert-manager | grep 'quay.io' | sed 's/=/: "/' | awk -F'"' '{print $2}' | uniq))
-        # cert manager csi driver
-        images+=($(helm template ./charts/jetstack/cert-manager-csi-driver | grep 'image: ' | awk -F'"' '{print $2}'))
-        # cloud native pg + cluster + pgAdmin4
-        images+=($(helm template ./charts/cnpg/cloudnative-pg | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
-        images+=($(helm template --set 'version.postgresql="17.2"' ./charts/cnpg/cluster | grep 'image' | grep -v PullPolicy | awk '{print $2}' | sed 's/alpine:/docker.io\/alpine:/' | sed 's/"17.2"/17.2/'))
-        images+=("docker.io/dpage/pgadmin4:8.14.0")
-        # metrics server
-        images+=($(helm template ./charts/metrics-server/metrics-server | grep 'image: ' | awk '{print $2}' | uniq))
-        # grafana operator + grafana
-        images+=($(helm template ./charts/grafana-operator/grafana-operator | grep 'image: ' | awk -F'"' '{print $2}' | uniq))
-        images+=("docker.io/grafana/grafana:11.5.0")
-        # prometheus operator + prometheus + alertmanager
-        images+=($(helm template --set grafana.enabled=false --set alertmanager.enabled=false --set prometheus.enabled=false ./charts/prometheus-community/kube-prometheus-stack | grep 'image: ' | tr -d '"' | awk '{print $2}' | uniq))
-        images+=("quay.io/prometheus-operator/prometheus-config-reloader:v0.79.2")
-        images+=("quay.io/prometheus/prometheus:v3.1.0")
-        images+=("quay.io/prometheus/alertmanager:v0.28.0")
-        for image in "${images[@]}"; do
-          remote_image="${image}"
-          local_image=$(echo "${remote_image}" | awk -F'@' '{print $1}')
-          local_image=$(echo "${local_image}" | sed 's/quay.io/localhost:{{.REGISTRY_PORT}}/')
-          local_image=$(echo "${local_image}" | sed 's/docker.io/localhost:{{.REGISTRY_PORT}}/')
-          local_image=$(echo "${local_image}" | sed 's/registry.k8s.io/localhost:{{.REGISTRY_PORT}}/')
-          local_image=$(echo "${local_image}" | sed 's/ghcr.io/localhost:{{.REGISTRY_PORT}}/')
-          docker pull "${remote_image}"
-          docker tag "${remote_image}" "${local_image}"
-          docker push "${local_image}"
+        #!/usr/bin/env bash
+        regs=($(echo "{{.REMOTE_REGISTRIES}}" | tr ' ' '\n'))
+        port={{.REGISTRY_PORT}}
+        for reg in "${regs[@]}"; do
+          vol_name="{{.REGISTRY_NAME}}-$(echo $reg | awk -F'=' '{print $1}')-data"
+          docker volume rm -f "${vol_name}" || true
         done
 
   kind:start:
@@ -106,36 +85,9 @@ tasks:
         set -e
 
         # starts up kind cluster
-        kind create cluster --name "{{.KIND_CLUSTER_NAME}}" --image "{{.KIND_CLUSTER_NODE_IMAGE}}" --config "{{.KIND_CLUSTER_CONFIG}}"
+        kind create cluster --name "{{.KIND_CLUSTER_NAME}}" --config "{{.KIND_CLUSTER_CONFIG}}"
 
         # ref: https://kind.sigs.k8s.io/docs/user/local-registry/
-
-        # configured local container registry
-        REGISTRY_DIR="/etc/containerd/certs.d/localhost:{{.REGISTRY_PORT}}"
-        for node in $(kind get nodes --name "{{.KIND_CLUSTER_NAME}}"); do
-          docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
-          cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
-        [host."http://{{.REGISTRY_NAME}}:5000"]
-        EOF
-        done
-
-        # configures network between kind cluster and container registry
-        if [ "$(docker inspect -f='{{`{{json .NetworkSettings.Networks.kind}}`}}' "{{.REGISTRY_NAME}}")" = 'null' ]; then
-          docker network connect "kind" "{{.REGISTRY_NAME}}"
-        fi
-
-        # document local registry
-        cat <<EOF | kubectl apply -f -
-        apiVersion: v1
-        kind: ConfigMap
-        metadata:
-          name: local-registry-hosting
-          namespace: kube-public
-        data:
-          localRegistryHosting.v1: |
-            host: "localhost:{{.REGISTRY_PORT}}"
-            help: "https://kind.sigs.k8s.io/docs/user/local-registry/"
-        EOF
 
         # install cilium CNI
         helm template charts/cilium/cilium \
@@ -143,7 +95,6 @@ tasks:
           --set envoy.image.digest="" \
           --set envoy.image.useDigest=false \
           --set ipam.mode=kubernetes | \
-        sed 's/quay.io/localhost:{{.REGISTRY_PORT}}/' | \
         kubectl --context "kind-{{.KIND_CLUSTER_NAME}}" apply -f -
 
         # wait before cilium is fully up and running
@@ -210,7 +161,6 @@ tasks:
   #   --ssh-hostkey-algos=rsa-sha2-512,rsa-sha2-256 \
   #   --private-key-file=$HOME/.ssh/flux \
   #   --path=fluxcd/clusters/local \
-  #   --registry localhost:5001/fluxcd
 
   pgadmin:install:
     desc: Install pgAdmin4 to access core/postgres database
@@ -237,7 +187,7 @@ tasks:
             - {}
         EOF
         # install pgadmin4 to access postgres database in core namespace
-        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: localhost:5001\/dpage/' | sed 's/:latest/:8.14.0/' | \
+        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: docker.io\/dpage/' | sed 's/:latest/:8.14.0/' | \
         kubectl apply -f -
 
   pgadmin:uninstall:
@@ -246,7 +196,7 @@ tasks:
     cmds:
       - |
         kubectl delete netpol pgadmin-allow-any -n core
-        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: localhost:5001\/dpage/' | sed 's/:latest/:8.14.0/' | \
+        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: docker.io\/dpage/' | sed 's/:latest/:8.14.0/' | \
         kubectl delete -f -
 
   start:
@@ -256,6 +206,15 @@ tasks:
       - task: kind:start
       - task: sops:bootstrap
       - task: fluxcd:bootstrap
+      - |
+        #!/usr/bin/env bash
+        sleep 30
+        retries=(1 2 3 4 5)
+        for retry in "${retries[@]}"; do
+          kubectl wait -A --for condition=Ready pods --all || true
+          sleep 5
+        done
+        kubectl wait -A --for condition=Ready pods --all
     dir: "{{.TASKFILE_DIR}}"
 
   stop:

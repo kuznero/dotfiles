@@ -21,10 +21,10 @@ spec:
     enableSecretRotation: true
     linux:
       image:
-        repository: ${REGISTRY}csi-secrets-store/driver
+        repository: registry.k8s.io/csi-secrets-store/driver
       crds:
         image:
-          repository: ${REGISTRY}csi-secrets-store/driver-crds
+          repository: registry.k8s.io/csi-secrets-store/driver-crds
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -37,9 +37,9 @@ spec:
                   - key: node-role.kubernetes.io/control-plane
                     operator: DoesNotExist
       registrarImage:
-        repository: ${REGISTRY}sig-storage/csi-node-driver-registrar
+        repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
       livenessProbeImage:
-        repository: ${REGISTRY}sig-storage/livenessprobe
+        repository: registry.k8s.io/sig-storage/livenessprobe
       tolerations:
         - operator: Exists
       driver:
