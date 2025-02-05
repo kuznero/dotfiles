@@ -15,7 +15,7 @@ command -v nix >/dev/null 2>&1 && {
 }
 
 command -v k9s >/dev/null 2>&1 && {
-  alias k9='k9s --request-timeout=10s --headless --command namespaces'
+  alias kk='k9s --request-timeout=10s --headless --command namespaces'
 }
 
 command -v kubectl >/dev/null 2>&1 && {
