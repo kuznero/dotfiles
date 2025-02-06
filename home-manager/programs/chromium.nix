@@ -11,6 +11,7 @@
       "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
       "fmkadmapgofadopljbjfkapdkoienihi" # React Developer Tools
       "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
+      "clngdbkpkpeebahjckkjfobafhncgmne" # Stylus
     ];
   };
 }
