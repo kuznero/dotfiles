@@ -279,7 +279,7 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                theme = "catppuccin-mocha";
+                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "SpaceMono Nerd Font";
                 fontSize = "16";
               })
