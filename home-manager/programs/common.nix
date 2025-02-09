@@ -18,6 +18,7 @@
       kubectl
       lazydocker
       lazygit
+      mc
       neofetch
       nerd-fonts.envy-code-r
       nerd-fonts.fantasque-sans-mono
