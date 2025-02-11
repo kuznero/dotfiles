@@ -59,7 +59,7 @@
     opts = {
       autoindent = true;
       breakindent = true;
-      cursorline = false;
+      cursorline = true;
       endofline = false;
       expandtab = true;
       hlsearch = true;
@@ -700,14 +700,28 @@
       transparent = {
         enable = true;
         settings = {
-          exclude_groups = [ ];
+          exclude_groups = [ "StatusLine" "CursorLine" ];
           extra_groups = [
-            "BufferLineTabClose"
+            "BufferLineBackground"
             "BufferLineBufferSelected"
             "BufferLineFill"
-            "BufferLineBackground"
-            "BufferLineSeparator"
             "BufferLineIndicatorSelected"
+            "BufferLineSeparator"
+            "BufferLineTabClose"
+            "DiagnosticSignError"
+            "DiagnosticSignHint"
+            "DiagnosticSignInfo"
+            "DiagnosticSignWarn"
+            "DiagnosticSignWarn"
+            "NeoTreeNormal"
+            "NeoTreeNormalNC"
+            "NotifyBackground"
+            "TelescopeBorder"
+            "TroubleCount"
+            "TroubleFsCount"
+            "TroubleNormal"
+            "TroubleNormalNC"
+            "all"
           ];
         };
       };
