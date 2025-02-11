@@ -59,7 +59,7 @@
     opts = {
       autoindent = true;
       breakindent = true;
-      cursorline = true;
+      cursorline = false;
       endofline = false;
       expandtab = true;
       hlsearch = true;
@@ -697,6 +697,20 @@
         };
       };
       todo-comments.enable = true;
+      transparent = {
+        enable = true;
+        settings = {
+          exclude_groups = [ ];
+          extra_groups = [
+            "BufferLineTabClose"
+            "BufferLineBufferSelected"
+            "BufferLineFill"
+            "BufferLineBackground"
+            "BufferLineSeparator"
+            "BufferLineIndicatorSelected"
+          ];
+        };
+      };
       treesitter = {
         enable = true;
         folding = true;
