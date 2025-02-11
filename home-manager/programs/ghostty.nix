@@ -22,6 +22,5 @@ in {
     font-size = ${fontSize}
     shell-integration-features = no-cursor
     cursor-style = block
-    background-opacity = 0.8
   '';
 }
