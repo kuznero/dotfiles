@@ -188,7 +188,7 @@
               ./home-manager/${user}.nix
 
               ./home-manager/programs/bcompare.nix
-              ./home-manager/programs/chromium.nix
+              ./home-manager/programs/browsers.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/filezilla.nix
               ./home-manager/programs/fzf.nix
@@ -233,7 +233,7 @@
 
               ./home-manager/${user}.nix
 
-              ./home-manager/programs/chromium.nix
+              ./home-manager/programs/browsers.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
@@ -339,7 +339,7 @@
 
               ./home-manager/${user}.nix
 
-              ./home-manager/programs/chromium.nix
+              ./home-manager/programs/browsers.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
