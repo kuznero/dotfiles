@@ -279,9 +279,10 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+                # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+                theme = "catppuccin-mocha";
                 fontFamily = "SpaceMono Nerd Font";
-                fontSize = "16";
+                fontSize = "15";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
