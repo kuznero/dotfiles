@@ -1,0 +1,226 @@
+version: "3"
+
+vars:
+
+  REGISTRY_IMAGE: "registry:2"
+  REGISTRY_NAME: playground
+  REGISTRY_PORT: 5000
+
+  REMOTE_REGISTRIES: "docker-io=https://registry-1.docker.io quay-io=https://quay.io registry-k8s-io=https://registry.k8s.io ghcr-io=https://ghcr.io"
+
+  KIND_CLUSTER_NAME: playground
+  KIND_CLUSTER_CONFIG: "{{.TASKFILE_DIR}}/config.yaml"
+
+tasks:
+
+  # ref: https://distribution.github.io/distribution/about/configuration/
+  #
+
+  registry:start:
+    desc: Starts a number of container registries in mirroring mode
+    silent: true
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        #!/usr/bin/env bash
+        docker network create kind || true
+        regs=($(echo "{{.REMOTE_REGISTRIES}}" | tr ' ' '\n'))
+        port={{.REGISTRY_PORT}}
+        for reg in "${regs[@]}"; do
+          reg_name="{{.REGISTRY_NAME}}-$(echo $reg | awk -F'=' '{print $1}')"
+          reg_url=$(echo "${reg}" | awk -F'=' '{print $2}')
+          vol_name="${reg_name}-data"
+          docker run -d --restart=always --network kind \
+            --name "${reg_name}" \
+            -p "127.0.0.1:${port}:5000" \
+            --volume "{{.TASKFILE_DIR}}/certs/ca-zscaler.crt:/etc/ssl/certs/ca-zscaler.crt:ro" \
+            --volume "${vol_name}:/var/lib/registry" \
+            --env "REGISTRY_PROXY_REMOTEURL=${reg_url}" \
+            --env "REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry" \
+            --env "REGISTRY_STORAGE_DELETE_ENABLED=true" \
+            --env "REGISTRY_VALIDATION_DISABLED=true" \
+            "{{.REGISTRY_IMAGE}}" || true
+          port=$((port+1))
+        done
+
+  registry:stop:
+    desc: Stops container registry
+    silent: true
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        #!/usr/bin/env bash
+        regs=($(echo "{{.REMOTE_REGISTRIES}}" | tr ' ' '\n'))
+        port={{.REGISTRY_PORT}}
+        for reg in "${regs[@]}"; do
+          reg_name="{{.REGISTRY_NAME}}-$(echo $reg | awk -F'=' '{print $1}')"
+          if [ "$(docker inspect -f '{{`{{.State.Running}}`}}' "${reg_name}" 2>/dev/null || true)" == 'true' ]; then
+            docker rm -f "${reg_name}"
+          fi
+        done
+
+  registry:flush:
+    desc: Flushes container registry
+    silent: true
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        #!/usr/bin/env bash
+        regs=($(echo "{{.REMOTE_REGISTRIES}}" | tr ' ' '\n'))
+        port={{.REGISTRY_PORT}}
+        for reg in "${regs[@]}"; do
+          vol_name="{{.REGISTRY_NAME}}-$(echo $reg | awk -F'=' '{print $1}')-data"
+          docker volume rm -f "${vol_name}" || true
+        done
+
+  kind:start:
+    desc: Starts kind cluster
+    silent: true
+    deps: ["registry:start"]
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        #!/usr/bin/env bash
+
+        set -e
+
+        # starts up kind cluster
+        kind create cluster --name "{{.KIND_CLUSTER_NAME}}" --config "{{.KIND_CLUSTER_CONFIG}}"
+
+        # ref: https://kind.sigs.k8s.io/docs/user/local-registry/
+
+        # install cilium CNI
+        helm template charts/cilium/cilium \
+          --namespace kube-system \
+          --set envoy.image.digest="" \
+          --set envoy.image.useDigest=false \
+          --set ipam.mode=kubernetes | \
+        kubectl --context "kind-{{.KIND_CLUSTER_NAME}}" apply -f -
+
+        # wait before cilium is fully up and running
+        cilium status --context "kind-{{.KIND_CLUSTER_NAME}}" --wait
+
+        # wait for core-dns and other pods to get up and running
+        kubectl --context "kind-{{.KIND_CLUSTER_NAME}}" wait --for=condition=Ready pods --all-namespaces --all --timeout=300s
+    status:
+      - |
+        #!/usr/bin/env bash
+        STARTED=$(kind get clusters 2>&1 | grep -E '^{{.KIND_CLUSTER_NAME}}$' | wc -l)
+        if [[ "$STARTED" -eq 0 ]]; then
+          exit 1
+        fi
+
+  kind:stop:
+    desc: Stops kind cluster
+    silent: true
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - kind delete cluster --name "{{.KIND_CLUSTER_NAME}}"
+    status:
+      - |
+        #!/usr/bin/env bash
+        STARTED=$(kind get clusters 2>&1 | grep -E '^{{.KIND_CLUSTER_NAME}}$' | wc -l)
+        if [[ "$STARTED" -ne 0 ]]; then
+          exit 1
+        fi
+
+  sops:bootstrap:
+    desc: Bootstrap Age private key (SOPS)
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        mkdir -p ~/.config/sops/age
+        if [ ! -f ~/.config/sops/age/keys.txt ]; then
+          cp clusters/local/age.agekey ~/.config/sops/age/keys.txt
+          chmod 0600 ~/.config/sops/age/keys.txt
+        fi
+        kubectl create namespace flux-system --save-config --dry-run=client -o yaml | kubectl apply -f -
+        cat clusters/local/age.agekey | kubectl create secret generic sops-age -n=flux-system \
+          --from-file=age.agekey=/dev/stdin \
+          --save-config --dry-run=client -o yaml | kubectl apply -f -
+
+  fluxcd:bootstrap:
+    desc: Bootstrap FluxCD control plane
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        flux create secret git flux-system \
+          --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
+          --private-key-file=$HOME/.ssh/flux \
+          --ssh-key-algorithm=rsa
+        kubectl apply -f clusters/local/flux-system/gotk-components.yaml
+        kubectl wait --timeout 5m -A --for condition=Ready pods --all
+        kubectl wait --for=condition=Established crd gitrepositories.source.toolkit.fluxcd.io
+        kubectl wait --for=condition=Established crd kustomizations.kustomize.toolkit.fluxcd.io
+        kubectl apply -f clusters/local/flux-system/gotk-sync.yaml
+
+  # flux bootstrap git \
+  #   --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
+  #   --branch=main \
+  #   --silent \
+  #   --ssh-hostkey-algos=rsa-sha2-512,rsa-sha2-256 \
+  #   --private-key-file=$HOME/.ssh/flux \
+  #   --path=fluxcd/clusters/local \
+
+  pgadmin:install:
+    desc: Install pgAdmin4 to access core/postgres database
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        # fix network policy
+        cat <<EOF | kubectl apply -f -
+        kind: NetworkPolicy
+        apiVersion: networking.k8s.io/v1
+        metadata:
+          name: pgadmin-allow-any
+          namespace: core
+        spec:
+          podSelector:
+            matchLabels:
+              app: postgres-pgadmin4
+          policyTypes:
+            - Ingress
+            - Egress
+          ingress:
+            - {}
+          egress:
+            - {}
+        EOF
+        # install pgadmin4 to access postgres database in core namespace
+        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: docker.io\/dpage/' | sed 's/:latest/:8.14.0/' | \
+        kubectl apply -f -
+
+  pgadmin:uninstall:
+    desc: Uninstall pgAdmin4 to access core/postgres database
+    dir: "{{.TASKFILE_DIR}}"
+    cmds:
+      - |
+        kubectl delete netpol pgadmin-allow-any -n core
+        kubectl cnpg pgadmin4 --dry-run --mode desktop postgres -n core | sed 's/image: dpage/image: docker.io\/dpage/' | sed 's/:latest/:8.14.0/' | \
+        kubectl delete -f -
+
+  start:
+    desc: Starts local registry and kind cluster with images populated
+    silent: true
+    cmds:
+      - task: kind:start
+      - task: sops:bootstrap
+      - task: fluxcd:bootstrap
+      - |
+        #!/usr/bin/env bash
+        sleep 30
+        retries=(1 2 3 4 5)
+        for retry in "${retries[@]}"; do
+          kubectl wait -A --for condition=Ready pods --all || true
+          sleep 5
+        done
+        kubectl wait -A --for condition=Ready pods --all
+    dir: "{{.TASKFILE_DIR}}"
+
+  stop:
+    desc: Stops local registry and kind cluster
+    silent: true
+    cmds:
+      - task: kind:stop
+      - task: registry:stop
+    dir: "{{.TASKFILE_DIR}}"

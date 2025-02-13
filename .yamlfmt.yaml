@@ -1,0 +1,7 @@
+# ref: https://github.com/google/yamlfmt
+#
+
+formatter:
+  type: basic
+  retain_line_breaks_single: true
+  eof_newline: true

@@ -1,0 +1,27 @@
+# ref: https://kubernetes.io/docs/concepts/policy/limit-range/
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: cpu-limit-range
+  namespace: system
+spec:
+  limits:
+    - default:
+        cpu: 200m
+      defaultRequest:
+        cpu: 10m
+      type: Container
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+  namespace: system
+spec:
+  limits:
+    - default:
+        memory: 256Mi
+      defaultRequest:
+        memory: 16Mi
+      type: Container

@@ -1,0 +1,62 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: monitoring-namespace
+    - name: ingress-controller
+  interval: 10m0s
+  timeout: 5m0s
+  path: ./fluxcd/catalog/monitoring/grafana
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: grafana-deployment
+      namespace: monitoring
+  patches:
+    - patch: |-
+        apiVersion: grafana.integreatly.org/v1beta1
+        kind: Grafana
+        metadata:
+          name: grafana
+          namespace: monitoring
+          labels:
+            dashboards: grafana
+        spec:
+          config:
+            server:
+              root_url: http://localhost:7080/monitoring/grafana
+            auth.anonymous:
+              enabled: true
+          ingress:
+            metadata:
+              annotations:
+                nginx.ingress.kubernetes.io/rewrite-target: /$2
+            spec:
+              ingressClassName: nginx
+              rules:
+                - host: localhost
+                  http:
+                    paths:
+                      - backend:
+                          service:
+                            name: grafana-service
+                            port:
+                              number: 3000
+                        path: /monitoring/grafana(/|$)(.*)
+                        pathType: ImplementationSpecific
+      target:
+        kind: Grafana
+        name: grafana
+        namespace: monitoring

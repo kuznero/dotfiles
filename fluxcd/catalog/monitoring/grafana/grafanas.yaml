@@ -1,0 +1,57 @@
+# ref: https://grafana-operator.github.io/grafana-operator/docs
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    dashboards: grafana
+spec:
+
+  version: "11.5.0"
+
+  client:
+    preferIngress: false
+
+  config: # map[string]any
+    # ref: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/
+    log:
+      level: info
+      mode: console
+    auth:
+      disable_login_form: "false"
+    security:
+      # admin_user: root
+      # admin_password: secret
+      disable_gravatar: "false"
+    auth.anonymous:
+      enabled: "true"
+    analytics:
+      enabled: "false"
+      reporting_enabled: "false"
+      check_for_updates: "false"
+      # server:
+      #   root_url: http://localhost:7080/monitoring/grafana
+
+  deployment:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: grafana
+              image: docker.io/grafana/grafana:11.5.0
+              env:
+                - name: GF_USERS_DEFAULT_THEME
+                  value: light
+              resources:
+                limits:
+                  cpu: "0"
+                  memory: "0"
+                requests:
+                  cpu: "0"
+                  memory: "0"
+              securityContext:
+                allowPrivilegeEscalation: true
+                readOnlyRootFilesystem: false
+              readinessProbe:
+                failureThreshold: 3

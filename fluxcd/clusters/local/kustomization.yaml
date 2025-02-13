@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # flux extensions
+  - flux-system/secrets.yaml
+  # namespaces
+  - system/namespace.yaml
+  - monitoring/namespace.yaml
+  - core/namespace.yaml
+  # addons
+  - system/secrets-store-csi-driver.yaml
+  - system/ingress-controller.yaml
+  - system/cert-manager.yaml
+  - system/cluster-issuers.yaml
+  - system/cnpg.yaml
+  - system/metrics-server.yaml
+  - system/grafana-operator.yaml
+  - system/prometheus-operator.yaml
+  # monitoring
+  - monitoring/alertmanager.yaml
+  - monitoring/prometheus.yaml
+  - monitoring/grafana.yaml
+  - monitoring/grafana-datasources.yaml
+  - monitoring/grafana-dashboards.yaml
+  # core
+  - core/database.yaml

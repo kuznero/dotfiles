@@ -1,0 +1,9 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ImageCatalog
+metadata:
+  name: postgresql
+  namespace: core
+spec:
+  images:
+    - major: 17
+      image: ghcr.io/cloudnative-pg/postgresql:17.2

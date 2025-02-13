@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metrics-server
+  namespace: system
+spec:
+  chart:
+    spec:
+      chart: ./fluxcd/charts/metrics-server/metrics-server
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+  install:
+    createNamespace: true
+  interval: 5m0s
+  values:
+    replicas: 2
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+    defaultArgs:
+      - --cert-dir=/tmp
+      - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+      - --kubelet-insecure-tls
+      - --kubelet-use-node-status-port
+    resources:
+      limits:
+        cpu: "0"
+        memory: "0"
+      requests:
+        cpu: "0"
+        memory: "0"
+    livenessProbe:
+      httpGet:
+        path: /livez
+        port: https
+        scheme: HTTPS
+      periodSeconds: 10
+      failureThreshold: 6
+    readinessProbe:
+      httpGet:
+        path: /readyz
+        port: https
+        scheme: HTTPS
+      initialDelaySeconds: 40
+      periodSeconds: 10
+      failureThreshold: 6
