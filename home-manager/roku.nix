@@ -1,6 +1,11 @@
 { config, lib, pkgs, system, user, ... }:
 
 {
+  # ref: https://nix.catppuccin.com/search/rolling/?scope=home-manager%20modules
+  catppuccin.enable = true;
+  catppuccin.flavor = "mocha";
+  catppuccin.gtk.enable = true;
+
   home.username = user;
   home.homeDirectory = lib.mkForce
     (if builtins.match ".*-darwin" system != null then
