@@ -1,5 +1,5 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ veracrypt ];
+  home.packages = with pkgs; [ ];
 }

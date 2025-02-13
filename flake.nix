@@ -54,6 +54,8 @@
                 system.stateVersion = "24.11";
               }
 
+              catppuccin.nixosModules.catppuccin
+
               # ref: https://github.com/NixOS/nixos-hardware/blob/master/flake.nix
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
 
@@ -70,33 +72,6 @@
               ./hosts/gnome.nix
               ./hosts/logind.nix
               ./hosts/media.nix
-              ./hosts/ollama.nix
-
-              # packages
-              ./pkgs/1password.nix
-            ];
-          };
-
-        devos = # sudo nixos-rebuild switch --flake .#devos --impure
-          let system = "aarch64-linux";
-          in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user nixos-wsl; };
-            modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "24.11";
-              }
-
-              # basic configuration & users
-              ./hosts/devos/configuration.nix
-              ./users/${user}.nix
-
-              # features
-              ./hosts/docker.nix
-              ./hosts/flatpak.nix
-              ./hosts/fonts.nix
-              ./hosts/gnome.nix
-              ./hosts/logind.nix
               ./hosts/ollama.nix
 
               # packages
@@ -136,6 +111,8 @@
                 system.stateVersion = "24.11";
               }
 
+              catppuccin.nixosModules.catppuccin
+
               # basic configuration & users
               ./hosts/wsl/configuration.nix
 
@@ -156,6 +133,8 @@
                 nixpkgs.config.allowUnfree = true;
                 system.stateVersion = "24.11";
               }
+
+              catppuccin.nixosModules.catppuccin
 
               # basic configuration & users
               ./hosts/miku/configuration.nix
@@ -184,6 +163,8 @@
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
+
+              catppuccin.homeManagerModules.catppuccin
 
               ./home-manager/${user}.nix
 
@@ -218,46 +199,6 @@
             ];
           };
 
-        devos = # home-manager switch --flake .#devos
-          let
-            system = "aarch64-linux";
-            pkgs-stable = import inputs.nixpkgs {
-              system = system;
-              config.allowUnfree = true;
-            };
-          in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user pkgs-stable; };
-            pkgs = nixpkgs-unstable.legacyPackages.${system};
-            modules = [
-              { nixpkgs.config.allowUnfree = true; }
-
-              ./home-manager/${user}.nix
-
-              ./home-manager/programs/browsers.nix
-              ./home-manager/programs/common.nix
-              ./home-manager/programs/fzf.nix
-              ./home-manager/programs/git.nix
-              ./home-manager/programs/messengers.nix
-              ./home-manager/programs/nixvim.nix
-              ./home-manager/programs/obsidian.nix
-              ./home-manager/programs/ollama.nix
-              ./home-manager/programs/spotify.nix
-              ./home-manager/programs/telegram.nix
-              ./home-manager/programs/tmux.nix
-              ./home-manager/programs/transmission.nix
-              ./home-manager/programs/vscode.nix
-              ./home-manager/programs/zoxide.nix
-              ./home-manager/programs/zsh.nix
-              (import ./home-manager/programs/wezterm.nix {
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "SpaceMono Nerd Font";
-                fontWeight = "ExtraLight";
-                fontSize = 12.0;
-                lineHeight = 1.0;
-              })
-            ];
-          };
-
         mac = # home-manager switch --flake .#mac
           let
             system = "aarch64-darwin";
@@ -270,6 +211,8 @@
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
+
+              catppuccin.homeManagerModules.catppuccin
 
               ./home-manager/${user}.nix
 
@@ -309,6 +252,8 @@
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
+              catppuccin.homeManagerModules.catppuccin
+
               ./home-manager/${user}.nix
 
               ./home-manager/programs/bcompare.nix
@@ -337,6 +282,8 @@
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
+
+              catppuccin.homeManagerModules.catppuccin
 
               ./home-manager/${user}.nix
 
