@@ -145,7 +145,7 @@ tasks:
     cmds:
       - |
         flux create secret git flux-system \
-          --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
+          --url=ssh://git@github.com:kuznero/dotfiles.git \
           --private-key-file=$HOME/.ssh/flux \
           --ssh-key-algorithm=rsa
         kubectl apply -f clusters/local/flux-system/gotk-components.yaml
@@ -155,7 +155,7 @@ tasks:
         kubectl apply -f clusters/local/flux-system/gotk-sync.yaml
 
   # flux bootstrap git \
-  #   --url=ssh://git@gitlab.com:roku-labs/dotfiles.git \
+  #   --url=ssh://git@github.com:kuznero/dotfiles.git \
   #   --branch=main \
   #   --silent \
   #   --ssh-hostkey-algos=rsa-sha2-512,rsa-sha2-256 \

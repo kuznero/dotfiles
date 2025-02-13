@@ -32,7 +32,7 @@ warning-policy = "ignore"
 [output.html]
 additional-css = ["./theme/catppuccin.css", "./theme/catppuccin-admonish.css", "./theme/mdbook-admonish.css", "./theme/pagetoc.css"]
 additional-js = ["./theme/mermaid.min.js", "./theme/mermaid-init.js", "./theme/pagetoc.js"]
-git-repository-url = "https://gitlab.com/roku-labs/dotfiles"
+git-repository-url = "https://github.com/kuznero/dotfiles"
 git-repository-icon = "fa-git-square"
 no-section-label = true
 default-theme = "latte"

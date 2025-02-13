@@ -96,7 +96,6 @@
               # features
               ./hosts/docker.nix
               ./hosts/logind.nix
-              ./hosts/gitlab-runner.nix
               ./hosts/github-runner.nix
             ];
           };

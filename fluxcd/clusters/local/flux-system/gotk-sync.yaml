@@ -9,7 +9,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@gitlab.com:roku-labs/dotfiles.git
+  url: ssh://git@github.com:kuznero/dotfiles.git
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
