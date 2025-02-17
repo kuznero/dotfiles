@@ -230,7 +230,6 @@
               ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/ollama.nix
-              ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
