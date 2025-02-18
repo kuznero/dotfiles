@@ -13,6 +13,22 @@
     package = pkgs.neovim-unwrapped;
     extraPackages = with pkgs; [ gotools gofumpt delve ];
 
+    extraPlugins = with pkgs; [
+      vimPlugins.ayu-vim
+      vimPlugins.catppuccin-nvim
+      vimPlugins.dracula-nvim
+      vimPlugins.everforest
+      vimPlugins.gruvbox-nvim
+      vimPlugins.kanagawa-nvim
+      vimPlugins.melange-nvim
+      vimPlugins.monokai-pro-nvim
+      vimPlugins.monokai-pro-nvim
+      vimPlugins.nightfox-nvim
+      vimPlugins.onedark-nvim
+      vimPlugins.oxocarbon-nvim
+      vimPlugins.vscode-nvim
+    ];
+
     autoCmd = [{
       event = "FileType";
       pattern = [ "markdown" ];
