@@ -12,7 +12,6 @@ let
     lzg = "lazygit";
     n = "nvim";
     v = "nvim";
-    tm = "tmux";
     tma = "tmux attach -t ";
     tml = "tmux ls";
     tmk = "tmux kill-server";
