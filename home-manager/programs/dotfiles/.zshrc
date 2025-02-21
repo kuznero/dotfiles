@@ -69,7 +69,7 @@ function y() {
   rm -f -- "$tmp"
 }
 
-function tt() {
+function tm() {
   if [ -n "$TMUX" ]; then
     echo "Script is already running inside a tmux session"
   else
