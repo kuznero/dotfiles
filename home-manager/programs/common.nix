@@ -44,6 +44,7 @@
       ripgrep
       rsync
       tree
+      tt
       vim
       wl-clipboard
       xclip
