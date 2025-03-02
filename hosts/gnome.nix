@@ -24,7 +24,7 @@
       user.databases = [{
         settings = with lib.gvariant; {
           "org/gnome/desktop/privacy".remember-recent-files = false;
-          "org/gnome/desktop/interface".color-scheme = "prefer-dark";
+          "org/gnome/desktop/interface".color-scheme = "prefer-light";
           # tweak >> appearance >> cursor
           "org/gnome/desktop/interface".cursor-theme = "phinger-cursors-dark";
           # tweak >> appearance >> shell
