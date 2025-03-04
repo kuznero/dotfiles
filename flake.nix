@@ -222,7 +222,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                theme = "catppuccin-mocha";
+                theme = "catppuccin-latte";
                 fontFamily = "SpaceMono Nerd Font";
                 fontSize = "15";
               })
