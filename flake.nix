@@ -177,7 +177,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "SpaceMono Nerd Font";
+                fontFamily = "Hurmit Nerd Font";
                 fontSize = "12";
               })
               ./home-manager/programs/git.nix
@@ -223,8 +223,8 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-latte";
-                fontFamily = "SpaceMono Nerd Font";
-                fontSize = "15";
+                fontFamily = "Hurmit Nerd Font";
+                fontSize = "16";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
@@ -294,7 +294,7 @@
               ./home-manager/programs/zsh.nix
               (import ./home-manager/programs/wezterm.nix {
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
-                fontFamily = "SpaceMono Nerd Font";
+                fontFamily = "Hurmit Nerd Font";
                 fontWeight = "Regular";
                 fontSize = 10.0;
                 lineHeight = 1.0;

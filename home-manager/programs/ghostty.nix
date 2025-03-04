@@ -1,5 +1,5 @@
 { inputs, pkgs, system, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
-, fontFamily ? "SpaceMono Nerd Font", fontSize ? "12", ... }:
+, fontFamily ? "Hurmit Nerd Font", fontSize ? "12", ... }:
 
 let
   configFile = if builtins.match ".*-darwin" system != null then
