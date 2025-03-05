@@ -79,6 +79,7 @@
       cursorline = true;
       endofline = false;
       expandtab = true;
+      foldenable = false;
       hlsearch = true;
       ignorecase = true;
       incsearch = true;
