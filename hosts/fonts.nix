@@ -21,7 +21,7 @@
       poppins
       source-sans-pro
       source-serif-pro
-      (nerdfonts.override { fonts = [ "Hurmit" "SpaceMono" ]; })
+      (nerdfonts.override { fonts = [ "SpaceMono" ]; })
     ];
   };
 }
