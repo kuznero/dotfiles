@@ -177,7 +177,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Hurmit Nerd Font";
+                fontFamily = "0xProto Nerd Font";
                 fontSize = "12";
               })
               ./home-manager/programs/git.nix
