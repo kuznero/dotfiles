@@ -71,7 +71,7 @@
 
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
-    colorscheme = "dayfox";
+    colorscheme = "catppuccin-latte";
 
     opts = {
       autoindent = true;
