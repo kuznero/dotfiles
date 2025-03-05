@@ -223,7 +223,7 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-latte";
-                fontFamily = "Hurmit Nerd Font";
+                fontFamily = "0xProto Nerd Font";
                 fontSize = "16";
               })
               ./home-manager/programs/git.nix
