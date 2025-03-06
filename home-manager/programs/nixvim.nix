@@ -71,7 +71,7 @@
 
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
-    colorscheme = "catppuccin-latte";
+    colorscheme = "catppuccin-mocha";
 
     opts = {
       autoindent = true;
