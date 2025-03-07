@@ -3,7 +3,7 @@
 {
   # ref: https://nix.catppuccin.com/search/rolling/?scope=home-manager%20modules
   catppuccin.enable = true;
-  catppuccin.flavor = "latte";
+  catppuccin.flavor = "mocha";
 
   home.username = user;
   home.homeDirectory = lib.mkForce
