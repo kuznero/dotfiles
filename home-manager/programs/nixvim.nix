@@ -190,7 +190,7 @@
             enable = true;
             autostart = true;
             # ref: https://github.com/nix-community/nixvim/discussions/1442
-            package = null;
+            package = pkgs.gopls;
             extraOptions.settings.gopls = {
               buildFlags = [ "-tags=unit,integration" ];
               gofumpt = true;
