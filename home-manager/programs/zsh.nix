@@ -32,7 +32,7 @@ in {
 
     oh-my-zsh = {
       enable = true;
-      plugins = [ "fzf" "git" "git-extras" "man" "systemd" "tmux" ];
+      plugins = [ "fzf" "git" "git-extras" "kube-ps1" "man" "systemd" "tmux" ];
       # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
       theme = "af-magic";
     };
