@@ -35,8 +35,12 @@
       # Rename window with prefix + r
       bind r command-prompt -I "#W" "rename-window '%%'"
 
-      # Reload tmux config by pressing prefix + R
+      # Reload tmux config by pressing prefix + 
       bind R source-file ~/.config/tmux/tmux.conf \; display "Configuration reloaded"
+
+      # Toggles to sync panes
+      bind e setw synchronize-panes on \; display "Sync is ON"
+      bind E setw synchronize-panes off \; display "Sync is OFF"
 
       # Apply Tc
       set -ga terminal-overrides ",xterm-256color:RGB:smcup@:rmcup@"
