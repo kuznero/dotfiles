@@ -106,6 +106,4 @@ function tm() {
   fi
 }
 
-if [ -n "$NIX_FLAKE_NAME" ]; then
-  export RPROMPT="%F{green}($NIX_FLAKE_NAME)%f";
-fi
+export RPROMPT='$(kube_ps1 | tr -d "()" | sed "s/|/ | /") :: %F{green}$NIX_FLAKE_NAME%f'
