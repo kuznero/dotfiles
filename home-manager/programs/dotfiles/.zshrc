@@ -25,6 +25,12 @@ command -v kubectl >/dev/null 2>&1 && {
   # complete -F __start_kubectl k
 }
 
+command -v switcher >/dev/null 2>&1 && {
+  source <(switcher init zsh)
+  alias s=switch
+  source <(switch completion zsh)
+}
+
 command -v helm >/dev/null 2>&1 && {
   alias h='helm'
   # shellcheck disable=SC1090

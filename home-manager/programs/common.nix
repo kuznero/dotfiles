@@ -16,6 +16,7 @@
       go-task
       k9s
       kubectl
+      kubeswitch
       lazydocker
       lazygit
       mc
