@@ -223,8 +223,8 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
-                fontFamily = "Mononoki Nerd Font";
-                fontSize = "16";
+                fontFamily = "Iosevka Nerd Font";
+                fontSize = "20";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
