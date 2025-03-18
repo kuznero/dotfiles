@@ -177,8 +177,8 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                fontFamily = "Mononoki Nerd Font";
-                fontSize = "14";
+                fontFamily = "Iosevka Nerd Font";
+                fontSize = "16";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/input-leap.nix

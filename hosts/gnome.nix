@@ -77,7 +77,7 @@
           "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" =
             {
               binding = "<Super>b";
-              command = "firefox";
+              command = "app.zen_browser.zen";
               name = "Open Browser";
             };
 
