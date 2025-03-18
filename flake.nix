@@ -178,7 +178,7 @@
                 system = system;
                 theme = "catppuccin-mocha";
                 fontFamily = "Iosevka Nerd Font";
-                fontSize = "16";
+                fontSize = "14";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/input-leap.nix
