@@ -17,6 +17,7 @@
       k9s
       kubectl
       kubeswitch
+      lan-mouse
       lazydocker
       lazygit
       mc
