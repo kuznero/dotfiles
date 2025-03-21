@@ -225,7 +225,7 @@
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
                 fontFamily = "0xProto Nerd Font";
-                fontSize = "20";
+                fontSize = "18";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
