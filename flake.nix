@@ -117,6 +117,7 @@
 
               # features
               ./hosts/docker.nix
+              ./hosts/flatpak.nix
               ./hosts/gnupg.nix
             ];
           };
