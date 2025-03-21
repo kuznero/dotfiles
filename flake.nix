@@ -178,7 +178,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                fontFamily = "Iosevka Nerd Font";
+                fontFamily = "0xProto Nerd Font";
                 fontSize = "14";
               })
               ./home-manager/programs/git.nix
@@ -224,7 +224,7 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
-                fontFamily = "Iosevka Nerd Font";
+                fontFamily = "0xProto Nerd Font";
                 fontSize = "20";
               })
               ./home-manager/programs/git.nix
