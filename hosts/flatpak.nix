@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  # flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  # flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo --user
   # flatpak update
   # flatpak search xmind
   # flatpak install flathub net.xmind.XMind
