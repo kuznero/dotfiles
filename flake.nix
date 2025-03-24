@@ -178,8 +178,8 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                fontFamily = "0xProto Nerd Font";
-                fontSize = "13";
+                fontFamily = "SpaceMono Nerd Font";
+                fontSize = "14";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/input-leap.nix
@@ -224,7 +224,7 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
-                fontFamily = "0xProto Nerd Font";
+                fontFamily = "SpaceMono Nerd Font";
                 fontSize = "18";
               })
               ./home-manager/programs/git.nix
