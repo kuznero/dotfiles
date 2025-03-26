@@ -225,7 +225,7 @@
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
                 fontFamily = "SpaceMono Nerd Font";
-                fontSize = "18";
+                fontSize = "16";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
