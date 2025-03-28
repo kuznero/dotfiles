@@ -67,6 +67,87 @@
         key = "<leader>z";
         action = "<cmd>Twilight<CR>";
       }
+      {
+        mode = "n";
+        key = "<f7>";
+        action = ":DapToggleRepl<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Toggle REPL";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f9>";
+        action = ":DapToggleBreakpoint<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Toggle Breakpoint";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f21>"; # shift-f9
+        action = ":DapClearBreakpoints<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Clear Breakpoints";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f5>";
+        action = ":DapContinue<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Continue";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f11>";
+        action = ":DapStepInto<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Step into";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f23>"; # shift-f11
+        action = ":DapStepOut<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Step Out";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f10>";
+        action = ":DapStepOver<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Step Over";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f5>";
+        action = ":DapNew<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Start";
+        };
+      }
+      {
+        mode = "n";
+        key = "<f17>"; # shift-f5
+        action = ":DapTerminate<cr>";
+        options = {
+          silent = true;
+          desc = "Dap: Terminate";
+        };
+      }
     ];
 
     editorconfig.enable = true;
@@ -156,6 +237,7 @@
         };
       };
       conform-nvim.enable = true;
+      cmp-dap.enable = true;
       dap = {
         enable = true;
         adapters = { };
