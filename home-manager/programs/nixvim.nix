@@ -215,8 +215,12 @@
           moveNext.key = "<C-.>";
         };
       };
-      cmp = {
+      blink-cmp = {
         enable = true;
+        settings = { signature.enabled = true; };
+      };
+      cmp = {
+        enable = false;
         autoEnableSources = true;
         settings = {
           sources = [
@@ -236,8 +240,8 @@
           };
         };
       };
+      cmp-dap.enable = false;
       conform-nvim.enable = true;
-      cmp-dap.enable = true;
       dap = {
         enable = true;
         adapters = { };
