@@ -20,7 +20,10 @@ in {
     theme = ${theme}
     font-family = ${fontFamily}
     font-size = ${fontSize}
+    font-style-bold = false
+    adjust-cell-height = -20%
     shell-integration-features = no-cursor
     cursor-style = block
+    mouse-hide-while-typing = true
   '';
 }
