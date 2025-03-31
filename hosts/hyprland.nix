@@ -34,6 +34,7 @@
     starship
     waybar
     wezterm
+    wlogout
     wlsunset
     wofi
   ];
