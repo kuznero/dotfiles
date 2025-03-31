@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: v5.16.0
-description: Helm chart for the Grafana Operator
-name: grafana-operator
-type: application
-version: v5.16.0

@@ -1,8 +1,0 @@
-creation_rules:
-  - path_regex: .*.yaml
-    encrypted_regex: ^(data|stringData)$
-    age: >-
-      age1sawl9lzslp6l9eugvn025ecznumkgswcl8cj8t5xh76k8dt7gsxqfqs0ky
-stores:
-  yaml:
-    indent: 2

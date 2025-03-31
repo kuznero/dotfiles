@@ -15,6 +15,7 @@
     packages = with pkgs; [
       font-awesome
       iosevka
+      jetbrains-mono
       monaspace
       montserrat
       # nerdfonts
