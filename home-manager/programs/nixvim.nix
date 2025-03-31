@@ -158,6 +158,7 @@
       autoindent = true;
       breakindent = true;
       cursorline = true;
+      colorcolumn = "80,120";
       endofline = false;
       expandtab = true;
       foldenable = false;
@@ -626,6 +627,14 @@
         };
       };
       nix.enable = true;
+      render-markdown = {
+        enable = true;
+        settings = {
+          latex.enabled = false;
+          html.enabled = false;
+        };
+      };
+      smear-cursor.enable = true;
       fzf-lua.enable = true;
       noice.enable = true;
       notify = {
