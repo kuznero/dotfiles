@@ -16,14 +16,6 @@ window.top_bar#waybar {
   border-bottom: solid alpha(@surface1, 0.7) 2;
 }
 
-window.left_bar#waybar {
-  background-color: alpha(@base, 0.7);
-  border-top: solid alpha(@surface1, 0.7) 2;
-  border-right: solid alpha(@surface1, 0.7) 2;
-  border-bottom: solid alpha(@surface1, 0.7) 2;
-  border-radius: 0 5 5 0;
-}
-
 window.bottom_bar .modules-center {
   background-color: alpha(@surface1, 0.7);
   color: @green;
@@ -37,8 +29,8 @@ window.bottom_bar .modules-center {
 window.bottom_bar .modules-left {
   background-color: alpha(@surface1, 0.7);
   border-radius: 0 5 5 0;
-  padding-left: 20;
-  padding-right: 20;
+  padding-left: 5;
+  padding-right: 5;
   margin-top: 5;
   margin-bottom: 5;
 }
@@ -70,11 +62,11 @@ window.bottom_bar .modules-right {
 
 #workspaces {
   margin-left: 10;
+  font-size: 1.6rem;
 }
 
 #workspaces button {
   color: @text;
-  /* font-size: 2em; */
 }
 
 #workspaces button.empty {
@@ -178,6 +170,7 @@ window.top_bar .modules-center {
 
 #idle_inhibitor {
   margin-right: 2;
+  font-size: 1.2rem;
 }
 
 #idle_inhibitor.deactivated {
@@ -186,10 +179,12 @@ window.top_bar .modules-center {
 
 #custom-dunst.off {
   color: @subtext0;
+  font-size: 1.2rem;
 }
 
 #custom-airplane_mode {
   margin-right: 2;
+  font-size: 1.2rem;
 }
 
 #custom-airplane_mode.off {
@@ -198,6 +193,7 @@ window.top_bar .modules-center {
 
 #custom-night_mode {
   margin-right: 2;
+  font-size: 1.2rem;
 }
 
 #custom-night_mode.off {
@@ -206,6 +202,7 @@ window.top_bar .modules-center {
 
 #custom-dunst {
   margin-right: 2;
+  font-size: 1.2rem;
 }
 
 #custom-media.Paused {
@@ -215,6 +212,11 @@ window.top_bar .modules-center {
 #custom-webcam {
   color: @maroon;
   margin-right: 3;
+  font-size: 1.2rem;
+}
+
+#privacy-item {
+  font-size: 1.2rem;
 }
 
 #privacy-item.screenshare {
@@ -230,11 +232,13 @@ window.top_bar .modules-center {
 #custom-recording {
   color: @red;
   margin-right: 4;
+  font-size: 1.2rem;
 }
 
 #custom-geo {
   color: @yellow;
   margin-right: 4;
+  font-size: 1.2rem;
 }
 
 #custom-logout_menu {
@@ -245,22 +249,11 @@ window.top_bar .modules-center {
   padding-right: 5;
   margin-top: 5;
   margin-bottom: 5;
-}
-
-window.left_bar .modules-center {
-  background-color: alpha(@surface1, 0.7);
-  border-radius: 0 5 5 0;
-  margin-right: 5;
-  margin-top: 15;
-  margin-bottom: 15;
-  padding-top: 5;
-  padding-bottom: 5;
+  font-size: 1.2rem;
 }
 
 #taskbar {
-  margin-top: 10;
-  margin-right: 10;
-  margin-left: 10;
+  padding-left: 5;
 }
 
 #taskbar button.active {
@@ -269,9 +262,7 @@ window.left_bar .modules-center {
 }
 
 #tray {
-  margin-bottom: 10;
-  margin-right: 10;
-  margin-left: 10;
+  padding-right: 5;
 }
 
 #tray>.needs-attention {
