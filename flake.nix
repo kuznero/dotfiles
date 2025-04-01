@@ -165,7 +165,7 @@
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
 
               ./home-manager/${user}.nix
 
@@ -214,7 +214,7 @@
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
 
               ./home-manager/${user}.nix
 
@@ -253,7 +253,7 @@
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
 
               ./home-manager/${user}.nix
 
@@ -284,7 +284,7 @@
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
-              catppuccin.homeManagerModules.catppuccin
+              catppuccin.homeModules.catppuccin
 
               ./home-manager/${user}.nix
 
