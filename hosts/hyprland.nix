@@ -14,15 +14,6 @@
     WLR_NO_HARDWARE_CURSORS = "1";
   };
 
-  networking.wireless.iwd = {
-    enable = true;
-    settings = {
-      General = { EnableNetworkConfiguration = true; };
-      Network = { EnableIPv6 = true; };
-      Scan = { DisablePeriodicScan = true; };
-    };
-  };
-
   environment.systemPackages = with pkgs; [
     at-spi2-atk
     avizo
@@ -40,9 +31,8 @@
     hyprpaper
     hyprpicker
     imagemagick
-    impala
-    iwgtk
     kitty
+    networkmanagerapplet
     overskride
     pamixer
     pavucontrol
