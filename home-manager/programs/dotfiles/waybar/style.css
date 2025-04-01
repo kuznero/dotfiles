@@ -205,6 +205,11 @@ window.top_bar .modules-center {
   font-size: 1.2rem;
 }
 
+#custom-media {
+  margin-right: 3;
+  font-size: 1.2rem;
+}
+
 #custom-media.Paused {
   color: @subtext0;
 }

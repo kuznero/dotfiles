@@ -116,12 +116,12 @@
   },
 
   "custom/media": {
-    "format": "{icon}󰎈",
+    "format": "{icon}",
     "restart-interval": 2,
     "return-type": "json",
     "format-icons": {
-      "Playing": "",
-      "Paused": "",
+      "Playing": "  ",
+      "Paused": "  ",
     },
     "max-length": 35,
     "exec": "fish -c fetch_music_player_data",
@@ -264,13 +264,13 @@
   "height": 46, // Waybar height (to be removed for auto height)
   "spacing": 4, // Gaps between modules (4px)
   "modules-left": ["user", "wlr/taskbar"],
-  "modules-center": ["cpu", "memory", "disk", "temperature", "battery", "backlight", "pulseaudio", "systemd-failed-units"],
+  "modules-center": ["cpu", "custom/separator_dot", "memory", "custom/separator_dot", "disk", "custom/separator_dot", "temperature", "custom/separator_dot", "battery", "custom/separator_dot", "backlight", "custom/separator_dot", "pulseaudio", "custom/separator_dot", "systemd-failed-units"],
   "modules-right": ["tray", "keyboard-state", "hyprland/language"],
 
   // Modules Config
   "wlr/taskbar": {
     "format": "{icon}",
-    "icon-size": 16,
+    "icon-size": 24,
     "icon-theme": "Numix-Circle",
     "tooltip-format": "{title}",
     "on-click": "activate",
@@ -278,8 +278,13 @@
     "on-click-middle": "fullscreen",
   },
 
+  "custom/separator_dot": {
+    "format": "•",
+    "tooltip": false,
+  },
+
   "cpu": {
-    "format": "[󰻠 {usage}%]",
+    "format": "󰻠 {usage}%",
     "states": {
       "high": 90,
       "upper-medium": 70,
@@ -290,9 +295,9 @@
     "on-click": "wezterm start btop",
     "on-click-right": "wezterm start btm",
   },
-  
+
   "memory": {
-    "format": "[ {percentage}%]",
+    "format": " {percentage}%",
     "tooltip-format": "Main: ({used} GiB/{total} GiB)({percentage}%), available {avail} GiB\nSwap: ({swapUsed} GiB/{swapTotal} GiB)({swapPercentage}%), available {swapAvail} GiB",
     "states": {
       "high": 90,
@@ -306,7 +311,7 @@
   },
 
   "disk": {
-    "format": "[󰋊 {percentage_used}%]",  
+    "format": "󰋊 {percentage_used}%",
     "tooltip-format": "({used}/{total})({percentage_used}%) in '{path}', available {free}({percentage_free}%)",
     "states": {
       "high": 90,
@@ -323,8 +328,8 @@
     "tooltip": false,
     "thermal-zone": 8,
     "critical-threshold": 80,
-    "format": "[{icon} {temperatureC}󰔄]",
-    "format-critical": "[{icon} {temperatureC}󰔄]",
+    "format": "{icon} {temperatureC}󰔄",
+    "format-critical": "{icon} {temperatureC}󰔄",
     "format-icons": [ "", "", "", "", "" ],
   },
 
@@ -336,16 +341,16 @@
       "lower-medium": 30,
       "low": 10,
     },
-    "format": "[{icon} {capacity}%]",
-    "format-charging": "[󱐋{icon} {capacity}%]",
-    "format-plugged": "[󰚥{icon} {capacity}%]",
+    "format": "{icon} {capacity}%",
+    "format-charging": "󱐋{icon} {capacity}%",
+    "format-plugged": "󰚥{icon} {capacity}%",
     "format-time": "{H} h {M} min",
     "format-icons": [ "󱃍", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹" ],
     "tooltip-format": "{timeTo}",
   },
   
   "backlight": {
-    "format": "[{icon} {percent}%]",
+    "format": "{icon} {percent}%",
     "format-icons": [
       "󰌶",
       "󱩎",
@@ -380,12 +385,12 @@
       "low": 10,
     },
     "tooltip-format": "{desc}",
-    "format": "[{icon} {volume}%{format_source}",  
-    "format-bluetooth": "[󰂱{icon} {volume}%{format_source}",
-    "format-bluetooth-muted": "[󰂱󰝟 {volume}%{format_source}",
-    "format-muted": "[󰝟 {volume}%{format_source}",
-    "format-source": " 󰍬 {volume}%]",
-    "format-source-muted": " 󰍭 {volume}%]",
+    "format": "{icon} {volume}%{format_source}",  
+    "format-bluetooth": "󰂱{icon} {volume}%{format_source}",
+    "format-bluetooth-muted": "󰂱󰝟 {volume}%{format_source}",
+    "format-muted": "󰝟 {volume}%{format_source}",
+    "format-source": " 󰍬 {volume}%",
+    "format-source-muted": " 󰍭 {volume}%",
     "format-icons": {
       "headphone": "󰋋",
       "hands-free": "",
@@ -408,7 +413,7 @@
   },
 
   "systemd-failed-units": {
-    "format": "[✗ {nr_failed}]",
+    "format": "✗ {nr_failed}",
   },
 
   "hyprland/language": {
@@ -419,7 +424,7 @@
   },
 
   "tray":{
-    "icon-size": 16,
+    "icon-size": 24,
     "spacing": 2,
   },
 
