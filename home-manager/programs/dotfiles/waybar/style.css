@@ -104,6 +104,8 @@ window.top_bar .modules-center {
 
 #custom-separator_dot {
   color: @green;
+  margin-left: 10;
+  margin-right: 10;
 }
 
 #clock.time {
