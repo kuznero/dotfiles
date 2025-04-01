@@ -2,13 +2,13 @@
 frame_color = "#cad3f5"
 separator_color= frame
 font = "SpaceMono Nerd Font Regular 12"
-corner_radius = 10
+corner_radius = 5
 offset = 5x5
 origin = top-right
 notification_limit = 8
 gap_size = 7
 frame_width = 2
-width = 300
+width = 400
 height = 100
 
 [urgency_low]
