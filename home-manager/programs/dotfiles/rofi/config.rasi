@@ -1,16 +1,16 @@
 configuration{
-    modi: "drun";
-    icon-theme: "Numix-Circle";
-    font: "JetBrains Mono Regular 13";
-    show-icons: true;
-    terminal: "wezterm";
-    drun-display-format: "{icon} {name}";
-    location: 0;
-    disable-history: false;
-    hide-scrollbar: true;
-    display-drun: "   Apps ";
-    sidebar-mode: true;
-    border-radius: 10;
+  modi: "drun";
+  icon-theme: "Numix-Circle";
+  font: "JetBrains Mono Regular 13";
+  show-icons: true;
+  terminal: "ghostty";
+  drun-display-format: "{icon} {name}";
+  location: 0;
+  disable-history: false;
+  hide-scrollbar: true;
+  display-drun: "   Apps ";
+  sidebar-mode: true;
+  border-radius: 5;
 }
 
 @theme "~/.config/rofi/themes/catppuccin-macchiato.rasi"

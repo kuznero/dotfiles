@@ -9,7 +9,7 @@
     grey: #6e738d;
     teal: #8bd5ca;
 
-    width: 600;
+    width: 800;
     border-radius: 15px;
 }
 
@@ -19,7 +19,7 @@ element-text, element-icon , mode-switcher {
 }
 
 window {
-    height: 360px;
+    height: 460px;
     border: 2px;
     border-color: @teal;
     background-color: @bg-col;

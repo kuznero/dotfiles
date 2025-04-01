@@ -1,4 +1,4 @@
 function clear-op
-    clear
-    commandline -f repaint
+  clear
+  commandline -f repaint
 end
