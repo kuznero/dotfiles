@@ -181,7 +181,7 @@
                 system = system;
                 theme = "catppuccin-mocha";
                 fontFamily = "SpaceMono Nerd Font";
-                fontSize = "14";
+                fontSize = "13";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/input-leap.nix

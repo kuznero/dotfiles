@@ -14,9 +14,4 @@
       "clngdbkpkpeebahjckkjfobafhncgmne" # Stylus
     ];
   };
-
-  programs.firefox = {
-    enable = builtins.match ".*-linux" system != null;
-    package = pkgs.firefox;
-  };
 }
