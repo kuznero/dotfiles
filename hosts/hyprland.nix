@@ -3,6 +3,10 @@
 {
   # ref: https://github.com/XNM1/linux-nixos-hyprland-config-dotfiles/tree/main
 
+  systemd.packages = with pkgs; [ auto-cpufreq ];
+  services.auto-cpufreq.enable = true;
+  services.power-profiles-daemon.enable = false;
+
   programs.hyprland = {
     enable = true;
     package = pkgs.hyprland;
