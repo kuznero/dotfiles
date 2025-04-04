@@ -29,10 +29,15 @@
 
     ghostty = { url = "github:ghostty-org/ghostty"; };
 
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
-    , nixvim, nixos-wsl, catppuccin, ghostty }@inputs:
+    , nixvim, nixos-wsl, catppuccin, ghostty, firefox-addons }@inputs:
     let user = "roku";
     in {
 
