@@ -29,10 +29,10 @@
 
   environment.systemPackages = with pkgs; [ gitFull vim ];
 
-  services.xserver.enable = true;
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+  services.xserver = {
+    enable = true;
+    xkb.layout = "us,ru";
+    xkb.options = "grp:win_space_toggle";
   };
 
   services.openssh.enable = true;

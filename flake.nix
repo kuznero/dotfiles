@@ -68,14 +68,23 @@
               ./hosts/moon/configuration.nix
               ./users/${user}.nix
 
+              # desktop
+              # ./hosts/gnome.nix
+              # ./hosts/hyprland.nix
+              ./hosts/xfce.nix
+              {
+                services.xserver.resolutions = [{
+                  x = 1680;
+                  y = 1050;
+                }];
+              }
+
               # features
               ./hosts/displaylink.nix
               ./hosts/docker.nix
               ./hosts/flatpak.nix
               ./hosts/fonts.nix
               ./hosts/gaming.nix
-              ./hosts/gnome.nix
-              ./hosts/hyprland.nix
               ./hosts/logind.nix
               ./hosts/media.nix
               ./hosts/ollama.nix
