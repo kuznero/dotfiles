@@ -3,51 +3,55 @@
 {
   home.file = {
     ".config/dunst" = {
-      source = ./dotfiles/dunst;
+      source = ./dotfiles/config/dunst;
       recursive = true;
     };
     ".config/fish" = {
-      source = ./dotfiles/fish;
+      source = ./dotfiles/config/fish;
       recursive = true;
     };
     ".config/gtk-3.0" = {
-      source = ./dotfiles/gtk-3.0;
+      source = ./dotfiles/config/gtk-3.0;
       recursive = true;
     };
     ".config/gtk-4.0" = {
-      source = ./dotfiles/gtk-4.0;
+      source = ./dotfiles/config/gtk-4.0;
       recursive = true;
     };
     ".config/hypr" = {
-      source = ./dotfiles/hypr;
+      source = ./dotfiles/config/hypr;
       recursive = true;
     };
     ".config/rofi" = {
-      source = ./dotfiles/rofi;
+      source = ./dotfiles/config/rofi;
       recursive = true;
     };
     ".config/wallpapers" = {
-      source = ./dotfiles/wallpapers;
+      source = ./dotfiles/config/wallpapers;
       recursive = true;
     };
     ".config/waybar" = {
-      source = ./dotfiles/waybar;
+      source = ./dotfiles/config/waybar;
       recursive = true;
     };
     ".config/wlogout" = {
-      source = ./dotfiles/wlogout;
+      source = ./dotfiles/config/wlogout;
       recursive = true;
     };
     ".config/xfce4" = {
-      source = ./dotfiles/xfce4;
+      source = ./dotfiles/config/xfce4;
       recursive = true;
     };
     ".config/xsettingsd" = {
-      source = ./dotfiles/xsettingsd;
+      source = ./dotfiles/config/xsettingsd;
       recursive = true;
     };
     ".config/yazi" = {
-      source = ./dotfiles/yazi;
+      source = ./dotfiles/config/yazi;
+      recursive = true;
+    };
+    ".local/share/xfce4/terminal/colorschemes" = {
+      source = ./dotfiles/local/share/xfce4/terminal/colorschemes;
       recursive = true;
     };
   };
