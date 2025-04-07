@@ -8,7 +8,7 @@ in {
   };
 
   services.open-webui = {
-    enable = true;
+    enable = false;
     package = pkgs-unstable.open-webui;
     host = "0.0.0.0";
     port = 11436;
