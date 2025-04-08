@@ -27,12 +27,20 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  environment.systemPackages = with pkgs; [ gitFull vim ];
+  environment.systemPackages = with pkgs; [ blueman gitFull vim ];
 
-  services.xserver = {
+  hardware.bluetooth = {
     enable = true;
-    xkb.layout = "us,ru";
-    xkb.options = "grp:win_space_toggle";
+    powerOnBoot = true;
+  };
+
+  services = {
+    blueman.enable = true;
+    xserver = {
+      enable = true;
+      xkb.layout = "us,ru";
+      xkb.options = "grp:win_space_toggle";
+    };
   };
 
   services.openssh.enable = true;
