@@ -1,7 +1,8 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   xfconf.settings = {
+
     # command: xfconf-query -c xfce4-keyboard-shortcuts -l -v | xclip -sel clip
     xfce4-keyboard-shortcuts = {
       "commands/custom/Print" = "xfce4-screenshooter";
@@ -9,7 +10,6 @@
       "commands/custom/<Alt>Print" = "xfce4-screenshooter -w";
       "commands/custom/<Primary>Escape" = "xfdesktop --menu";
       "commands/custom/<Primary><Shift>Escape" = "xfce4-taskmanager";
-      # "commands/custom/<Super>t" = "exo-open --launch TerminalEmulator";
       "commands/custom/<Super>t" = "ghostty";
       "commands/custom/<Super>b" = "firefox";
       "commands/custom/<Super>e" = "thunar";
@@ -29,10 +29,30 @@
       "xfwm4/custom/<Super>9" = "workspace_9_key";
       "xfwm4/custom/<Super>0" = "workspace_10_key";
     };
-    # xfce4-session = { "startup/ssh-agent/enabled" = false; };
-    # xfce4-desktop = {
-    #   "backdrop/screen0/monitorLVDS-1/workspace0/last-image" =
-    #     "${pkgs.nixos-artwork.wallpapers.stripes-logo.gnomeFilePath}";
-    # };
+
+    # command: xfconf-query -c xfce4-desktop -l -v | xclip -sel clip
+    xfce4-desktop = {
+      "backdrop/screen0/monitorDP-3-1-8/workspace0/color-style" = 0;
+      "backdrop/screen0/monitorDP-3-1-8/workspace0/image-style" = 5;
+      "backdrop/screen0/monitorDP-3-1-8/workspace0/last-image" =
+        "/home/${config.home.username}/.config/wallpapers/xfce-leaves.svg";
+      "backdrop/screen0/monitoreDP-1/workspace0/color-style" = 0;
+      "backdrop/screen0/monitoreDP-1/workspace0/image-style" = 5;
+      "backdrop/screen0/monitoreDP-1/workspace0/last-image" =
+        "/home/${config.home.username}/.config/wallpapers/xfce-leaves.svg";
+    };
+
+    # command: xfconf-query -c xfce4-power-manager -l -v | xclip -sel clip
+    xfce4-power-manager = {
+      "xfce4-power-manager/brightness-switch" = 0;
+      "xfce4-power-manager/brightness-switch-restore-on-exit" = 1;
+      "xfce4-power-manager/dpms-enabled" = false;
+      "xfce4-power-manager/general-notification" = true;
+      "xfce4-power-manager/lid-action-on-ac" = 0;
+      "xfce4-power-manager/lid-action-on-battery" = 0;
+      "xfce4-power-manager/lock-screen-suspend-hibernate" = true;
+      "xfce4-power-manager/show-tray-icon" = false;
+    };
+
   };
 }
