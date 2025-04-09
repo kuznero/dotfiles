@@ -161,7 +161,8 @@
 
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
-    colorscheme = "catppuccin-mocha";
+    # colorscheme = "catppuccin-mocha";
+    colorscheme = "duskfox";
 
     opts = {
       autoindent = true;

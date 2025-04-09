@@ -9,7 +9,8 @@
       "commands/custom/<Alt>Print" = "xfce4-screenshooter -w";
       "commands/custom/<Primary>Escape" = "xfdesktop --menu";
       "commands/custom/<Primary><Shift>Escape" = "xfce4-taskmanager";
-      "commands/custom/<Super>t" = "exo-open --launch TerminalEmulator";
+      # "commands/custom/<Super>t" = "exo-open --launch TerminalEmulator";
+      "commands/custom/<Super>t" = "ghostty";
       "commands/custom/<Super>b" = "firefox";
       "commands/custom/<Super>e" = "thunar";
       "commands/custom/<Super>p" = "xfce4-display-settings --minimal";
