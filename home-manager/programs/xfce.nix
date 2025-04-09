@@ -51,6 +51,10 @@
       "xfce4-power-manager/lid-action-on-ac" = 0;
       "xfce4-power-manager/lid-action-on-battery" = 0;
       "xfce4-power-manager/lock-screen-suspend-hibernate" = true;
+      "xfce4-power-manager/logind-handle-hibernate-key" = true;
+      "xfce4-power-manager/logind-handle-lid-switch" = true;
+      "xfce4-power-manager/logind-handle-power-key" = true;
+      "xfce4-power-manager/logind-handle-suspend-key" = true;
       "xfce4-power-manager/show-tray-icon" = false;
     };
 
