@@ -38,10 +38,6 @@
       source = ./dotfiles/config/wlogout;
       recursive = true;
     };
-    ".config/xfce4" = {
-      source = ./dotfiles/config/xfce4;
-      recursive = true;
-    };
     ".config/xsettingsd" = {
       source = ./dotfiles/config/xsettingsd;
       recursive = true;
