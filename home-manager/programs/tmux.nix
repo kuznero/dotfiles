@@ -32,15 +32,22 @@
     terminal = "tmux-256color";
 
     extraConfig = ''
-      # Rename window with prefix + r
-      bind r command-prompt -I "#W" "rename-window '%%'"
+      # Rename window
+      bind -n M-r command-prompt -I "#W" "rename-window '%%'"
 
-      # Reload tmux config by pressing prefix + 
-      bind R source-file ~/.config/tmux/tmux.conf \; display "Configuration reloaded"
+      # Reload tmux config
+      bind -n M-R source-file ~/.config/tmux/tmux.conf \; display "Configuration reloaded"
+
+      # Easy navigation
+      bind -n M-Left run-shell "if [ $(tmux display-message -p '#{pane_at_left}') -ne 1 ]; then tmux select-pane -L; else tmux select-window -p; fi"
+      bind -n M-Right run-shell "if [ $(tmux display-message -p '#{pane_at_right}') -ne 1 ]; then tmux select-pane -R; else tmux select-window -n; fi"
+      bind -n M-Down run-shell "if [ $(tmux display-message -p '#{pane_at_bottom}') -ne 1 ]; then tmux select-pane -D; fi"
+      bind -n M-Up run-shell "if [ $(tmux display-message -p '#{pane_at_top}') -ne 1 ]; then tmux select-pane -U; fi"
+      bind -n M-n run-shell "tmux new-window"
 
       # Toggles to sync panes
-      bind e setw synchronize-panes on \; display "Sync is ON"
-      bind E setw synchronize-panes off \; display "Sync is OFF"
+      bind -n M-e setw synchronize-panes on \; display "Sync is ON"
+      bind -n M-E setw synchronize-panes off \; display "Sync is OFF"
 
       # Apply Tc
       set -ga terminal-overrides ",xterm-256color:RGB:smcup@:rmcup@"
