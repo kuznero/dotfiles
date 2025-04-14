@@ -57,6 +57,8 @@
 
       # Set default escape-time
       set-option -sg escape-time 10
+
+      set-option -g status-position top
     '';
   };
 
