@@ -3,9 +3,9 @@
 {
   catppuccin.tmux = {
     enable = true;
-    flavor = "frappe";
+    flavor = "mocha";
     extraConfig = ''
-      set -g @catppuccin_window_status_style "rounded"
+      set -g @catppuccin_window_status_style "none"
       set -g @catppuccin_window_text " #W"
       set -g @catppuccin_window_current_fill "number"
       set -g @catppuccin_window_current_text " #W"
@@ -58,7 +58,7 @@
       # Set default escape-time
       set-option -sg escape-time 10
 
-      set-option -g status-position top
+      set-option -g status-position bottom
     '';
   };
 
