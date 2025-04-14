@@ -702,6 +702,26 @@
         };
         # themes: dropdown, cursor, ivy
         settings = {
+          defaults = {
+            file_ignore_patterns = [
+              ".git/"
+              "node_modules/"
+              "vendor/"
+              ".mypy_cache/"
+              "__pycache__/"
+            ];
+            vimgrep_arguments = [
+              "rg"
+              "--color=never"
+              "--no-heading"
+              "--hidden"
+              "--with-filename"
+              "--line-number"
+              "--column"
+              "--smart-case"
+              "--trim"
+            ];
+          };
           pickers = {
             colorscheme = {
               theme = "ivy";
