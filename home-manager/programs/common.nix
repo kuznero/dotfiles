@@ -14,7 +14,7 @@
       gitFull
       gnupg
       go-task
-      k9s
+      (pkgs.callPackage ./pkgs/k9s { }) # k9s
       kubectl
       kubeswitch
       lan-mouse
