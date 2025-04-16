@@ -44,6 +44,7 @@
       bind -n M-Down run-shell "if [ $(tmux display-message -p '#{pane_at_bottom}') -ne 1 ]; then tmux select-pane -D; fi"
       bind -n M-Up run-shell "if [ $(tmux display-message -p '#{pane_at_top}') -ne 1 ]; then tmux select-pane -U; fi"
       bind -n M-n run-shell "tmux new-window"
+      bind -n M-z run-shell "tmux resize-pane -Z"
 
       # Toggles to sync panes
       bind -n M-e setw synchronize-panes on \; display "Sync is ON"
