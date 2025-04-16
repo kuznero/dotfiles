@@ -12,6 +12,9 @@ let
     lzg = "lazygit";
     n = "nvim";
     v = "nvim";
+    ve = "nvim '+colorscheme everforest'";
+    vd = "nvim '+colorscheme duskfox'";
+    vl = "nvim '+colorscheme dayfox'";
     tma = "tmux attach -t ";
     tml = "tmux ls";
     tmk = "tmux kill-server";
