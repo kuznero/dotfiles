@@ -200,7 +200,6 @@
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
-              ./home-manager/programs/input-leap.nix
               ./home-manager/programs/messengers.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/obsidian.nix
