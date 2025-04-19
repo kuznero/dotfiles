@@ -204,6 +204,7 @@
               ./home-manager/programs/messengers.nix
               ./home-manager/programs/nixvim.nix
               ./home-manager/programs/obsidian.nix
+              ./home-manager/programs/office.nix
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
