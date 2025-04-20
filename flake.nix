@@ -239,8 +239,9 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
-                fontFamily = "SpaceMono Nerd Font";
+                fontFamily = "Mononoki Nerd Font";
                 fontSize = "17";
+                adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/jetbrains.nix
