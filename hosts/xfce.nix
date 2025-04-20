@@ -1,10 +1,16 @@
 { lib, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs;
-    [
-      lightlocker # Session-locker for XFCE workaround
-    ];
+  environment.systemPackages = with pkgs; [
+    evince
+    lightlocker # Session-locker for XFCE workaround
+    xfce.ristretto
+    xfce.thunar
+    xfce.thunar-archive-plugin
+    xfce.thunar-volman
+    xfce.xfce4-icon-theme
+    xfce.xfwm4-themes
+  ];
 
   services.xserver = {
     enable = true;
