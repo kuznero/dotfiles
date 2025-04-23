@@ -13,7 +13,7 @@ let
     n = "nvim";
     v = "nvim";
     ve = "nvim '+colorscheme everforest'";
-    vd = "nvim '+colorscheme duskfox'";
+    vd = "nvim '+colorscheme ayu'";
     vl = "nvim '+colorscheme dayfox'";
     tma = "tmux attach -t ";
     tml = "tmux ls";
