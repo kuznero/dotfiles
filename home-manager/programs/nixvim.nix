@@ -53,6 +53,11 @@
     keymaps = [
       {
         mode = "n";
+        key = "<leader>a";
+        action = "<cmd>AerialToggle<CR>";
+      }
+      {
+        mode = "n";
         key = "<leader>e";
         action = "<cmd>Neotree<CR>";
       }
