@@ -1,5 +1,5 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [ jetbrains-toolbox ];
+  home.packages = with pkgs; [ jetbrains.goland ];
 }
