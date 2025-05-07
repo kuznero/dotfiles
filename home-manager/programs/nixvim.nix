@@ -58,6 +58,11 @@
       }
       {
         mode = "n";
+        key = "<leader>c";
+        action = "<cmd>CodeCompanionActions<CR>";
+      }
+      {
+        mode = "n";
         key = "<leader>e";
         action = "<cmd>Neotree<CR>";
       }
@@ -295,65 +300,65 @@
               };
             };
           };
-          prompt_library = {
-            "Custom Prompt" = {
-              description = "Prompt the LLM from Neovim";
-              opts = {
-                index = 3;
-                is_default = true;
-                is_slash_cmd = false;
-                user_prompt = true;
-              };
-              prompts = [{
-                content = {
-                  __raw = ''
-                    function(context)
-                      return fmt(
-                        [[I want you to act as a senior %s developer. I will ask you specific questions and I want you to return raw code only (no codeblocks and no explanations). If you can't respond with code, respond with nothing]],
-                        context.filetype
-                      )
-                    end
-                  '';
-                };
-                opts = {
-                  tag = "system_tag";
-                  visible = false;
-                };
-                role = { __raw = "system"; };
-              }];
-              strategy = "inline";
-            };
-            "Generate a Commit Message" = {
-              description = "Generate a commit message";
-              opts = {
-                auto_submit = true;
-                index = 10;
-                is_default = true;
-                is_slash_cmd = true;
-                short_name = "commit";
-              };
-              prompts = [{
-                content = {
-                  __raw = ''
-                    function()
-                      return fmt(
-                        [[You are an expert at following the Conventional Commit specification. Given the git diff listed below, please generate a commit message for me:
-
-                        ```diff
-                        %s
-                        ```
-                        ]],
-                        vim.fn.system("git diff --no-ext-diff --staged")
-                      )
-                    end
-                  '';
-                };
-                opts = { contains_code = true; };
-                role = "user";
-              }];
-              strategy = "chat";
-            };
-          };
+          # prompt_library = {
+          #   "Custom Prompt" = {
+          #     description = "Prompt the LLM from Neovim";
+          #     opts = {
+          #       index = 3;
+          #       is_default = true;
+          #       is_slash_cmd = false;
+          #       user_prompt = true;
+          #     };
+          #     prompts = [{
+          #       content = {
+          #         __raw = ''
+          #           function(context)
+          #             return fmt(
+          #               [[I want you to act as a senior %s developer. I will ask you specific questions and I want you to return raw code only (no codeblocks and no explanations). If you can't respond with code, respond with nothing]],
+          #               context.filetype
+          #             )
+          #           end
+          #         '';
+          #       };
+          #       opts = {
+          #         tag = "system_tag";
+          #         visible = false;
+          #       };
+          #       role = { __raw = "system"; };
+          #     }];
+          #     strategy = "inline";
+          #   };
+          #   "Generate a Commit Message" = {
+          #     description = "Generate a commit message";
+          #     opts = {
+          #       auto_submit = true;
+          #       index = 10;
+          #       is_default = true;
+          #       is_slash_cmd = true;
+          #       short_name = "commit";
+          #     };
+          #     prompts = [{
+          #       content = {
+          #         __raw = ''
+          #           function()
+          #             return fmt(
+          #               [[You are an expert at following the Conventional Commit specification. Given the git diff listed below, please generate a commit message for me:
+          #
+          #               ```diff
+          #               %s
+          #               ```
+          #               ]],
+          #               vim.fn.system("git diff --no-ext-diff --staged")
+          #             )
+          #           end
+          #         '';
+          #       };
+          #       opts = { contains_code = true; };
+          #       role = "user";
+          #     }];
+          #     strategy = "chat";
+          #   };
+          # };
           opts = {
             log_level = "TRACE";
             send_code = true;
