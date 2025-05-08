@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, ... }:
+{ inputs, pkgs, ollamaModel ? "qwen2.5-coder:7b", ... }:
 
 # NOTE: after installing nixvim, start it, and run `checkhealth` command to ensure no errors.
 # NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
@@ -278,7 +278,7 @@
                     },
                     schema = {
                       model = {
-                        default = 'qwen2.5-coder:7b',
+                        default = '${ollamaModel}',
                         -- default = "llama3.1:8b-instruct-q8_0",
                       },
                       num_ctx = {
