@@ -40,7 +40,8 @@ in {
       theme = "af-magic";
     };
 
-    initContent = lib.mkOrder 550 ''
+    # ref: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.zsh.initContent
+    initContent = lib.mkOrder 1500 ''
       command -v brew >/dev/null 2>&1 && {
         FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
       }
