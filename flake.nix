@@ -259,7 +259,12 @@
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
-              ./home-manager/programs/nixvim.nix
+              (import ./home-manager/programs/nixvim.nix {
+                inputs = inputs;
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                system = system;
+                ollamaModel = "qwen2.5-coder:1.5b";
+              })
               ./home-manager/programs/obsidian.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/zoxide.nix
