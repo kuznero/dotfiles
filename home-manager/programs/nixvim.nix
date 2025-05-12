@@ -174,7 +174,7 @@
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
     # colorscheme = "catppuccin-mocha";
-    colorscheme = "duskfox";
+    colorscheme = "carbonfox";
 
     opts = {
       autoindent = true;
@@ -265,6 +265,7 @@
           };
         };
       };
+      copilot-vim.enable = true;
       codecompanion = {
         enable = true;
         settings = {
