@@ -24,6 +24,7 @@
     userName = "Roman Kuznetsov";
     userEmail = "${config.home.username}@lix.one";
     extraConfig = {
+      init = { defaultBranch = "main"; };
       core = { autocrlf = "input"; };
       color = { ui = true; };
       diff = { tool = "bc"; };
