@@ -211,7 +211,6 @@
               ./home-manager/${user}.nix
 
               ./home-manager/programs/common.nix
-              ./home-manager/programs/cursor.nix
               ./home-manager/programs/fzf.nix
               (import ./home-manager/programs/ghostty.nix {
                 inputs = inputs;
