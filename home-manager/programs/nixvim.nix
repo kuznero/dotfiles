@@ -369,9 +369,9 @@
             use_default_prompts = true;
           };
           strategies = {
-            agent = { adapter = "ollama"; };
-            chat = { adapter = "ollama"; };
-            inline = { adapter = "ollama"; };
+            agent = { adapter = "copilot"; };
+            chat = { adapter = "copilot"; };
+            inline = { adapter = "copilot"; };
           };
         };
       };
