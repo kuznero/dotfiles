@@ -173,8 +173,8 @@
 
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
-    # colorscheme = "catppuccin-mocha";
-    colorscheme = "carbonfox";
+    colorscheme = "catppuccin-mocha";
+    # colorscheme = "carbonfox";
 
     opts = {
       autoindent = true;
