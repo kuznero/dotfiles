@@ -29,12 +29,21 @@
       vimPlugins.vscode-nvim
     ];
 
-    autoCmd = [{
-      event = "FileType";
-      pattern = [ "markdown" ];
-      command = "setlocal wrap";
-      desc = "Enable wrapping on markdown";
-    }];
+    autoCmd = [
+      {
+        event = "FileType";
+        pattern = [ "markdown" ];
+        command = "setlocal wrap";
+        desc = "Enable wrapping on markdown";
+      }
+      {
+        event = "FileType";
+        pattern = [ "helm" ];
+        command = "LspRestart";
+        desc =
+          "ref: https://github.com/nix-community/nixvim/issues/989#issuecomment-2333728503";
+      }
+    ];
 
     globals = {
       mapleader = "\\";
@@ -424,6 +433,7 @@
       dressing.enable = true;
       gitsigns.enable = true;
       lazygit.enable = true;
+      helm.enable = true;
       lint.enable = true;
       lsp = {
         enable = true;
@@ -470,6 +480,7 @@
               semanticTokens = true;
             };
           };
+          helm_ls.enable = true;
           buf_ls = {
             enable = true;
             autostart = true;
