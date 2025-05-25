@@ -3,7 +3,7 @@
 
   inputs = {
 
-    nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-24.11"; };
+    nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-25.05"; };
 
     nixpkgs-unstable = { url = "github:nixos/nixpkgs/nixos-unstable"; };
 
@@ -56,7 +56,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "24.11";
+                system.stateVersion = "25.05";
               }
 
               catppuccin.nixosModules.catppuccin
@@ -101,7 +101,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "24.11";
+                system.stateVersion = "25.05";
               }
 
               # basic configuration & users
@@ -122,7 +122,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "24.11";
+                system.stateVersion = "25.05";
               }
 
               catppuccin.nixosModules.catppuccin
