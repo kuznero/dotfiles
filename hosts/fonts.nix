@@ -22,7 +22,7 @@
       poppins
       source-sans-pro
       source-serif-pro
-      (nerdfonts.override { fonts = [ "SpaceMono" ]; })
+      nerd-fonts.space-mono
     ];
   };
 }
