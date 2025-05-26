@@ -209,6 +209,7 @@
       termguicolors = true;
       undofile = true;
       updatetime = 50; # Faster completion
+      winbar = "";
       wrap = false;
     };
 
@@ -661,7 +662,6 @@
               __unkeyed-1 = "startify";
               __unkeyed-2 = "neo-tree";
               statusline = [ "dap-repl" ];
-              winbar = [ "aerial" "dap-repl" "neotest-summary" ];
             };
             globalstatus = true;
           };
@@ -726,15 +726,6 @@
               symbols = { alternate_file = ""; };
             }];
             lualine_z = [ "tabs" ];
-          };
-          winbar = {
-            lualine_c = [{ __unkeyed-1 = "navic"; }];
-            lualine_x = [{
-              __unkeyed-1 = "filename";
-              newfile_status = true;
-              path = 3;
-              shorting_target = 150;
-            }];
           };
         };
       };
