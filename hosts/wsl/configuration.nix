@@ -7,6 +7,8 @@
 
   nixpkgs.hostPlatform = system;
 
+  programs.nix-ld.enable = true;
+
   wsl.enable = true;
   wsl.defaultUser = user;
 
