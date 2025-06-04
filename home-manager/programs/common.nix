@@ -38,6 +38,7 @@
       nerd-fonts.ubuntu
       nerd-fonts.ubuntu-mono
       nerd-fonts.ubuntu-sans
+      nodejs_22
       pass
       podman
       podman-compose
