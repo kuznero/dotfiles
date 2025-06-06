@@ -15,6 +15,41 @@
   #   ];
   # };
 
+  programs.brave = {
+    enable = true;
+    commandLineArgs = [ "--no-default-browser-check" "--restore-last-session" ];
+    extensions = [
+      {
+        # 1Password
+        id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";
+      }
+      {
+        # User-Agent Switcher and Manager
+        id = "bhchdcejhohfmigjafbampogmaanbfkg";
+      }
+      {
+        # Obsidian
+        id = "cnjifjpddelmedmihgijeibhnjfabmlf";
+      }
+      {
+        # Dark Reader
+        id = "eimadpbcbfnmbkopoojfekhnkhdbieeh";
+      }
+      {
+        # React Developer Tools
+        id = "fmkadmapgofadopljbjfkapdkoienihi";
+      }
+      {
+        # Picture-in-Picture Extension (by Google)
+        id = "hkgfoiooedgoejojocmhlaklaeopbecg";
+      }
+      {
+        # Stylus
+        id = "clngdbkpkpeebahjckkjfobafhncgmne";
+      }
+    ];
+  };
+
   # ref: https://github.com/zbioe/dotnix/blob/33bb4a80ea69def119e40ee2766c092d52bbc96f/hosts/ln/firefox/settings.nix
   programs.firefox = {
     enable = true;
