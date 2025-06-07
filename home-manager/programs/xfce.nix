@@ -11,7 +11,7 @@
       "commands/custom/<Primary>Escape" = "xfdesktop --menu";
       "commands/custom/<Primary><Shift>Escape" = "xfce4-taskmanager";
       "commands/custom/<Super>t" = "ghostty";
-      "commands/custom/<Super>b" = "firefox";
+      "commands/custom/<Super>b" = "brave";
       "commands/custom/<Super>e" = "thunar";
       "commands/custom/<Super>p" = "xfce4-display-settings --minimal";
       "commands/custom/<Super>r" = "xfce4-appfinder";
