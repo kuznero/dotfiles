@@ -9,6 +9,9 @@
     jwtSecretFile = "/data/onlyoffice-secret.jwt";
   };
 
+  security.acme.defaults.email = "roku@lix.one";
+  security.acme.acceptTerms = true;
+
   # otherwise this leads to nginx
   # open() "/var/lib/onlyoffice/documentserver/App_Data/cache/files/data/conv_check_1138411943_docx/output.docx" failed (13: Permission denied)
   # and mysterious 403 errors
