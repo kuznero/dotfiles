@@ -112,6 +112,7 @@
               ./hosts/docker.nix
               ./hosts/logind.nix
               ./hosts/github-runner.nix
+              ./hosts/onlyoffice-server.nix
             ];
           };
 
