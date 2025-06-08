@@ -11,8 +11,11 @@
 
   boot.kernel.sysctl."net.ipv4.ip_forward" = true;
 
-  networking.hostName = "sun";
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "sun";
+    networkmanager.enable = true;
+    firewall.enable = false;
+  };
 
   time.timeZone = "Europe/Copenhagen";
 
