@@ -14,7 +14,6 @@
   networking = {
     hostName = "sun";
     networkmanager.enable = true;
-    firewall.enable = false;
   };
 
   time.timeZone = "Europe/Copenhagen";

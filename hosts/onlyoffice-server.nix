@@ -6,11 +6,14 @@
     package = pkgs.onlyoffice-documentserver;
     port = 8111;
     hostname = "onlyoffice.lix.one";
+    # NOTE: generate with `openssl rand -hex 32`
     jwtSecretFile = "/data/onlyoffice-secret.jwt";
   };
 
   security.acme.defaults.email = "roku@lix.one";
   security.acme.acceptTerms = true;
+
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   # otherwise this leads to nginx
   # open() "/var/lib/onlyoffice/documentserver/App_Data/cache/files/data/conv_check_1138411943_docx/output.docx" failed (13: Permission denied)
