@@ -7,6 +7,7 @@
     port = 8111;
     hostname = "onlyoffice.lix.one";
     # NOTE: generate with `openssl rand -hex 32`
+    # NOTE: when JWT is re-generated, make sure to `sudo systemctl restart onlyoffice-documentserver`
     jwtSecretFile = "/data/onlyoffice-secret.jwt";
   };
 
