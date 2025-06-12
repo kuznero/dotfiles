@@ -52,21 +52,8 @@ PowerShell:
 wsl -l -v
 ```
 
-NixOS is not yet packaged as a official WSL distribution or on the Microsoft
-store. Download the latest release of `nixos-wsl.tar.gz` from the [NixOS-WSL
-Github page](https://github.com/nix-community/NixOS-WSL/releases).
-
-Import the WSL container using PowerShell:
-
-```powershell
-wsl --import NixOS .\NixOS\ .\Downloads\nixos-wsl.tar.gz --version 2
-```
-
-Start it with PowerShell:
-
-```powershell
-wsl -d NixOS
-```
+Following [installation instructions](https://nix-community.github.io/NixOS-WSL/install.html)
+on how to install NixOS on WSL2.
 
 > Make sure to update custom CA certificate according to your company settings.
 
@@ -93,6 +80,9 @@ Then, change `/etc/nixos/configuration.nix` file and ensure it has this line:
     Defaults env_keep += "NIX_SSL_CERT_FILE"
   '';
 ```
+
+> You might also want to change default user name by changing `wsl.defaultUser`
+> in `/etc/nixos/configuration.nix` file.
 
 run `sudo -E NIX_SSL_CERT_FILE=/etc/pki/tls/certs/ca-zscaler.crt nixos-rebuild
 switch` command. It will produce some warnings in the begining, but if the
