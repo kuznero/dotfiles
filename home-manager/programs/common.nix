@@ -12,6 +12,7 @@
       ffmpegthumbnailer
       fish
       flux
+      gcc
       gitFull
       gnupg
       go-task
@@ -39,6 +40,7 @@
       nerd-fonts.ubuntu
       nerd-fonts.ubuntu-mono
       nerd-fonts.ubuntu-sans
+      nodejs_24
       pass
       podman
       podman-compose
@@ -47,6 +49,7 @@
       ripgrep
       rsync
       tree
+      tree-sitter
       tt
       vim
       wl-clipboard
