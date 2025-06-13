@@ -770,7 +770,15 @@
       };
       smear-cursor.enable = true;
       fzf-lua.enable = true;
-      noice.enable = true;
+      noice = {
+        enable = true;
+        settings = {
+          lsp.override = {
+            "vim.lsp.util.convert_input_to_markdown_lines" = true;
+            "vim.lsp.util.stylize_markdown" = true;
+          };
+        };
+      };
       notify = {
         enable = true;
         settings.timeout = 2000; # default: 5000
