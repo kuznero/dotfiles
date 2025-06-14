@@ -69,14 +69,14 @@
               ./users/${user}.nix
 
               # desktop
-              # ./hosts/gnome.nix
-              ./hosts/xfce.nix
-              {
-                services.xserver.resolutions = [{
-                  x = 1680;
-                  y = 1050;
-                }];
-              }
+              ./hosts/gnome.nix
+              # ./hosts/xfce.nix
+              # {
+              #   services.xserver.resolutions = [{
+              #     x = 1680;
+              #     y = 1050;
+              #   }];
+              # }
 
               # features
               ./hosts/displaylink.nix
