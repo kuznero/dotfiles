@@ -224,7 +224,6 @@
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
-              ./home-manager/programs/jetbrains.nix
               (import ./home-manager/programs/nixvim.nix {
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
