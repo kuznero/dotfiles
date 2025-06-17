@@ -2,8 +2,8 @@
 
 {
   home.file = {
-    ".config/k9s/plugins" = {
-      source = ./dotfiles/config/k9s/plugins;
+    ".config/k9s" = {
+      source = ./dotfiles/config/k9s;
       recursive = true;
     };
     ".config/wallpapers" = {
