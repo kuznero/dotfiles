@@ -41,5 +41,22 @@
       gpg.ssh = { program = "op-ssh-sign"; };
       commit = { gpgsign = true; };
     };
+    includes = [{
+      path = "~/.config/git/bc-config";
+      condition = "gitdir:~/Data/Projects/bc/";
+    }];
   };
+
+  # Create the bc-specific config that disables signing
+  home.file.".config/git/bc-config".text = ''
+    [user]
+      email = "xramk@bankingcircle.com"
+      signingkey = ""
+    [gpg]
+      format = ""
+    [gpg "ssh"]
+      program = ""
+    [commit]
+      gpgsign = false
+  '';
 }
