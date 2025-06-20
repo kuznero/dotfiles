@@ -10,6 +10,10 @@ if [[ "$TERM_PROGRAM" = vscode ]]; then
   alias v=code;
 fi
 
+if [ -d "/Applications/1Password.app/Contents/MacOS" ]; then
+  export PATH=$PATH:/Applications/1Password.app/Contents/MacOS
+fi
+
 command -v nix >/dev/null 2>&1 && {
   alias dev='nix develop'
 }
