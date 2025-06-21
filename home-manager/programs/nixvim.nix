@@ -189,7 +189,7 @@
       autoindent = true;
       breakindent = true;
       cursorline = true;
-      colorcolumn = "80,120";
+      colorcolumn = "80";
       endofline = false;
       expandtab = true;
       foldenable = false;
