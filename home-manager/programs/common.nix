@@ -5,7 +5,7 @@
     [
       bat
       btop
-      claude-code
+      (pkgs.callPackage ./pkgs/claude-code { })
       cmatrix
       eza
       fd
@@ -16,7 +16,7 @@
       gitFull
       gnupg
       go-task
-      (pkgs.callPackage ./pkgs/k9s { }) # k9s
+      (pkgs.callPackage ./pkgs/k9s { })
       kubectl
       kubeswitch
       lan-mouse
