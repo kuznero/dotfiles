@@ -185,6 +185,7 @@
               ./home-manager/programs/obsidian.nix
               ./home-manager/programs/office.nix
               ./home-manager/programs/pcloud.nix
+              ./home-manager/programs/scripts.nix
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
@@ -231,6 +232,7 @@
                 ollamaModel = "qwen2.5-coder:7b";
               })
               ./home-manager/programs/ollama.nix
+              ./home-manager/programs/scripts.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/yabai.nix
               ./home-manager/programs/zoxide.nix
@@ -266,6 +268,7 @@
                 ollamaModel = "qwen2.5-coder:1.5b";
               })
               ./home-manager/programs/obsidian.nix
+              ./home-manager/programs/scripts.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
