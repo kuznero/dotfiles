@@ -5,6 +5,7 @@
     [
       bat
       btop
+      (pkgs.callPackage ./pkgs/ccusage { })
       (pkgs.callPackage ./pkgs/claude-code { })
       cmatrix
       eza
