@@ -1,22 +1,18 @@
-{
-  lib,
-  buildNpmPackage,
-  fetchzip,
-  nodejs_20,
-}:
+{ lib, buildNpmPackage, fetchzip, nodejs_20, }:
 
 buildNpmPackage rec {
   pname = "claude-code";
-  version = "1.0.30";
+  version = "1.0.33";
 
   nodejs = nodejs_20; # required for sandboxed Nix builds on Darwin
 
   src = fetchzip {
-    url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
-    hash = "sha256-DwzSXpDrNV8FhfqrRQ3OK/LjmiXd+VHEW91jnyds2P4=";
+    url =
+      "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
+    hash = "sha256-AH/ZokL0Ktsx18DrpUKgYrZKdBnKo29jntwXUWspH8w=";
   };
 
-  npmDepsHash = "sha256-M6H6A4i4JBqcFTG/ZkmxpINa4lw8sO5+iu2YcBqmvi4=";
+  npmDepsHash = "sha256-oHSePK/QiAHP+2Fn+yUf66TcRGCoZg3mrI4x7S/nbCc=";
 
   postPatch = ''
     cp ${./package-lock.json} package-lock.json
@@ -36,14 +32,12 @@ buildNpmPackage rec {
   passthru.updateScript = ./update.sh;
 
   meta = {
-    description = "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster";
+    description =
+      "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster";
     homepage = "https://github.com/anthropics/claude-code";
     downloadPage = "https://www.npmjs.com/package/@anthropic-ai/claude-code";
     license = lib.licenses.unfree;
-    maintainers = with lib.maintainers; [
-      malo
-      omarjatoi
-    ];
+    maintainers = with lib.maintainers; [ malo omarjatoi ];
     mainProgram = "claude";
   };
 }
