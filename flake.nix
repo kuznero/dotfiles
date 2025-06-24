@@ -220,8 +220,8 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
-                fontFamily = "Mononoki Nerd Font";
-                fontSize = "17";
+                fontFamily = "Lekton Nerd Font";
+                fontSize = "21";
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
