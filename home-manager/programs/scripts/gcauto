@@ -1,2 +1,18 @@
 #!/usr/bin/env bash
-git commit -m "$(claude -p "Look at the staged git changes and create a summarizing git commit title. Only respond with the title and no affirmation.")"
+
+command -v git >/dev/null 2>&1 || {
+	echo "[error] git is not found"
+	exit 1
+}
+
+command -v claude >/dev/null 2>&1 || {
+	echo "[error] claude is not found"
+	exit 1
+}
+
+set -e
+
+PROMPT="Look at the staged git changes and create a conventional commit message (e.g., 'feat: Add new feature', 'fix: Resolve bug', 'refactor: Refactor old code', 'docs: Update documentation'). Only respond with the complete message, including the type and scope if applicable, and no affirmation."
+COMMIT_MSG=$(claude -p "${PROMPT}")
+
+git commit -m "${COMMIT_MSG}"
