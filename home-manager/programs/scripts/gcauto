@@ -10,6 +10,11 @@ command -v claude >/dev/null 2>&1 || {
 	exit 1
 }
 
+[[ -n $(git diff --cached --name-only) ]] || {
+	echo "[error] nothing is staged"
+	exit 1
+}
+
 set -e
 
 PROMPT="Look at the staged git changes and create a conventional commit message (e.g., 'feat: Add new feature', 'fix: Resolve bug', 'refactor: Refactor old code', 'docs: Update documentation'). Only respond with the complete message, including the type and scope if applicable, and no affirmation."
