@@ -70,6 +70,11 @@ command -v task >/dev/null 2>&1 && {
   source <(task --completion zsh)
 }
 
+command -v ccusage >/dev/null 2>&1 && {
+  alias cc-today='ccusage daily --since $(date +%Y%m%d) --until $(date +%Y%m%d)'
+  alias cc-live='ccusage blocks --live'
+}
+
 function y() {
   local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
   yazi "$@" --cwd-file="$tmp"
