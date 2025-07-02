@@ -5,7 +5,7 @@
 
   users.users.${user} = {
     isNormalUser = true;
-    description = "Roman Kuznetsov";
+    description = "RoKu";
     extraGroups = [ "docker" "networkmanager" "wheel" ];
     shell = pkgs.zsh;
   };
