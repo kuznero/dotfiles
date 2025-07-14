@@ -193,6 +193,8 @@
       endofline = false;
       expandtab = true;
       foldenable = false;
+      fileformat = "unix";
+      fileformats = ["unix" "dos"];
       hlsearch = true;
       ignorecase = true;
       incsearch = true;
