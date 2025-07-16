@@ -169,7 +169,7 @@
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
-              ./home-manager/programs/jetbrains.nix
+              # ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/messengers.nix
               (import ./home-manager/programs/nixvim.nix {
                 inputs = inputs;
