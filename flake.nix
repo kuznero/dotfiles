@@ -215,8 +215,8 @@
                 system = system;
                 # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 theme = "catppuccin-mocha";
-                fontFamily = "Monaco";
-                fontSize = "16";
+                fontFamily = "0xProto Nerd Font";
+                fontSize = "18";
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
