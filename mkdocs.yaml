@@ -1,0 +1,92 @@
+# ref: https://squidfunk.github.io/mkdocs-material/reference/
+#
+
+site_name: Roku Labs Dotfiles
+
+theme:
+  name: material
+  palette:
+    primary: blue grey
+  font:
+    text: Atkinson Hyperlegible Next
+    # text: Roboto Condensed
+    code: Kode Mono
+    # code: Space Mono
+  icon:
+    logo: material/library
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
+  features:
+    - content.tabs.link
+    - content.tooltips
+
+extra_css:
+  - assets/css/extra.css
+
+plugins:
+  - drawio_file
+  - search
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - Machine Configurations:
+      - Overview: machines/index.md
+      - DevOS: machines/devos.md
+      - Moon: machines/moon.md
+      - Sun: machines/sun.md
+      - Mac: machines/mac.md
+      - WSL2: machines/wsl.md
+  - Configuration:
+      - System Modules: nix-modules/index.md
+      - Home Manager:
+          - Overview: home-manager/index.md
+          - Programs:
+              - Git: home-manager/programs/git.md
+              - Nixvim: home-manager/programs/nixvim.md
+  - Troubleshooting: troubleshooting.md
+
+validation:
+  omitted_files: warn
+  links:
+    absolute_links: relative_to_docs
+    anchors: warn
+    unrecognized_links: warn
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tilde
+  - tables
+  - toc:
+      permalink: true
