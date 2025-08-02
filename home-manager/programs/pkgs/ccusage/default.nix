@@ -1,16 +1,12 @@
-{
-  lib,
-  buildNpmPackage,
-  fetchurl,
-}:
+{ lib, buildNpmPackage, fetchurl, }:
 
 buildNpmPackage rec {
   pname = "ccusage";
-  version = "15.5.0";
+  version = "15.5.2";
 
   src = fetchurl {
     url = "https://registry.npmjs.org/ccusage/-/ccusage-${version}.tgz";
-    hash = "sha256-pb0dlxYOSnqJkZknAKozeOdBH3raVOoqHKGWkRX/Lio=";
+    hash = "sha256-f4n9Garu90gkI1qNOnLlvRAqXn+0DLrPbddZwbaHQ+g=";
   };
 
   npmDepsHash = "sha256-pbcOmC/cHU9MRzsUbKlNcdeyYNLQe/RVAIZXVDfMCyI=";
@@ -62,7 +58,8 @@ buildNpmPackage rec {
   '';
 
   meta = {
-    description = "CLI tool for analyzing Claude Code token usage and costs from local JSONL files";
+    description =
+      "CLI tool for analyzing Claude Code token usage and costs from local JSONL files";
     homepage = "https://ccusage.com";
     changelog = "https://github.com/ryoppippi/ccusage/releases/tag/v${version}";
     license = lib.licenses.mit;
