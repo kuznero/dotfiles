@@ -185,6 +185,7 @@
               ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
+              ./home-manager/programs/vscode.nix
               # ./home-manager/programs/xfce.nix
               ./home-manager/programs/zoxide.nix
               ./home-manager/programs/zsh.nix
