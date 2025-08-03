@@ -7,7 +7,6 @@ This document explains the structure and organization of the Roku Labs dotfiles 
 ```plain
 dotfiles/
 ├── docs/               # Documentation
-├── dotfiles/           # Traditional dotfiles (vscode, etc.)
 ├── home-manager/       # User environment configurations
 ├── hosts/              # NixOS system configurations
 ├── pkgs/               # Custom packages

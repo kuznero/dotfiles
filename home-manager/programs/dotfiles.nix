@@ -2,6 +2,14 @@
 
 {
   home.file = {
+    "Library/Application Support/Code/User" = {
+      source = ./dotfiles/config/Code/User;
+      recursive = true;
+    };
+    ".config/Code/User" = {
+      source = ./dotfiles/config/Code/User;
+      recursive = true;
+    };
     ".config/k9s" = {
       source = ./dotfiles/config/k9s;
       recursive = true;
