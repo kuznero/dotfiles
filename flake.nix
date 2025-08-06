@@ -164,8 +164,8 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "catppuccin-mocha";
-                fontFamily = "Mononoki Nerd Font";
-                fontSize = "14";
+                fontFamily = "0xProto Nerd Font";
+                fontSize = "16";
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
