@@ -33,8 +33,57 @@
       {
         event = "FileType";
         pattern = [ "markdown" ];
-        command = "setlocal textwidth=80 nowrap";
-        desc = "Set textwidth=80 and disable wrapping for markdown";
+        callback = {
+          __raw = ''
+            function()
+              vim.opt_local.textwidth = 80
+              vim.opt_local.wrap = false
+              
+              -- formatoptions controls how automatic formatting is done
+              -- t: Auto-wrap text using textwidth
+              -- c: Auto-wrap comments using textwidth
+              -- q: Allow formatting of comments with "gq"
+              -- l: Long lines are not broken in insert mode
+              -- n: Recognize numbered lists when formatting
+              -- 2: When formatting text, use the indent of the second line of a paragraph
+              --    for the rest of the paragraph, instead of the indent of the first line.
+              --    This is THE KEY FLAG for proper list continuation indentation!
+              vim.opt_local.formatoptions = "tcqln2"
+              
+              vim.opt_local.autoindent = true
+              
+              -- formatlistpat defines the pattern that identifies a list item
+              -- This pattern matches lines starting with optional whitespace followed by
+              -- a dash, asterisk, or plus sign, then at least one space
+              -- When Vim recognizes a line as a list item (via this pattern),
+              -- and the '2' flag is set in formatoptions, it will indent continuation
+              -- lines to match the position after the list marker
+              vim.opt_local.formatlistpat = "^\\s*[-*+]\\s\\+"
+              
+              -- comments defines comment/list markers for automatic formatting
+              -- b: means blank required after the marker
+              -- Each marker (-, *, +) is recognized for proper list formatting
+              vim.opt_local.comments = "b:- ,b:* ,b:+ "
+              
+              -- How it works together:
+              -- 1. When you select a list item and press 'gq'
+              -- 2. Vim checks if the line matches formatlistpat (is it a list item?)
+              -- 3. If yes, and formatoptions contains '2', Vim formats the text
+              -- 4. The continuation lines are indented to align with the text after the marker
+              -- 
+              -- Example:
+              -- Before gq:
+              -- - This is a very long line that needs to be wrapped because it exceeds textwidth
+              --
+              -- After gq:
+              -- - This is a very long line that needs to be wrapped because it exceeds
+              --   textwidth
+              --
+              -- The second line is indented with 2 spaces to align with "This" on the first line
+            end
+          '';
+        };
+        desc = "Configure markdown formatting with proper list indentation";
       }
       {
         event = "BufEnter";
