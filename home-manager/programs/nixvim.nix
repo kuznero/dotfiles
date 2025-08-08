@@ -69,7 +69,7 @@
                 -- Function to format a single block of text
                 local function format_block(block_lines, block_indent, block_list_marker)
                   local continuation_indent = block_indent .. string.rep(" ", #(block_list_marker or ""))
-                  
+
                   -- Join all lines into one string
                   local text = ""
                   for i, line in ipairs(block_lines) do
@@ -89,18 +89,18 @@
                       end
                     end
                   end
-                  
+
                   -- Split text into words
                   local words = {}
                   for word in text:gmatch("%S+") do
                     table.insert(words, word)
                   end
-                  
+
                   -- Rebuild lines with proper width and indentation
                   local formatted_lines = {}
                   local current_line = block_indent .. (block_list_marker or "")
                   local line_length = #current_line
-                  
+
                   for _, word in ipairs(words) do
                     local word_length = #word
                     if line_length + word_length + 1 > vim.o.textwidth and current_line ~= block_indent .. (block_list_marker or "") then
@@ -118,30 +118,30 @@
                       line_length = line_length + word_length + 1
                     end
                   end
-                  
+
                   -- Add the last line
                   if current_line ~= block_indent .. (block_list_marker or "") then
                     table.insert(formatted_lines, current_line)
                   end
-                  
+
                   return formatted_lines
                 end
-                
+
                 -- Process lines, detecting multiple list items
                 local all_formatted_lines = {}
                 local current_block = {}
                 local current_indent = nil
                 local current_list_marker = nil
-                
+
                 for i, line in ipairs(lines) do
                   local line_indent = line:match("^(%s*)") or ""
-                  
+
                   -- Check if this line starts a new list item
                   local _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "([-*+]%s)")
                   if not line_list_marker then
                     _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "(%d+%.%s)")
                   end
-                  
+
                   -- If this is a new list item and we have a current block, format it
                   if line_list_marker and #current_block > 0 then
                     local formatted = format_block(current_block, current_indent, current_list_marker)
@@ -150,16 +150,16 @@
                     end
                     current_block = {}
                   end
-                  
+
                   -- Start or continue current block
                   if line_list_marker or i == 1 then
                     current_indent = line_indent
                     current_list_marker = line_list_marker
                   end
-                  
+
                   table.insert(current_block, line)
                 end
-                
+
                 -- Format the last block
                 if #current_block > 0 then
                   local formatted = format_block(current_block, current_indent, current_list_marker)
@@ -167,10 +167,10 @@
                     table.insert(all_formatted_lines, formatted_line)
                   end
                 end
-                
+
                 -- Replace the original lines
                 vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, all_formatted_lines)
-                
+
                 return 0  -- Return 0 to indicate we handled the formatting
               end
 
@@ -631,7 +631,20 @@
       gitsigns.enable = true;
       lazygit.enable = true;
       helm.enable = true;
-      lint.enable = true;
+      lint = {
+        enable = true;
+        lintersByFt = {
+          # Explicitly configure linters to avoid auto-detection of vale
+          markdown = [ "markdownlint" ];
+          yaml = [ "yamllint" ];
+          dockerfile = [ "hadolint" ];
+          go = [ "golangcilint" ];
+          terraform = [ "tflint" ];
+          json = [ "jsonlint" ];
+          sh = [ "shellcheck" ];
+          bash = [ "shellcheck" ];
+        };
+      };
       lsp = {
         enable = true;
         servers = {
@@ -973,6 +986,31 @@
             "vim.lsp.util.convert_input_to_markdown_lines" = true;
             "vim.lsp.util.stylize_markdown" = true;
           };
+          routes = [
+            {
+              # Filter out treesitter "Index out of bounds" errors
+              filter = {
+                event = "msg_show";
+                any = [
+                  { find = "Index out of bounds"; }
+                  {
+                    find =
+                      "Error executing vim.schedule lua callback.*treesitter";
+                  }
+                ];
+              };
+              opts = { skip = true; };
+            }
+            {
+              # Filter out deprecated warnings
+              filter = {
+                event = "msg_show";
+                any =
+                  [ { find = "is deprecated"; } { find = "vim.deprecated"; } ];
+              };
+              opts = { skip = true; };
+            }
+          ];
         };
       };
       notify = {
