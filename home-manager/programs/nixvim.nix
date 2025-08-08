@@ -38,7 +38,7 @@
             function()
               vim.opt_local.textwidth = 80
               vim.opt_local.wrap = false
-              
+
               -- formatoptions controls how automatic formatting is done
               -- t: Auto-wrap text using textwidth
               -- c: Auto-wrap comments using textwidth
@@ -47,10 +47,10 @@
               -- 2: When formatting text, use the indent of the second line of a paragraph
               --    for the rest of the paragraph, instead of the indent of the first line.
               vim.opt_local.formatoptions = "tcqn2"
-              
+
               vim.opt_local.autoindent = true
               vim.opt_local.smartindent = false  -- Disable smartindent as it can interfere
-              
+
               -- Custom format expression to handle indented paragraphs
               -- This function preserves the indentation when formatting with gq
               _G.markdown_format = function()
@@ -58,98 +58,142 @@
                 if vim.v.operator ~= 'gq' then
                   return 1  -- Let vim handle it normally
                 end
-                
+
                 local start_line = vim.v.lnum
                 local end_line = start_line + vim.v.count - 1
-                
+
                 -- Get the lines to format
                 local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
                 if #lines == 0 then return 1 end
-                
-                -- Detect the indentation from the first line
-                local first_line = lines[1]
-                local indent = first_line:match("^(%s*)") or ""
-                
-                -- Check if this is a list item (-, *, +, or numbered)
-                local is_list_item = first_line:match("^%s*[-*+]%s") or first_line:match("^%s*%d+%.%s")
-                
-                -- For list items, use vim's default formatting (which works with formatoptions=tcqn2)
-                if is_list_item then
-                  return 1  -- Let vim handle list formatting normally
-                end
-                
-                -- For regular indented paragraphs, use our custom formatting
-                -- Join all lines into one string, removing existing indentation
-                local text = ""
-                for _, line in ipairs(lines) do
-                  local trimmed = line:gsub("^%s*", "")
-                  if text == "" then
-                    text = trimmed
-                  else
-                    text = text .. " " .. trimmed
-                  end
-                end
-                
-                -- Split text into words
-                local words = {}
-                for word in text:gmatch("%S+") do
-                  table.insert(words, word)
-                end
-                
-                -- Rebuild lines with proper width and indentation
-                local new_lines = {}
-                local current_line = indent
-                local line_length = #indent
-                
-                for _, word in ipairs(words) do
-                  local word_length = #word
-                  if line_length + word_length + 1 > vim.o.textwidth and current_line ~= indent then
-                    -- Start a new line
-                    table.insert(new_lines, current_line)
-                    current_line = indent .. word
-                    line_length = #indent + word_length
-                  else
-                    -- Add word to current line
-                    if current_line == indent then
-                      current_line = current_line .. word
+
+                -- Function to format a single block of text
+                local function format_block(block_lines, block_indent, block_list_marker)
+                  local continuation_indent = block_indent .. string.rep(" ", #(block_list_marker or ""))
+                  
+                  -- Join all lines into one string
+                  local text = ""
+                  for i, line in ipairs(block_lines) do
+                    local trimmed
+                    if i == 1 and block_list_marker then
+                      -- For the first line of a list item, extract text after the marker
+                      trimmed = line:match("^%s*[-*+]%s+(.*)$") or line:match("^%s*%d+%.%s+(.*)$") or ""
                     else
-                      current_line = current_line .. " " .. word
+                      -- For other lines, remove all leading whitespace
+                      trimmed = line:gsub("^%s*", "")
                     end
-                    line_length = line_length + word_length + 1
+                    if trimmed ~= "" then
+                      if text == "" then
+                        text = trimmed
+                      else
+                        text = text .. " " .. trimmed
+                      end
+                    end
                   end
+                  
+                  -- Split text into words
+                  local words = {}
+                  for word in text:gmatch("%S+") do
+                    table.insert(words, word)
+                  end
+                  
+                  -- Rebuild lines with proper width and indentation
+                  local formatted_lines = {}
+                  local current_line = block_indent .. (block_list_marker or "")
+                  local line_length = #current_line
+                  
+                  for _, word in ipairs(words) do
+                    local word_length = #word
+                    if line_length + word_length + 1 > vim.o.textwidth and current_line ~= block_indent .. (block_list_marker or "") then
+                      -- Start a new line
+                      table.insert(formatted_lines, current_line)
+                      current_line = continuation_indent .. word
+                      line_length = #continuation_indent + word_length
+                    else
+                      -- Add word to current line
+                      if current_line == block_indent .. (block_list_marker or "") then
+                        current_line = current_line .. word
+                      else
+                        current_line = current_line .. " " .. word
+                      end
+                      line_length = line_length + word_length + 1
+                    end
+                  end
+                  
+                  -- Add the last line
+                  if current_line ~= block_indent .. (block_list_marker or "") then
+                    table.insert(formatted_lines, current_line)
+                  end
+                  
+                  return formatted_lines
                 end
                 
-                -- Add the last line
-                if current_line ~= indent then
-                  table.insert(new_lines, current_line)
+                -- Process lines, detecting multiple list items
+                local all_formatted_lines = {}
+                local current_block = {}
+                local current_indent = nil
+                local current_list_marker = nil
+                
+                for i, line in ipairs(lines) do
+                  local line_indent = line:match("^(%s*)") or ""
+                  
+                  -- Check if this line starts a new list item
+                  local _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "([-*+]%s)")
+                  if not line_list_marker then
+                    _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "(%d+%.%s)")
+                  end
+                  
+                  -- If this is a new list item and we have a current block, format it
+                  if line_list_marker and #current_block > 0 then
+                    local formatted = format_block(current_block, current_indent, current_list_marker)
+                    for _, formatted_line in ipairs(formatted) do
+                      table.insert(all_formatted_lines, formatted_line)
+                    end
+                    current_block = {}
+                  end
+                  
+                  -- Start or continue current block
+                  if line_list_marker or i == 1 then
+                    current_indent = line_indent
+                    current_list_marker = line_list_marker
+                  end
+                  
+                  table.insert(current_block, line)
+                end
+                
+                -- Format the last block
+                if #current_block > 0 then
+                  local formatted = format_block(current_block, current_indent, current_list_marker)
+                  for _, formatted_line in ipairs(formatted) do
+                    table.insert(all_formatted_lines, formatted_line)
+                  end
                 end
                 
                 -- Replace the original lines
-                vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, new_lines)
+                vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, all_formatted_lines)
                 
                 return 0  -- Return 0 to indicate we handled the formatting
               end
-              
+
               -- Set the custom format expression
               vim.opt_local.formatexpr = "v:lua.markdown_format()"
-              
+
               -- formatlistpat defines the pattern that identifies a list item
               -- This pattern matches lines starting with optional whitespace followed by
               -- a dash, asterisk, or plus sign, then at least one space
               vim.opt_local.formatlistpat = "^\\s*[-*+]\\s\\+"
-              
+
               -- comments defines comment/list markers for automatic formatting
               -- b: means blank required after the marker
               -- Each marker (-, *, +) is recognized for proper list formatting
               vim.opt_local.comments = "b:- ,b:* ,b:+ "
-              
+
               -- How it works:
               -- For list items:
               -- 1. When you select a list item and press 'gq'
               -- 2. Vim checks if the line matches formatlistpat (is it a list item?)
               -- 3. If yes, and formatoptions contains '2', Vim formats the text
               -- 4. The continuation lines are indented to align with the text after the marker
-              -- 
+              --
               -- For indented paragraphs:
               -- 1. When you select an indented paragraph and press 'gq'
               -- 2. With the '2' flag, Vim preserves the indentation of the paragraph
@@ -344,7 +388,7 @@
       expandtab = true;
       foldenable = false;
       fileformat = "unix";
-      fileformats = ["unix" "dos"];
+      fileformats = [ "unix" "dos" ];
       hlsearch = true;
       ignorecase = true;
       incsearch = true;
