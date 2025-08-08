@@ -43,21 +43,99 @@
               -- t: Auto-wrap text using textwidth
               -- c: Auto-wrap comments using textwidth
               -- q: Allow formatting of comments with "gq"
-              -- l: Long lines are not broken in insert mode
               -- n: Recognize numbered lists when formatting
               -- 2: When formatting text, use the indent of the second line of a paragraph
               --    for the rest of the paragraph, instead of the indent of the first line.
-              --    This is THE KEY FLAG for proper list continuation indentation!
-              vim.opt_local.formatoptions = "tcqln2"
+              vim.opt_local.formatoptions = "tcqn2"
               
               vim.opt_local.autoindent = true
+              vim.opt_local.smartindent = false  -- Disable smartindent as it can interfere
+              
+              -- Custom format expression to handle indented paragraphs
+              -- This function preserves the indentation when formatting with gq
+              _G.markdown_format = function()
+                -- Safety check - only handle gq operations, not J (join)
+                if vim.v.operator ~= 'gq' then
+                  return 1  -- Let vim handle it normally
+                end
+                
+                local start_line = vim.v.lnum
+                local end_line = start_line + vim.v.count - 1
+                
+                -- Get the lines to format
+                local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+                if #lines == 0 then return 1 end
+                
+                -- Detect the indentation from the first line
+                local first_line = lines[1]
+                local indent = first_line:match("^(%s*)") or ""
+                
+                -- Check if this is a list item (-, *, +, or numbered)
+                local is_list_item = first_line:match("^%s*[-*+]%s") or first_line:match("^%s*%d+%.%s")
+                
+                -- For list items, use vim's default formatting (which works with formatoptions=tcqn2)
+                if is_list_item then
+                  return 1  -- Let vim handle list formatting normally
+                end
+                
+                -- For regular indented paragraphs, use our custom formatting
+                -- Join all lines into one string, removing existing indentation
+                local text = ""
+                for _, line in ipairs(lines) do
+                  local trimmed = line:gsub("^%s*", "")
+                  if text == "" then
+                    text = trimmed
+                  else
+                    text = text .. " " .. trimmed
+                  end
+                end
+                
+                -- Split text into words
+                local words = {}
+                for word in text:gmatch("%S+") do
+                  table.insert(words, word)
+                end
+                
+                -- Rebuild lines with proper width and indentation
+                local new_lines = {}
+                local current_line = indent
+                local line_length = #indent
+                
+                for _, word in ipairs(words) do
+                  local word_length = #word
+                  if line_length + word_length + 1 > vim.o.textwidth and current_line ~= indent then
+                    -- Start a new line
+                    table.insert(new_lines, current_line)
+                    current_line = indent .. word
+                    line_length = #indent + word_length
+                  else
+                    -- Add word to current line
+                    if current_line == indent then
+                      current_line = current_line .. word
+                    else
+                      current_line = current_line .. " " .. word
+                    end
+                    line_length = line_length + word_length + 1
+                  end
+                end
+                
+                -- Add the last line
+                if current_line ~= indent then
+                  table.insert(new_lines, current_line)
+                end
+                
+                -- Replace the original lines
+                vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, new_lines)
+                
+                return 0  -- Return 0 to indicate we handled the formatting
+              end
+              
+              -- Set the custom format expression
+              vim.opt_local.formatexpr = "v:lua.markdown_format()"
               
               -- formatlistpat defines the pattern that identifies a list item
               -- This pattern matches lines starting with optional whitespace followed by
               -- a dash, asterisk, or plus sign, then at least one space
-              -- When Vim recognizes a line as a list item (via this pattern),
-              -- and the '2' flag is set in formatoptions, it will indent continuation
-              -- lines to match the position after the list marker
               vim.opt_local.formatlistpat = "^\\s*[-*+]\\s\\+"
               
               -- comments defines comment/list markers for automatic formatting
@@ -65,21 +143,32 @@
               -- Each marker (-, *, +) is recognized for proper list formatting
               vim.opt_local.comments = "b:- ,b:* ,b:+ "
               
-              -- How it works together:
+              -- How it works:
+              -- For list items:
               -- 1. When you select a list item and press 'gq'
               -- 2. Vim checks if the line matches formatlistpat (is it a list item?)
               -- 3. If yes, and formatoptions contains '2', Vim formats the text
               -- 4. The continuation lines are indented to align with the text after the marker
               -- 
-              -- Example:
-              -- Before gq:
+              -- For indented paragraphs:
+              -- 1. When you select an indented paragraph and press 'gq'
+              -- 2. With the '2' flag, Vim preserves the indentation of the paragraph
+              -- 3. All wrapped lines maintain the same indentation as the original
+              --
+              -- Examples:
+              -- List item before gq:
               -- - This is a very long line that needs to be wrapped because it exceeds textwidth
               --
               -- After gq:
               -- - This is a very long line that needs to be wrapped because it exceeds
               --   textwidth
               --
-              -- The second line is indented with 2 spaces to align with "This" on the first line
+              -- Indented paragraph before gq:
+              --     This is an indented paragraph with a very long line that needs to be wrapped because it exceeds the configured textwidth of 80 characters
+              --
+              -- After gq:
+              --     This is an indented paragraph with a very long line that needs to be
+              --     wrapped because it exceeds the configured textwidth of 80 characters
             end
           '';
         };
