@@ -33,8 +33,20 @@
       {
         event = "FileType";
         pattern = [ "markdown" ];
-        command = "setlocal wrap";
-        desc = "Enable wrapping on markdown";
+        command = "setlocal textwidth=80 nowrap";
+        desc = "Set textwidth=80 and disable wrapping for markdown";
+      }
+      {
+        event = "BufEnter";
+        pattern = [ "*.md" "*.markdown" ];
+        command = "setlocal textwidth=80 nowrap";
+        desc = "Enforce textwidth=80 and nowrap on markdown buffer enter";
+      }
+      {
+        event = "BufWinEnter";
+        pattern = [ "*.md" "*.markdown" ];
+        command = "setlocal textwidth=80 nowrap";
+        desc = "Enforce settings when window displays markdown buffer";
       }
       {
         event = "FileType";
@@ -537,7 +549,7 @@
           nvimWdHeel = false;
           update = true;
         };
-        wrap = false;
+        wrap = true; # Disabled - let autocmds handle wrap setting
         bib = {
           defaultPath = null;
           findInRoot = true;
