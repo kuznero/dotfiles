@@ -221,13 +221,13 @@
       {
         event = "BufEnter";
         pattern = [ "*.md" "*.markdown" ];
-        command = "setlocal textwidth=80 nowrap";
-        desc = "Enforce textwidth=80 and nowrap on markdown buffer enter";
+        command = "setlocal textwidth=80 nowrap tabstop=4 shiftwidth=4 expandtab";
+        desc = "Enforce textwidth=80, nowrap, and 4-space tabs on markdown buffer enter";
       }
       {
         event = "BufWinEnter";
         pattern = [ "*.md" "*.markdown" ];
-        command = "setlocal textwidth=80 nowrap";
+        command = "setlocal textwidth=80 nowrap tabstop=4 shiftwidth=4 expandtab";
         desc = "Enforce settings when window displays markdown buffer";
       }
       {
