@@ -952,6 +952,14 @@
             hideGitignored = false;
           };
         };
+        eventHandlers = {
+          file_opened = ''
+            function(file_path)
+              -- Auto close neo-tree when a file is opened
+              require("neo-tree").close_all()
+            end
+          '';
+        };
         defaultComponentConfigs = {
           diagnostics = {
             symbols = {
