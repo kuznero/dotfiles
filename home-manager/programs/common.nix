@@ -54,7 +54,6 @@
       tree-sitter
       tt
       vim
-      wl-clipboard
       xclip
       zoxide
       zsh
