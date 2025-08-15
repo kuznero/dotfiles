@@ -27,7 +27,7 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  environment.systemPackages = with pkgs; [ blueman gitFull vim ];
+  environment.systemPackages = with pkgs; [ blueman vim ];
 
   hardware.bluetooth = {
     enable = true;

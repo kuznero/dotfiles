@@ -3,7 +3,7 @@
 {
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.gitFull;
+    package = pkgs.gitAndTools.git;
     aliases = {
       st = "status";
       ci = "commit";

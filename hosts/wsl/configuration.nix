@@ -29,5 +29,5 @@
 
   security.sudo.extraConfig = ''Defaults env_keep += "NIX_SSL_CERT_FILE"'';
 
-  environment.systemPackages = with pkgs; [ gitFull vim ];
+  environment.systemPackages = with pkgs; [ vim ];
 }
