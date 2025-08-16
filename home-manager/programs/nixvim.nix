@@ -54,9 +54,9 @@
               -- Custom format expression to handle indented paragraphs, lists, and quotes
               -- This function preserves the indentation when formatting with gq
               _G.markdown_format = function()
-                -- Safety check - only handle gq operations, not J (join)
-                if vim.v.operator ~= 'gq' then
-                  return 1  -- Let vim handle it normally
+                -- Safety check - only handle gq and gw operations
+                if vim.v.operator ~= 'gq' and vim.v.operator ~= 'gw' then
+                  return 0  -- Return 0 for non-formatting operations
                 end
 
                 local start_line = vim.v.lnum
