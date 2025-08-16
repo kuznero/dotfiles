@@ -51,7 +51,7 @@
               vim.opt_local.autoindent = true
               vim.opt_local.smartindent = false  -- Disable smartindent as it can interfere
 
-              -- Custom format expression to handle indented paragraphs
+              -- Custom format expression to handle indented paragraphs, lists, and quotes
               -- This function preserves the indentation when formatting with gq
               _G.markdown_format = function()
                 -- Safety check - only handle gq operations, not J (join)
@@ -67,14 +67,35 @@
                 if #lines == 0 then return 1 end
 
                 -- Function to format a single block of text
-                local function format_block(block_lines, block_indent, block_list_marker)
-                  local continuation_indent = block_indent .. string.rep(" ", #(block_list_marker or ""))
+                local function format_block(block_lines, block_indent, block_list_marker, block_quote_prefix)
+                  local continuation_indent
+                  if block_quote_prefix then
+                    -- For quotes, each line should start with the quote prefix
+                    if block_list_marker then
+                      -- For list items in quotes, indent continuation lines to align with text
+                      continuation_indent = block_indent .. block_quote_prefix .. string.rep(" ", #block_list_marker)
+                    else
+                      -- For regular quotes, just repeat the quote prefix
+                      continuation_indent = block_indent .. block_quote_prefix
+                    end
+                  else
+                    -- For non-quotes, indent continuation lines for list items
+                    continuation_indent = block_indent .. string.rep(" ", #(block_list_marker or ""))
+                  end
 
                   -- Join all lines into one string
                   local text = ""
                   for i, line in ipairs(block_lines) do
                     local trimmed
-                    if i == 1 and block_list_marker then
+                    if block_quote_prefix then
+                      -- For quote lines, remove the quote prefix and following spaces
+                      local pattern = "^" .. block_indent:gsub(".", "%%%0") .. block_quote_prefix:gsub(".", "%%%0") .. "%s*"
+                      trimmed = line:gsub(pattern, "")
+                      -- Also handle list markers in quotes
+                      if i == 1 and block_list_marker then
+                        trimmed = trimmed:match("^[-*+]%s+(.*)$") or trimmed:match("^%d+%.%s+(.*)$") or trimmed
+                      end
+                    elseif i == 1 and block_list_marker then
                       -- For the first line of a list item, extract text after the marker
                       trimmed = line:match("^%s*[-*+]%s+(.*)$") or line:match("^%s*%d+%.%s+(.*)$") or ""
                     else
@@ -98,19 +119,20 @@
 
                   -- Rebuild lines with proper width and indentation
                   local formatted_lines = {}
-                  local current_line = block_indent .. (block_list_marker or "")
+                  local first_line_prefix = block_indent .. (block_quote_prefix or "") .. (block_list_marker or "")
+                  local current_line = first_line_prefix
                   local line_length = #current_line
 
                   for _, word in ipairs(words) do
                     local word_length = #word
-                    if line_length + word_length + 1 > vim.o.textwidth and current_line ~= block_indent .. (block_list_marker or "") then
+                    if line_length + word_length + 1 > vim.o.textwidth and current_line ~= first_line_prefix then
                       -- Start a new line
                       table.insert(formatted_lines, current_line)
                       current_line = continuation_indent .. word
                       line_length = #continuation_indent + word_length
                     else
                       -- Add word to current line
-                      if current_line == block_indent .. (block_list_marker or "") then
+                      if current_line == first_line_prefix then
                         current_line = current_line .. word
                       else
                         current_line = current_line .. " " .. word
@@ -120,31 +142,68 @@
                   end
 
                   -- Add the last line
-                  if current_line ~= block_indent .. (block_list_marker or "") then
+                  if current_line ~= first_line_prefix then
                     table.insert(formatted_lines, current_line)
                   end
 
                   return formatted_lines
                 end
 
-                -- Process lines, detecting multiple list items
+                -- Process lines, detecting quotes, list items, and regular paragraphs
                 local all_formatted_lines = {}
                 local current_block = {}
                 local current_indent = nil
                 local current_list_marker = nil
+                local current_quote_prefix = nil
 
                 for i, line in ipairs(lines) do
                   local line_indent = line:match("^(%s*)") or ""
-
-                  -- Check if this line starts a new list item
-                  local _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "([-*+]%s)")
-                  if not line_list_marker then
-                    _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "(%d+%.%s)")
+                  
+                  -- Check if this line is a quote (starts with > after optional whitespace)
+                  local quote_match = line:match("^" .. line_indent:gsub(".", "%%%0") .. "(>+%s*)")
+                  
+                  -- Check if this line starts a new list item (after potential quote prefix)
+                  local check_line = line
+                  if quote_match then
+                    check_line = line:sub(#line_indent + #quote_match + 1)
+                  end
+                  
+                  local _, _, line_list_marker
+                  if quote_match then
+                    -- For quotes, check for list markers after the quote prefix
+                    _, _, line_list_marker = check_line:find("^([-*+]%s)")
+                    if not line_list_marker then
+                      _, _, line_list_marker = check_line:find("^(%d+%.%s)")
+                    end
+                  else
+                    -- Regular list item check
+                    _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "([-*+]%s)")
+                    if not line_list_marker then
+                      _, _, line_list_marker = line:find("^" .. line_indent:gsub(".", "%%%0") .. "(%d+%.%s)")
+                    end
                   end
 
-                  -- If this is a new list item and we have a current block, format it
-                  if line_list_marker and #current_block > 0 then
-                    local formatted = format_block(current_block, current_indent, current_list_marker)
+                  -- Determine if we need to start a new block
+                  local needs_new_block = false
+                  
+                  if i == 1 then
+                    -- First line always starts a new block
+                    needs_new_block = true
+                  elseif quote_match ~= current_quote_prefix then
+                    -- Quote prefix changed
+                    needs_new_block = true
+                  elseif line_list_marker and #current_block > 0 then
+                    -- New list item starts
+                    needs_new_block = true
+                  elseif not quote_match and not line_list_marker and 
+                         current_quote_prefix and #line:gsub("^%s*", "") > 0 then
+                    -- Non-quote line after a quote block
+                    needs_new_block = true
+                  end
+
+                  -- If we need a new block and have a current block, format it
+                  if needs_new_block and #current_block > 0 then
+                    local formatted = format_block(current_block, current_indent, current_list_marker, current_quote_prefix)
                     for _, formatted_line in ipairs(formatted) do
                       table.insert(all_formatted_lines, formatted_line)
                     end
@@ -152,9 +211,10 @@
                   end
 
                   -- Start or continue current block
-                  if line_list_marker or i == 1 then
+                  if needs_new_block then
                     current_indent = line_indent
                     current_list_marker = line_list_marker
+                    current_quote_prefix = quote_match
                   end
 
                   table.insert(current_block, line)
@@ -162,7 +222,7 @@
 
                 -- Format the last block
                 if #current_block > 0 then
-                  local formatted = format_block(current_block, current_indent, current_list_marker)
+                  local formatted = format_block(current_block, current_indent, current_list_marker, current_quote_prefix)
                   for _, formatted_line in ipairs(formatted) do
                     table.insert(all_formatted_lines, formatted_line)
                   end
@@ -1005,6 +1065,7 @@
                     find =
                       "Error executing vim.schedule lua callback.*treesitter";
                   }
+                  { find = "Error in decoration provider.*treesitter"; }
                 ];
               };
               opts = { skip = true; };
