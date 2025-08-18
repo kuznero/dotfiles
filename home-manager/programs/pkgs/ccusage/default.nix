@@ -2,11 +2,11 @@
 
 buildNpmPackage rec {
   pname = "ccusage";
-  version = "15.9.5";
+  version = "15.9.9";
 
   src = fetchurl {
     url = "https://registry.npmjs.org/ccusage/-/ccusage-${version}.tgz";
-    hash = "sha256-Z7QaS16ndr31k0Gs7lZ1TCy9tmnPyafyq/idEBGoaRM=";
+    hash = "sha256-mJ3E50Q30g/cQ9sbgJdZgEBNIJjQISY6L4p807KbNN4=";
   };
 
   npmDepsHash = "sha256-pbcOmC/cHU9MRzsUbKlNcdeyYNLQe/RVAIZXVDfMCyI=";
