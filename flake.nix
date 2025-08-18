@@ -74,11 +74,11 @@
               # }
 
               # features
-              ./hosts/displaylink.nix
+              # ./hosts/displaylink.nix
               ./hosts/docker.nix
               ./hosts/flatpak.nix
               ./hosts/fonts.nix
-              ./hosts/gaming.nix
+              # ./hosts/gaming.nix
               ./hosts/logind.nix
               ./hosts/media.nix
               ./hosts/ollama.nix
