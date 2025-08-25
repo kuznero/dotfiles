@@ -10,9 +10,9 @@ let
     gst = "git status";
     lzd = "lazydocker";
     lzg = "lazygit";
-    v = "nvim";
-    vv = "nvim '+colorscheme dracula'";
-    vl = "nvim '+colorscheme vscode' '+set background=light'";
+    # v = "nvim";
+    # vv = "nvim '+colorscheme dracula'";
+    # vl = "nvim '+colorscheme vscode' '+set background=light'";
     tma = "tmux attach -t ";
     tml = "tmux ls";
     tmk = "tmux kill-server";
