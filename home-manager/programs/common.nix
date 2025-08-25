@@ -5,10 +5,10 @@
     [
       bat
       btop
-      busybox
       (pkgs.callPackage ./pkgs/ccusage { })
       (pkgs.callPackage ./pkgs/claude-code { })
       cmatrix
+      coreutils-full
       eza
       fd
       ffmpegthumbnailer
