@@ -172,12 +172,12 @@
               # ./home-manager/programs/jetbrains.nix
               ./home-manager/programs/messengers.nix
               ./home-manager/programs/mkdocs.nix
-              (import ./home-manager/programs/nixvim.nix {
-                inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                system = system;
-                ollamaModel = "qwen2.5-coder:1.5b";
-              })
+              # (import ./home-manager/programs/nixvim.nix {
+              #   inputs = inputs;
+              #   pkgs = nixpkgs-unstable.legacyPackages.${system};
+              #   system = system;
+              #   ollamaModel = "qwen2.5-coder:1.5b";
+              # })
               ./home-manager/programs/obsidian.nix
               ./home-manager/programs/office.nix
               ./home-manager/programs/pcloud.nix
@@ -223,12 +223,12 @@
               })
               ./home-manager/programs/git.nix
               ./home-manager/programs/mkdocs.nix
-              (import ./home-manager/programs/nixvim.nix {
-                inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                system = system;
-                ollamaModel = "qwen2.5-coder:7b";
-              })
+              # (import ./home-manager/programs/nixvim.nix {
+              #   inputs = inputs;
+              #   pkgs = nixpkgs-unstable.legacyPackages.${system};
+              #   system = system;
+              #   ollamaModel = "qwen2.5-coder:7b";
+              # })
               ./home-manager/programs/ollama.nix
               ./home-manager/programs/scripts.nix
               ./home-manager/programs/tmux.nix
@@ -260,12 +260,12 @@
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/mkdocs.nix
-              (import ./home-manager/programs/nixvim.nix {
-                inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
-                system = system;
-                ollamaModel = "qwen2.5-coder:1.5b";
-              })
+              # (import ./home-manager/programs/nixvim.nix {
+              #   inputs = inputs;
+              #   pkgs = nixpkgs-unstable.legacyPackages.${system};
+              #   system = system;
+              #   ollamaModel = "qwen2.5-coder:1.5b";
+              # })
               ./home-manager/programs/obsidian.nix
               ./home-manager/programs/scripts.nix
               ./home-manager/programs/tmux.nix
