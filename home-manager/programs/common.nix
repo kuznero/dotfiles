@@ -54,6 +54,7 @@
       tree-sitter
       tt
       vim
+      wget
       xclip
       zoxide
       zsh
