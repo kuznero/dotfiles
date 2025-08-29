@@ -155,7 +155,7 @@
               ./home-manager/programs/bcompare.nix
               ./home-manager/programs/browsers.nix
               ./home-manager/programs/common.nix
-              ./home-manager/programs/cursor.nix
+              # ./home-manager/programs/cursor.nix
               ./home-manager/programs/dotfiles.nix
               ./home-manager/programs/filezilla.nix
               ./home-manager/programs/fzf.nix
@@ -165,7 +165,7 @@
                 system = system;
                 theme = "catppuccin-mocha";
                 fontFamily = "0xProto Nerd Font";
-                fontSize = "16";
+                fontSize = "14";
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
