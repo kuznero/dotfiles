@@ -74,7 +74,7 @@
               # }
 
               # features
-              # ./hosts/displaylink.nix
+              ./hosts/displaylink.nix
               ./hosts/docker.nix
               ./hosts/flatpak.nix
               ./hosts/fonts.nix
