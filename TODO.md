@@ -2,8 +2,6 @@
 
 # Dotfiles Improvement TODO
 
-- [ ] Configure Podman instead of Docker (ref: https://nixos.wiki/wiki/Podman)
-
 ## High Priority
 
 ### 🏗️ Structure & Organization

@@ -48,7 +48,7 @@
   "window.zoomLevel": 1,
   "workbench.colorTheme": "Catppuccin Macchiato",
   "workbench.editor.enablePreview": false,
-  "workbench.iconTheme": "catppuccin-mocha",
+  "workbench.iconTheme": "catppuccin-macchiato",
   "workbench.layoutControl.enabled": false,
   "workbench.preferredDarkColorTheme": "Catppuccin Macchiato",
   "workbench.startupEditor": "none"
