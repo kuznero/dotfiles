@@ -12,7 +12,7 @@ buildNpmPackage rec {
     hash = "sha256-PHTT5kb6/MuxqqMWXwqdmpI+4ZSubRUNDp/ENEjcFBE=";
   };
 
-  npmDepsHash = "sha256-oHSePK/QiAHP+2Fn+yUf66TcRGCoZg3mrI4x7S/nbCc=";
+  npmDepsHash = "sha256-xbxMjwVvkUmjiaklcYsrWLcb2c9qxiYWcT5eM8LN/h8=";
 
   postPatch = ''
     cp ${./package-lock.json} package-lock.json
