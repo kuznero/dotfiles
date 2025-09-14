@@ -184,7 +184,6 @@
               ./home-manager/programs/office.nix
               ./home-manager/programs/pcloud.nix
               ./home-manager/programs/scripts.nix
-              ./home-manager/programs/spotify.nix
               ./home-manager/programs/tmux.nix
               ./home-manager/programs/transmission.nix
               ./home-manager/programs/vscode.nix
