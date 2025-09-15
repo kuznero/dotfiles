@@ -18,7 +18,7 @@ in {
         null)
     ];
   home.file."${configFile}".text = ''
-    theme = ${theme}
+    # theme = ${theme}
     font-family = ${fontFamily}
     font-size = ${fontSize}
     font-style-bold = false
