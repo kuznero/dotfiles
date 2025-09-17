@@ -14,6 +14,10 @@
       source = ./dotfiles/config/k9s;
       recursive = true;
     };
+    ".config/mc" = {
+      source = ./dotfiles/config/mc;
+      recursive = true;
+    };
     ".config/wallpapers" = {
       source = ./dotfiles/config/wallpapers;
       recursive = true;
