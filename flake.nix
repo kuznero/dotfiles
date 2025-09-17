@@ -258,6 +258,7 @@
 
               ./home-manager/programs/bcompare.nix
               ./home-manager/programs/common.nix
+              ./home-manager/programs/dotfiles.nix
               ./home-manager/programs/fzf.nix
               ./home-manager/programs/git.nix
               ./home-manager/programs/mkdocs.nix
