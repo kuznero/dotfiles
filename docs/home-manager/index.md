@@ -16,7 +16,7 @@ The Home Manager configuration in this repository provides:
 
 ```plain
 home-manager/
-├── roku.nix              # Main user configuration
+├── user.nix              # Main user configuration
 └── programs/             # Application modules
     ├── common.nix        # Common tools
     ├── git.nix          # Git configuration

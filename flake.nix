@@ -33,7 +33,9 @@
 
   outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
     , nixvim, nixos-wsl, catppuccin, ghostty }@inputs:
-    let user = "roku";
+    let
+      user = if builtins.getEnv "NIX_USER" != "" then builtins.getEnv "NIX_USER" else "roku";
+      userName = if builtins.getEnv "NIX_USER_NAME" != "" then builtins.getEnv "NIX_USER_NAME" else "Roman Kuznetsov";
     in {
 
       formatter.x86_64-linux = let
@@ -47,7 +49,7 @@
         moon = # sudo nixos-rebuild switch --flake .#moon --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user; };
+            specialArgs = { inherit inputs system user userName; };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -61,7 +63,7 @@
 
               # basic configuration & users
               ./hosts/moon/configuration.nix
-              ./users/${user}.nix
+              ./users/user.nix
 
               # desktop
               ./hosts/gnome.nix
@@ -93,7 +95,7 @@
         sun = # sudo nixos-rebuild switch --flake .#sun --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user; };
+            specialArgs = { inherit inputs system user userName; };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -102,7 +104,7 @@
 
               # basic configuration & users
               ./hosts/sun/configuration.nix
-              ./users/${user}.nix
+              ./users/user.nix
 
               # features
               ./hosts/docker.nix
@@ -115,7 +117,7 @@
         wsl = # sudo nixos-rebuild switch --flake .#wsl --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user; };
+            specialArgs = { inherit inputs system user userName; };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -126,12 +128,13 @@
 
               # basic configuration & users
               ./hosts/wsl/configuration.nix
+              ./users/user.nix
 
               # features
-              # ./hosts/docker.nix
+              ./hosts/docker.nix
               ./hosts/flatpak.nix
               ./hosts/gnupg.nix
-              ./hosts/podman.nix
+              # ./hosts/podman.nix
             ];
           };
       };
@@ -145,15 +148,14 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user pkgs-stable; };
+            extraSpecialArgs = { inherit inputs system user userName pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
               catppuccin.homeModules.catppuccin
 
-              ./home-manager/${user}.nix
-
+              ./home-manager/user.nix
               ./home-manager/programs/bcompare.nix
               ./home-manager/programs/browsers.nix
               ./home-manager/programs/common.nix
@@ -201,15 +203,14 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user pkgs-stable; };
+            extraSpecialArgs = { inherit inputs system user userName pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
               catppuccin.homeModules.catppuccin
 
-              ./home-manager/${user}.nix
-
+              ./home-manager/user.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/fzf.nix
               (import ./home-manager/programs/ghostty.nix {
@@ -247,15 +248,14 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user pkgs-stable; };
+            extraSpecialArgs = { inherit inputs system user userName pkgs-stable; };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
               catppuccin.homeModules.catppuccin
 
-              ./home-manager/${user}.nix
-
+              ./home-manager/user.nix
               ./home-manager/programs/bcompare.nix
               ./home-manager/programs/common.nix
               ./home-manager/programs/dotfiles.nix

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, system, user, ... }:
+{ config, lib, pkgs, system, user, userName, ... }:
 
 {
   # ref: https://nix.catppuccin.com/search/rolling/?scope=home-manager%20modules
@@ -8,11 +8,11 @@
   home.username = user;
   home.homeDirectory = lib.mkForce
     (if builtins.match ".*-darwin" system != null then
-      "/Users/${config.home.username}"
+      "/Users/${user}"
     else if builtins.match ".*-linux" system != null then
-      "/home/${config.home.username}"
+      "/home/${user}"
     else
-      "/home/${config.home.username}");
+      "/home/${user}");
 
   home.enableNixpkgsReleaseCheck = false;
 

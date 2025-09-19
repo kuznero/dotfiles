@@ -6,6 +6,8 @@ tasks:
     dir: "{{.ROOT_DIR}}"
     env:
       NIXPKGS_ALLOW_UNFREE: "1"
+      NIX_USER: "{{.USER}}"
+      NIX_USER_NAME: "{{.USER_NAME}}"
     requires:
       vars:
         - NAME
@@ -17,6 +19,8 @@ tasks:
     dir: "{{.ROOT_DIR}}"
     env:
       NIXPKGS_ALLOW_UNFREE: "1"
+      NIX_USER: "{{.USER}}"
+      NIX_USER_NAME: "{{.USER_NAME}}"
     requires:
       vars:
         - NAME

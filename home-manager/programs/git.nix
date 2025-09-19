@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, user, userName, ... }:
 
 {
   programs.git = {
@@ -21,8 +21,8 @@
       pl = "pull --all --prune";
       ps = "push";
     };
-    userName = "Roman Kuznetsov";
-    userEmail = "${config.home.username}@lix.one";
+    userName = "${userName}";
+    userEmail = "${user}@lix.one";
     extraConfig = {
       init = { defaultBranch = "main"; };
       core = { autocrlf = "input"; };

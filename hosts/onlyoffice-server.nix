@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, user, ... }:
 
 {
   services.onlyoffice = {
@@ -11,7 +11,7 @@
     jwtSecretFile = "/data/onlyoffice-secret.jwt";
   };
 
-  security.acme.defaults.email = "roku@lix.one";
+  security.acme.defaults.email = "${user}@lix.one";
   security.acme.acceptTerms = true;
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];
