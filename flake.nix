@@ -34,8 +34,8 @@
   outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
     , nixvim, nixos-wsl, catppuccin, ghostty }@inputs:
     let
-      user = if builtins.getEnv "NIX_USER" != "" then builtins.getEnv "NIX_USER" else "roku";
-      userName = if builtins.getEnv "NIX_USER_NAME" != "" then builtins.getEnv "NIX_USER_NAME" else "Roman Kuznetsov";
+      user = "roku";
+      userName = "Roman Kuznetsov";
     in {
 
       formatter.x86_64-linux = let
