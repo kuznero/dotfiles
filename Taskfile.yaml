@@ -1,4 +1,9 @@
 version: "3"
+
+vars:
+  USER: '{{.USER | default "roku"}}'
+  USER_NAME: '{{.USER_NAME | default "Roman Kuznetsov"}}'
+
 tasks:
 
   nixos:switch:

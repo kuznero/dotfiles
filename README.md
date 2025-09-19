@@ -14,33 +14,62 @@ EOF
 
 ## Apply configuration
 
+### Using Task Commands (Recommended)
+
+You can provide custom user variables when running task commands:
+
+```bash
+# For NixOS systems
+task nixos:switch NAME=moon USER="myuser" USER_NAME="My Full Name"
+
+# For Home Manager
+task home-manager:switch NAME=mac USER="myuser" USER_NAME="My Full Name"
+```
+
+If not provided, defaults to `USER=roku` and `USER_NAME="Roman Kuznetsov"`.
+
 ### DevOS Virtual Machine (`aarch64-linux`)
 
 ```bash
+# Using task (recommended)
+task nixos:switch NAME=devos
+task home-manager:switch NAME=devos
+
+# Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#devos --impure
 nix run home-manager/master -- switch --flake github:kuznero/dotfiles#devos
-# home-manager switch --flake github:kuznero/dotfiles#devos
 ```
 
 ### Moon Lenovo Laptop (`x86_64-linux`)
 
 ```bash
+# Using task (recommended)
+task nixos:switch NAME=moon
+task home-manager:switch NAME=moon
+
+# Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#moon --impure
 nix run home-manager/master -- switch --flake github:kuznero/dotfiles#moon
-# home-manager switch --flake github:kuznero/dotfiles#moon
 ```
 
 ### Sun GitHub Runner Server (`x86_64-linux`)
 
 ```bash
+# Using task (recommended)
+task nixos:switch NAME=sun
+
+# Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#sun --impure
 ```
 
 ### Roman's MacBook Pro Laptop (`aarch64-darwin`)
 
 ```bash
+# Using task (recommended)
+task home-manager:switch NAME=mac
+
+# Or manually
 nix run home-manager/master -- switch --flake github:kuznero/dotfiles#mac
-# home-manager switch --flake github:kuznero/dotfiles#mac
 ```
 
 ### WSL2 (`x86_64-linux`)
@@ -96,7 +125,11 @@ After the above is done, and corporate proxy is well configured, proceed to the
 following:
 
 ```bash
+# Using task (recommended)
+task nixos:switch NAME=wsl
+task home-manager:switch NAME=wsl
+
+# Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#wsl --impure
 nix run home-manager/master -- switch --flake github:kuznero/dotfiles#wsl
-# home-manager switch --flake github:kuznero/dotfiles#wsl
 ```
