@@ -48,6 +48,17 @@
 
   # security.sudo.extraConfig = ''Defaults env_keep += "NIX_SSL_CERT_FILE"'';
 
+  # Ensure /bin/bash exists, since some scripts expect it to be there
+  system.activationScripts.binbash = {
+    deps = [ "binsh" ];
+    text = ''
+      #!/bin/sh
+      # This script creates a symlink to the bash binary in /bin
+      # to ensure compatibility with scripts that expect bash to be in /bin/bash
+      ln -sf /bin/sh /bin/bash
+    '';
+  };
+
   environment.systemPackages = with pkgs; [
     vim
     wslu  # WSL utilities including wslview for better Windows integration
