@@ -10,6 +10,10 @@
       source = ./dotfiles/config/Code/User;
       recursive = true;
     };
+    ".config/ghostty" = {
+      source = ./dotfiles/config/ghostty;
+      recursive = true;
+    };
     ".config/k9s" = {
       source = ./dotfiles/config/k9s;
       recursive = true;
