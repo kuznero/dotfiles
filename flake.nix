@@ -167,7 +167,7 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                theme = "catppuccin-mocha";
+                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "0xProto Nerd Font";
                 fontSize = "14";
                 adjustCellHeight = "0%";
@@ -217,8 +217,7 @@
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
-                # theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                theme = "catppuccin-mocha";
+                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "0xProto Nerd Font";
                 fontSize = "18";
                 adjustCellHeight = "0%";
