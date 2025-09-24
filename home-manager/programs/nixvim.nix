@@ -436,7 +436,7 @@
 
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
-    colorscheme = "catppuccin-mocha";
+    colorscheme = "catppuccin-latte";
     # colorscheme = "carbonfox";
 
     opts = {
