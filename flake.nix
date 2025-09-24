@@ -131,10 +131,10 @@
               ./users/user.nix
 
               # features
-              ./hosts/docker.nix
+              # ./hosts/docker.nix
               ./hosts/flatpak.nix
               ./hosts/gnupg.nix
-              # ./hosts/podman.nix
+              ./hosts/podman.nix
             ];
           };
       };
