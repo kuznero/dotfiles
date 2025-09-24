@@ -3,7 +3,7 @@
 {
   catppuccin.tmux = {
     enable = true;
-    flavor = "mocha";
+    flavor = "latte";
     extraConfig = ''
       set -g @catppuccin_window_status_style "none"
       set -g @catppuccin_window_text " #W"
