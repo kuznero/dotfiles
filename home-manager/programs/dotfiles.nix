@@ -18,6 +18,10 @@
       source = ./dotfiles/config/k9s;
       recursive = true;
     };
+    "Library/Application Support/k9s" = {
+      source = ./dotfiles/config/k9s;
+      recursive = true;
+    };
     ".config/mc" = {
       source = ./dotfiles/config/mc;
       recursive = true;
