@@ -10,7 +10,7 @@ PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
 # If we're running from repo root, adjust paths
 if [[ ! -f "${DEFAULT_NIX}" ]]; then
-  PKG_DIR="home-manager/programs/pkgs/ccusage"
+  PKG_DIR="nixpkgs/ccusage"
   DEFAULT_NIX="${PKG_DIR}/default.nix"
   PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
@@ -26,12 +26,9 @@ echo "   Package directory: ${PKG_DIR}"
 
 # Get latest version from npm
 echo "📦 Fetching latest version from npm..."
-LATEST_VERSION=$(npm view ccusage version)
-echo "   Latest version: $LATEST_VERSION"
-
-# Get current version from default.nix
 CURRENT_VERSION=$(grep -oP 'version = "\K[^"]+' "${DEFAULT_NIX}")
-echo "   Current version: $CURRENT_VERSION"
+LATEST_VERSION=$(npm view ccusage version)
+echo "   Versions: $CURRENT_VERSION -> $LATEST_VERSION"
 
 if [ "$LATEST_VERSION" = "$CURRENT_VERSION" ]; then
   echo "✅ Already up to date!"
@@ -84,8 +81,3 @@ else
   echo "⚠️  Couldn't automatically determine npmDepsHash."
   echo "   You'll need to build manually and update the hash."
 fi
-
-echo ""
-echo "📋 Summary of changes:"
-echo "   Version: $CURRENT_VERSION → $LATEST_VERSION"
-echo "   Files modified: ${DEFAULT_NIX}, ${PACKAGE_LOCK}"
