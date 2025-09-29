@@ -10,7 +10,7 @@ PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
 # If we're running from repo root, adjust paths
 if [[ ! -f "${DEFAULT_NIX}" ]]; then
-  PKG_DIR="nixpkgs/claude-code"
+  PKG_DIR="home-manager/programs/pkgs/claude-code"
   DEFAULT_NIX="${PKG_DIR}/default.nix"
   PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
