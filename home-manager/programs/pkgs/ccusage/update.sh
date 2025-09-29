@@ -10,23 +10,23 @@ PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
 # If we're running from repo root, adjust paths
 if [[ ! -f "${DEFAULT_NIX}" ]]; then
-  PKG_DIR="home-manager/programs/pkgs/claude-code"
+  PKG_DIR="home-manager/programs/pkgs/ccusage"
   DEFAULT_NIX="${PKG_DIR}/default.nix"
   PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
   if [[ ! -f "${DEFAULT_NIX}" ]]; then
-    echo "❌ Error: Cannot find claude-code package directory"
-    echo "   Please run from repository root or claude-code directory"
+    echo "❌ Error: Cannot find ccusage package directory"
+    echo "   Please run from repository root or ccusage directory"
     exit 1
   fi
 fi
 
-echo "🔄 Updating claude-code package..."
+echo "🔄 Updating ccusage package..."
 echo "   Package directory: ${PKG_DIR}"
 
 # Get latest version from npm
 echo "📦 Fetching latest version from npm..."
-LATEST_VERSION=$(npm view @anthropic-ai/claude-code version)
+LATEST_VERSION=$(npm view ccusage version)
 echo "   Latest version: $LATEST_VERSION"
 
 # Get current version from default.nix
@@ -47,20 +47,16 @@ sed -i "s/version = \".*\"/version = \"$LATEST_VERSION\"/" "${DEFAULT_NIX}"
 # Generate updated package-lock.json
 echo "🔧 Generating new package-lock.json..."
 cd "${PKG_DIR}"
-npm i --package-lock-only @anthropic-ai/claude-code@"$LATEST_VERSION"
+npm i --package-lock-only ccusage@"$LATEST_VERSION"
 rm -f package.json
 cd - > /dev/null
 
 # Fetch new source hash
 echo "🔍 Fetching new source hash..."
-URL="https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${LATEST_VERSION}.tgz"
-TEMP_DIR=$(mktemp -d)
-CURRENT_DIR=$(pwd)
-cd "$TEMP_DIR"
-nix-prefetch-url --unpack "$URL" 2>/dev/null | tail -n1 > hash.txt
-NEW_HASH=$(nix hash convert --hash-algo sha256 --to sri $(cat hash.txt))
-cd "$CURRENT_DIR"
-rm -rf "$TEMP_DIR"
+URL="https://registry.npmjs.org/ccusage/-/ccusage-${LATEST_VERSION}.tgz"
+# Note: ccusage uses fetchurl (not fetchzip), so we don't use --unpack
+HASH_OUTPUT=$(nix-prefetch-url "$URL" 2>/dev/null | tail -n1)
+NEW_HASH=$(nix hash convert --hash-algo sha256 --to sri "$HASH_OUTPUT")
 
 # Update hash in default.nix
 echo "   New source hash: $NEW_HASH"
@@ -71,7 +67,7 @@ echo "📦 Building to get new npm dependencies hash..."
 echo "   (This may take a moment...)"
 
 # Try to build and capture the new npmDepsHash
-BUILD_OUTPUT=$(cd "${PKG_DIR}" && NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' 2>&1 || true)
+BUILD_OUTPUT=$(cd "${PKG_DIR}" && nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' 2>&1 || true)
 if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
   NEW_NPM_HASH=$(echo "$BUILD_OUTPUT" | grep -oP 'got:\s+\Ksha256-[^\s]+')
   echo "   New npmDepsHash: $NEW_NPM_HASH"
@@ -79,8 +75,8 @@ if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
 
   # Build again to verify
   echo "🔨 Verifying build..."
-  if (cd "${PKG_DIR}" && NIXPKGS_ALLOW_UNFREE=1 nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' > /dev/null 2>&1); then
-    echo "✅ Successfully updated claude-code to version $LATEST_VERSION!"
+  if (cd "${PKG_DIR}" && nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' > /dev/null 2>&1); then
+    echo "✅ Successfully updated ccusage to version $LATEST_VERSION!"
   else
     echo "⚠️  Build failed, but files have been updated. May need manual adjustment."
   fi

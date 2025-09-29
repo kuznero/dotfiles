@@ -3,13 +3,13 @@
 
 buildGoModule rec {
   pname = "k9s";
-  version = "0.50.12";
+  version = "0.50.13";
 
   src = fetchFromGitHub {
     owner = "derailed";
     repo = "k9s";
     rev = "v${version}";
-    hash = "sha256-eN0z2Q6aMUcDnIyA1EoixKnDFvG7b7Z1F0LKZvV7pQo=";
+    hash = "sha256-X1AZArXeqfn+YSkj3c4gIVJrFvA4U3oV/XtvpsNhutg=";
   };
 
   ldflags = [
@@ -24,7 +24,7 @@ buildGoModule rec {
 
   proxyVendor = true;
 
-  vendorHash = "sha256-Y0GBQf/iPhfBAlQGd/Ecn2fv0pspVzOTrmOzAluwfNY=";
+  vendorHash = "sha256-6IYMrh1wIiU2jy9RMpFWfjlerpfW/luFcusmlWBS7RE=";
 
   # TODO investigate why some config tests are failing
   doCheck = !(stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64);
@@ -38,7 +38,7 @@ buildGoModule rec {
       command = "HOME=$(mktemp -d) k9s version -s";
       inherit version;
     };
-    updateScript = nix-update-script { };
+    updateScript = ./update.sh;
   };
 
   nativeBuildInputs = [ installShellFiles ];
