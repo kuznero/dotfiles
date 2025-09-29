@@ -2,14 +2,14 @@
 
 buildNpmPackage rec {
   pname = "ccusage";
-  version = "17.0.2";
+  version = "17.0.3";
 
   src = fetchurl {
     url = "https://registry.npmjs.org/ccusage/-/ccusage-${version}.tgz";
-    hash = "sha256-TWuBDOFetMz80TFicfKZJ90AB3R/wAgG6fezgOBuz+c=";
+    hash = "sha256-tfIT44gYt0QT1cC/W6fYndlSYD0RWhTKRp94QkwEi/0=";
   };
 
-  npmDepsHash = "sha256-Kyj+1sMxhpAQpE4P3I5bMJEVsj1IngcEBmv2+zRojAc=";
+  npmDepsHash = "sha256-We1YcBoMYun5HEJHyimZ2Rj/5y+2vbcQLf4FyL7QxGY=";
   forceEmptyCache = true;
 
   postPatch = ''
@@ -56,6 +56,8 @@ buildNpmPackage rec {
 
     runHook postInstallCheck
   '';
+
+  passthru.updateScript = ./update.sh;
 
   meta = {
     description =
