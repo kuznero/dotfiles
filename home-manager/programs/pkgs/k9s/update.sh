@@ -32,11 +32,8 @@ if [ -z "$LATEST_VERSION" ]; then
   exit 1
 fi
 
-echo "   Latest version: $LATEST_VERSION"
-
-# Get current version from default.nix
 CURRENT_VERSION=$(grep -oP 'version = "\K[^"]+' "${DEFAULT_NIX}")
-echo "   Current version: $CURRENT_VERSION"
+echo "   Versions: $CURRENT_VERSION -> $LATEST_VERSION"
 
 if [ "$LATEST_VERSION" = "$CURRENT_VERSION" ]; then
   echo "✅ Already up to date!"
@@ -88,8 +85,3 @@ else
   echo "⚠️  Couldn't automatically determine vendorHash."
   echo "   You'll need to build manually and update the hash."
 fi
-
-echo ""
-echo "📋 Summary of changes:"
-echo "   Version: $CURRENT_VERSION → $LATEST_VERSION"
-echo "   Files modified: ${DEFAULT_NIX}"
