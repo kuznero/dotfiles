@@ -10,7 +10,7 @@ PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
 # If we're running from repo root, adjust paths
 if [[ ! -f "${DEFAULT_NIX}" ]]; then
-  PKG_DIR="nixpkgs/ccusage"
+  PKG_DIR="home-manager/programs/pkgs/ccusage"
   DEFAULT_NIX="${PKG_DIR}/default.nix"
   PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
