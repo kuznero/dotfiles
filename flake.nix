@@ -168,8 +168,8 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "0xProto Nerd Font";
-                fontSize = "14";
+                fontFamily = "Agave Nerd Font";
+                fontSize = "16";
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
@@ -219,8 +219,8 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "0xProto Nerd Font";
-                fontSize = "18";
+                fontFamily = "Agave Nerd Font";
+                fontSize = "20";
                 adjustCellHeight = "0%";
               })
               ./home-manager/programs/git.nix
