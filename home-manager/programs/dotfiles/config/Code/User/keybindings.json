@@ -86,5 +86,9 @@
     "key": "f11",
     "command": "-workbench.action.debug.stepInto",
     "when": "debugState != 'inactive'"
+  },
+  {
+    "key": "shift+cmd+0",
+    "command": "claude-vscode.sidebar.open"
   }
 ]

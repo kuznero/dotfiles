@@ -26,6 +26,7 @@
       mc
       neofetch
       nerd-fonts._0xproto
+      nerd-fonts.agave
       nerd-fonts.envy-code-r
       nerd-fonts.fantasque-sans-mono
       nerd-fonts.hurmit

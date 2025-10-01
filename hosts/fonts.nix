@@ -22,6 +22,7 @@
       poppins
       source-sans-pro
       source-serif-pro
+      nerd-fonts.agave
       nerd-fonts.space-mono
     ];
   };
