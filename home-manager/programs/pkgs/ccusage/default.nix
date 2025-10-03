@@ -2,14 +2,14 @@
 
 buildNpmPackage rec {
   pname = "ccusage";
-  version = "17.0.3";
+  version = "17.1.1";
 
   src = fetchurl {
     url = "https://registry.npmjs.org/ccusage/-/ccusage-${version}.tgz";
-    hash = "sha256-tfIT44gYt0QT1cC/W6fYndlSYD0RWhTKRp94QkwEi/0=";
+    hash = "sha256-iyj6jO5Fhbg/swwrB87Tufp7dBQdRzkFZ/gMZlwmwnY=";
   };
 
-  npmDepsHash = "sha256-We1YcBoMYun5HEJHyimZ2Rj/5y+2vbcQLf4FyL7QxGY=";
+  npmDepsHash = "sha256-kmy56VyIl25bmmQ/OXI5ZWWPAxtgMv9SOo6Ua+Wl+Is=";
   forceEmptyCache = true;
 
   postPatch = ''

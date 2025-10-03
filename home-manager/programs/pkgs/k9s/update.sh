@@ -68,7 +68,24 @@ echo "📦 Building to get new vendorHash..."
 echo "   (This may take a moment...)"
 
 # Try to build and capture the new vendorHash
+# Check if nix-build is available
+if ! command -v nix-build &> /dev/null; then
+  echo "❌ Error: nix-build command not found. Cannot update vendorHash."
+  echo "   Please ensure Nix is installed in the build environment."
+  exit 1
+fi
+
+# First, try with <nixpkgs> if available
 BUILD_OUTPUT=$(cd "${PKG_DIR}" && nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' 2>&1 || true)
+
+# If <nixpkgs> is not available, try using a pinned nixpkgs from GitHub
+if echo "$BUILD_OUTPUT" | grep -q "while calling the 'findFile' builtin"; then
+  echo "   <nixpkgs> not found, trying with pinned nixpkgs..."
+  BUILD_OUTPUT=$(cd "${PKG_DIR}" && nix-build -E '
+    let
+      pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixpkgs-unstable.tar.gz") {};
+    in pkgs.callPackage ./default.nix {}' 2>&1 || true)
+fi
 if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
   NEW_VENDOR_HASH=$(echo "$BUILD_OUTPUT" | grep -oP 'got:\s+\Ksha256-[^\s]+')
   echo "   New vendorHash: $NEW_VENDOR_HASH"
@@ -76,12 +93,23 @@ if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
 
   # Build again to verify
   echo "🔨 Verifying build..."
+  # Try with <nixpkgs> first, fallback to pinned nixpkgs
   if (cd "${PKG_DIR}" && nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' > /dev/null 2>&1); then
     echo "✅ Successfully updated k9s to version $LATEST_VERSION!"
+  elif (cd "${PKG_DIR}" && nix-build -E '
+    let
+      pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixpkgs-unstable.tar.gz") {};
+    in pkgs.callPackage ./default.nix {}' > /dev/null 2>&1); then
+    echo "✅ Successfully updated k9s to version $LATEST_VERSION!"
   else
-    echo "⚠️  Build failed, but files have been updated. May need manual adjustment."
+    echo "❌ Error: Build verification failed after updating vendorHash."
+    exit 1
   fi
 else
-  echo "⚠️  Couldn't automatically determine vendorHash."
-  echo "   You'll need to build manually and update the hash."
+  echo "❌ Error: Could not determine vendorHash from build output."
+  echo "   Build output did not contain expected hash format."
+  echo ""
+  echo "Build output:"
+  echo "$BUILD_OUTPUT"
+  exit 1
 fi
