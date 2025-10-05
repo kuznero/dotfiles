@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+# Detect OS for sed compatibility
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  SED_INPLACE="sed -i ''"
+else
+  SED_INPLACE="sed -i"
+fi
+
 # Determine the script's directory and package path
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG_DIR="${SCRIPT_DIR}"
@@ -25,7 +32,7 @@ echo "🔄 Updating claude-code package..."
 echo "   Package directory: ${PKG_DIR}"
 
 echo "📦 Fetching latest version from npm..."
-CURRENT_VERSION=$(grep -oP 'version = "\K[^"]+' "${DEFAULT_NIX}")
+CURRENT_VERSION=$(sed -n 's/.*version = "\([^"]*\)".*/\1/p' "${DEFAULT_NIX}")
 LATEST_VERSION=$(npm view @anthropic-ai/claude-code version)
 echo "   Versions: $CURRENT_VERSION -> $LATEST_VERSION"
 
@@ -38,7 +45,7 @@ echo ""
 echo "📝 Updating to version $LATEST_VERSION..."
 
 # Update version in default.nix
-sed -i "s/version = \".*\"/version = \"$LATEST_VERSION\"/" "${DEFAULT_NIX}"
+eval "$SED_INPLACE \"s/version = \\\".*\\\"/version = \\\"$LATEST_VERSION\\\"/\" \"${DEFAULT_NIX}\""
 
 # Generate updated package-lock.json
 echo "🔧 Generating new package-lock.json..."
@@ -60,7 +67,7 @@ rm -rf "$TEMP_DIR"
 
 # Update hash in default.nix
 echo "   New source hash: $NEW_HASH"
-sed -i "s|hash = \"sha256-.*\"|hash = \"$NEW_HASH\"|" "${DEFAULT_NIX}"
+eval "$SED_INPLACE \"s|hash = \\\"sha256-.*\\\"|hash = \\\"$NEW_HASH\\\"|\" \"${DEFAULT_NIX}\""
 
 # Update npm dependencies hash
 echo "📦 Building to get new npm dependencies hash..."
@@ -86,9 +93,9 @@ if echo "$BUILD_OUTPUT" | grep -q "while calling the 'findFile' builtin"; then
     in pkgs.callPackage ./default.nix {}' 2>&1 || true)
 fi
 if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
-  NEW_NPM_HASH=$(echo "$BUILD_OUTPUT" | grep -oP 'got:\s+\Ksha256-[^\s]+')
+  NEW_NPM_HASH=$(echo "$BUILD_OUTPUT" | sed -n 's/.*got:[[:space:]]*\(sha256-[^[:space:]]*\).*/\1/p')
   echo "   New npmDepsHash: $NEW_NPM_HASH"
-  sed -i "s|npmDepsHash = \"sha256-.*\"|npmDepsHash = \"$NEW_NPM_HASH\"|" "${DEFAULT_NIX}"
+  eval "$SED_INPLACE \"s|npmDepsHash = \\\"sha256-.*\\\"|npmDepsHash = \\\"$NEW_NPM_HASH\\\"|\" \"${DEFAULT_NIX}\""
 
   # Build again to verify
   echo "🔨 Verifying build..."

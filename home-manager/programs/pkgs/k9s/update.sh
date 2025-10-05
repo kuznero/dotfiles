@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+# Detect OS for sed compatibility
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  SED_INPLACE="sed -i ''"
+else
+  SED_INPLACE="sed -i"
+fi
+
 # Determine the script's directory and package path
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG_DIR="${SCRIPT_DIR}"
@@ -25,14 +32,14 @@ echo "   Package directory: ${PKG_DIR}"
 # Get latest version from GitHub API
 echo "📦 Fetching latest version from GitHub..."
 LATEST_RELEASE=$(curl -s https://api.github.com/repos/derailed/k9s/releases/latest)
-LATEST_VERSION=$(echo "$LATEST_RELEASE" | grep -oP '"tag_name":\s*"v\K[^"]+')
+LATEST_VERSION=$(echo "$LATEST_RELEASE" | sed -n 's/.*"tag_name":[[:space:]]*"v\([^"]*\)".*/\1/p')
 
 if [ -z "$LATEST_VERSION" ]; then
   echo "❌ Error: Could not fetch latest version from GitHub"
   exit 1
 fi
 
-CURRENT_VERSION=$(grep -oP 'version = "\K[^"]+' "${DEFAULT_NIX}")
+CURRENT_VERSION=$(sed -n 's/.*version = "\([^"]*\)".*/\1/p' "${DEFAULT_NIX}")
 echo "   Versions: $CURRENT_VERSION -> $LATEST_VERSION"
 
 if [ "$LATEST_VERSION" = "$CURRENT_VERSION" ]; then
@@ -44,7 +51,7 @@ echo ""
 echo "📝 Updating to version $LATEST_VERSION..."
 
 # Update version in default.nix
-sed -i "s/version = \".*\"/version = \"$LATEST_VERSION\"/" "${DEFAULT_NIX}"
+eval "$SED_INPLACE \"s/version = \\\".*\\\"/version = \\\"$LATEST_VERSION\\\"/\" \"${DEFAULT_NIX}\""
 
 # Fetch new source hash for GitHub
 echo "🔍 Fetching new source hash..."
@@ -61,7 +68,7 @@ rm -f "$TEMP_OUTPUT"
 
 # Update hash in default.nix
 echo "   New source hash: $NEW_HASH"
-sed -i "s|hash = \"sha256-.*\"|hash = \"$NEW_HASH\"|" "${DEFAULT_NIX}"
+eval "$SED_INPLACE \"s|hash = \\\"sha256-.*\\\"|hash = \\\"$NEW_HASH\\\"|\" \"${DEFAULT_NIX}\""
 
 # Update vendor hash for Go modules
 echo "📦 Building to get new vendorHash..."
@@ -87,9 +94,9 @@ if echo "$BUILD_OUTPUT" | grep -q "while calling the 'findFile' builtin"; then
     in pkgs.callPackage ./default.nix {}' 2>&1 || true)
 fi
 if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
-  NEW_VENDOR_HASH=$(echo "$BUILD_OUTPUT" | grep -oP 'got:\s+\Ksha256-[^\s]+')
+  NEW_VENDOR_HASH=$(echo "$BUILD_OUTPUT" | sed -n 's/.*got:[[:space:]]*\(sha256-[^[:space:]]*\).*/\1/p')
   echo "   New vendorHash: $NEW_VENDOR_HASH"
-  sed -i "s|vendorHash = \"sha256-.*\"|vendorHash = \"$NEW_VENDOR_HASH\"|" "${DEFAULT_NIX}"
+  eval "$SED_INPLACE \"s|vendorHash = \\\"sha256-.*\\\"|vendorHash = \\\"$NEW_VENDOR_HASH\\\"|\" \"${DEFAULT_NIX}\""
 
   # Build again to verify
   echo "🔨 Verifying build..."
