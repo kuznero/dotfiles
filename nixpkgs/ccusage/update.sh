@@ -13,14 +13,11 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PKG_DIR="${SCRIPT_DIR}"
 DEFAULT_NIX="${PKG_DIR}/default.nix"
-PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
 
 # If we're running from repo root, adjust paths
 if [[ ! -f "${DEFAULT_NIX}" ]]; then
-  PKG_DIR="home-manager/programs/pkgs/ccusage"
+  PKG_DIR="nixpkgs/ccusage"
   DEFAULT_NIX="${PKG_DIR}/default.nix"
-  PACKAGE_LOCK="${PKG_DIR}/package-lock.json"
-
   if [[ ! -f "${DEFAULT_NIX}" ]]; then
     echo "❌ Error: Cannot find ccusage package directory"
     echo "   Please run from repository root or ccusage directory"

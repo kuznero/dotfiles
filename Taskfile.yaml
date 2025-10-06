@@ -13,7 +13,7 @@ tasks:
     cmds:
       - sudo nixos-rebuild switch --flake .#{{.NAME}} --impure
 
-  home-manager:switch:
+  home:switch:
     desc: Switches home-manager configuration
     dir: "{{.ROOT_DIR}}"
     env:

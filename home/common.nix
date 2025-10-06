@@ -5,8 +5,8 @@
     [
       bat
       btop
-      (pkgs.callPackage ./pkgs/ccusage { })
-      (pkgs.callPackage ./pkgs/claude-code { })
+      (pkgs.callPackage ../nixpkgs/ccusage { })
+      (pkgs.callPackage ../nixpkgs/claude-code { })
       cmatrix
       coreutils-full
       eza
@@ -17,7 +17,7 @@
       gcc
       gnupg
       go-task
-      (pkgs.callPackage ./pkgs/k9s { })
+      (pkgs.callPackage ../nixpkgs/k9s { })
       kubectl
       kubeswitch
       lan-mouse

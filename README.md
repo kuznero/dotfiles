@@ -23,7 +23,7 @@ You can provide custom user variables when running task commands:
 task nixos:switch NAME=moon USER="myuser" USER_NAME="My Full Name"
 
 # For Home Manager
-task home-manager:switch NAME=mac USER="myuser" USER_NAME="My Full Name"
+task home:switch NAME=mac USER="myuser" USER_NAME="My Full Name"
 ```
 
 If not provided, defaults to `USER=roku` and `USER_NAME="Roman Kuznetsov"`.
@@ -33,11 +33,11 @@ If not provided, defaults to `USER=roku` and `USER_NAME="Roman Kuznetsov"`.
 ```bash
 # Using task (recommended)
 task nixos:switch NAME=devos
-task home-manager:switch NAME=devos
+task home:switch NAME=devos
 
 # Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#devos --impure
-nix run home-manager/master -- switch --flake github:kuznero/dotfiles#devos
+nix run home/master -- switch --flake github:kuznero/dotfiles#devos
 ```
 
 ### Moon Lenovo Laptop (`x86_64-linux`)
@@ -45,11 +45,11 @@ nix run home-manager/master -- switch --flake github:kuznero/dotfiles#devos
 ```bash
 # Using task (recommended)
 task nixos:switch NAME=moon
-task home-manager:switch NAME=moon
+task home:switch NAME=moon
 
 # Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#moon --impure
-nix run home-manager/master -- switch --flake github:kuznero/dotfiles#moon
+nix run home/master -- switch --flake github:kuznero/dotfiles#moon
 ```
 
 ### Sun GitHub Runner Server (`x86_64-linux`)
@@ -66,10 +66,10 @@ sudo nixos-rebuild switch --flake github:kuznero/dotfiles#sun --impure
 
 ```bash
 # Using task (recommended)
-task home-manager:switch NAME=mac
+task home:switch NAME=mac
 
 # Or manually
-nix run home-manager/master -- switch --flake github:kuznero/dotfiles#mac
+nix run home/master -- switch --flake github:kuznero/dotfiles#mac
 ```
 
 ### WSL2 (`x86_64-linux`)
@@ -127,9 +127,9 @@ following:
 ```bash
 # Using task (recommended)
 task nixos:switch NAME=wsl
-task home-manager:switch NAME=wsl
+task home:switch NAME=wsl
 
 # Or manually
 sudo nixos-rebuild switch --flake github:kuznero/dotfiles#wsl --impure
-nix run home-manager/master -- switch --flake github:kuznero/dotfiles#wsl
+nix run home/master -- switch --flake github:kuznero/dotfiles#wsl
 ```
