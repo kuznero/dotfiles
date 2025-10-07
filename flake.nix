@@ -122,10 +122,10 @@
               ./nixos/user.nix
 
               # features
-              # ./nixos/docker.nix
+              ./nixos/docker.nix
               ./nixos/flatpak.nix
               ./nixos/gnupg.nix
-              ./nixos/podman.nix
+              # ./nixos/podman.nix
             ];
           };
       };
