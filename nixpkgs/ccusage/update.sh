@@ -75,6 +75,9 @@ if ! command -v nix-build &> /dev/null; then
   exit 1
 fi
 
+# Temporarily set npmDepsHash to empty string to force hash mismatch error
+eval "$SED_INPLACE \"s|npmDepsHash = \\\".*\\\"|npmDepsHash = \\\"\\\"|\" \"${DEFAULT_NIX}\""
+
 # First, try with <nixpkgs> if available
 BUILD_OUTPUT=$(cd "${PKG_DIR}" && nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}' 2>&1 || true)
 
@@ -89,7 +92,7 @@ fi
 if echo "$BUILD_OUTPUT" | grep -q "got:    sha256-"; then
   NEW_NPM_HASH=$(echo "$BUILD_OUTPUT" | sed -n 's/.*got:[[:space:]]*\(sha256-[^[:space:]]*\).*/\1/p')
   echo "   New npmDepsHash: $NEW_NPM_HASH"
-  eval "$SED_INPLACE \"s|npmDepsHash = \\\"sha256-.*\\\"|npmDepsHash = \\\"$NEW_NPM_HASH\\\"|\" \"${DEFAULT_NIX}\""
+  eval "$SED_INPLACE \"s|npmDepsHash = \\\".*\\\"|npmDepsHash = \\\"$NEW_NPM_HASH\\\"|\" \"${DEFAULT_NIX}\""
 
   # Build again to verify
   echo "🔨 Verifying build..."
