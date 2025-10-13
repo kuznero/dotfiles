@@ -12,7 +12,8 @@
     };
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Don't override nixpkgs - let nixvim use its own to avoid package availability issues
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
@@ -139,7 +140,9 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user userName pkgs-stable; };
+            extraSpecialArgs = {
+              inherit inputs system user userName pkgs-stable;
+            };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -167,12 +170,11 @@
               # ./home/jetbrains.nix
               ./home/messengers.nix
               ./home/mkdocs.nix
-              # (import ./home/nixvim.nix {
-              #   inputs = inputs;
-              #   pkgs = nixpkgs-unstable.legacyPackages.${system};
-              #   system = system;
-              #   ollamaModel = "qwen2.5-coder:1.5b";
-              # })
+              (import ./home/nixvim.nix {
+                inputs = inputs;
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                system = system;
+              })
               ./home/obsidian.nix
               ./home/office.nix
               ./home/pcloud.nix
@@ -194,7 +196,9 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user userName pkgs-stable; };
+            extraSpecialArgs = {
+              inherit inputs system user userName pkgs-stable;
+            };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -216,12 +220,11 @@
               })
               ./home/git.nix
               ./home/mkdocs.nix
-              # (import ./home/nixvim.nix {
-              #   inputs = inputs;
-              #   pkgs = nixpkgs-unstable.legacyPackages.${system};
-              #   system = system;
-              #   ollamaModel = "qwen2.5-coder:7b";
-              # })
+              (import ./home/nixvim.nix {
+                inputs = inputs;
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                system = system;
+              })
               ./home/ollama.nix
               ./home/scripts.nix
               ./home/tmux.nix
@@ -239,7 +242,9 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit inputs system user userName pkgs-stable; };
+            extraSpecialArgs = {
+              inherit inputs system user userName pkgs-stable;
+            };
             pkgs = nixpkgs-unstable.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -253,12 +258,11 @@
               ./home/fzf.nix
               ./home/git.nix
               ./home/mkdocs.nix
-              # (import ./home/nixvim.nix {
-              #   inputs = inputs;
-              #   pkgs = nixpkgs-unstable.legacyPackages.${system};
-              #   system = system;
-              #   ollamaModel = "qwen2.5-coder:1.5b";
-              # })
+              (import ./home/nixvim.nix {
+                inputs = inputs;
+                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                system = system;
+              })
               ./home/obsidian.nix
               ./home/scripts.nix
               ./home/tmux.nix

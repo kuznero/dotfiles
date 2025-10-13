@@ -1,10 +1,10 @@
-{ inputs, pkgs, ollamaModel ? "qwen2.5-coder:7b", ... }:
+{ inputs, pkgs, ... }:
 
 # NOTE: after installing nixvim, start it, and run `checkhealth` command to ensure no errors.
 # NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
 
 {
-  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
+  imports = [ inputs.nixvim.homeModules.nixvim ];
 
   home.packages = with pkgs; [ chafa gomodifytags impl ueberzugpp viu ];
 
@@ -158,16 +158,16 @@
 
                 for i, line in ipairs(lines) do
                   local line_indent = line:match("^(%s*)") or ""
-                  
+
                   -- Check if this line is a quote (starts with > after optional whitespace)
                   local quote_match = line:match("^" .. line_indent:gsub(".", "%%%0") .. "(>+%s*)")
-                  
+
                   -- Check if this line starts a new list item (after potential quote prefix)
                   local check_line = line
                   if quote_match then
                     check_line = line:sub(#line_indent + #quote_match + 1)
                   end
-                  
+
                   local _, _, line_list_marker
                   if quote_match then
                     -- For quotes, check for list markers after the quote prefix
@@ -185,7 +185,7 @@
 
                   -- Determine if we need to start a new block
                   local needs_new_block = false
-                  
+
                   if i == 1 then
                     -- First line always starts a new block
                     needs_new_block = true
@@ -195,7 +195,7 @@
                   elseif line_list_marker and #current_block > 0 then
                     -- New list item starts
                     needs_new_block = true
-                  elseif not quote_match and not line_list_marker and 
+                  elseif not quote_match and not line_list_marker and
                          current_quote_prefix and #line:gsub("^%s*", "") > 0 then
                     -- Non-quote line after a quote block
                     needs_new_block = true
@@ -281,13 +281,16 @@
       {
         event = "BufEnter";
         pattern = [ "*.md" "*.markdown" ];
-        command = "setlocal textwidth=80 nowrap tabstop=4 shiftwidth=4 expandtab";
-        desc = "Enforce textwidth=80, nowrap, and 4-space tabs on markdown buffer enter";
+        command =
+          "setlocal textwidth=80 nowrap tabstop=4 shiftwidth=4 expandtab";
+        desc =
+          "Enforce textwidth=80, nowrap, and 4-space tabs on markdown buffer enter";
       }
       {
         event = "BufWinEnter";
         pattern = [ "*.md" "*.markdown" ];
-        command = "setlocal textwidth=80 nowrap tabstop=4 shiftwidth=4 expandtab";
+        command =
+          "setlocal textwidth=80 nowrap tabstop=4 shiftwidth=4 expandtab";
         desc = "Enforce settings when window displays markdown buffer";
       }
       {
@@ -432,6 +435,40 @@
           desc = "Dap: Terminate";
         };
       }
+      # Unmap Neovim's built-in comment keymaps to avoid conflicts with Comment.nvim
+      {
+        mode = [ "n" "x" ];
+        key = "gc";
+        action = "<Nop>";
+      }
+      {
+        mode = [ "n" "x" ];
+        key = "gb";
+        action = "<Nop>";
+      }
+      {
+        mode = "n";
+        key = "gcc";
+        action = "<Nop>";
+      }
+      {
+        mode = "n";
+        key = "gbc";
+        action = "<Nop>";
+      }
+      # Diagnostic navigation
+      {
+        mode = "n";
+        key = "]d";
+        action = "<cmd>lua vim.diagnostic.goto_next()<CR>";
+        options = { desc = "Go to next diagnostic"; };
+      }
+      {
+        mode = "n";
+        key = "[d";
+        action = "<cmd>lua vim.diagnostic.goto_prev()<CR>";
+        options = { desc = "Go to previous diagnostic"; };
+      }
     ];
 
     editorconfig.enable = true;
@@ -528,116 +565,6 @@
               buffer = { score_offset = -7; };
               lsp = { fallbacks = [ ]; };
             };
-          };
-        };
-      };
-      copilot-vim.enable = true;
-      codecompanion = {
-        enable = true;
-        settings = {
-          adapters = {
-            ollama = {
-              __raw = ''
-                function()
-                  return require('codecompanion.adapters').extend('ollama', {
-                    env = {
-                      url = "http://127.0.0.1:11434",
-                    },
-                    schema = {
-                      model = {
-                        default = '${ollamaModel}',
-                        -- default = "llama3.1:8b-instruct-q8_0",
-                      },
-                      num_ctx = {
-                        default = 32768,
-                      },
-                    },
-                  })
-                end
-              '';
-            };
-          };
-          display = {
-            action_palette = {
-              opts = { show_default_prompt_library = true; };
-              provider = "default";
-            };
-            chat = {
-              window = {
-                layout = "vertical";
-                opts = { breakindent = true; };
-              };
-            };
-          };
-          # prompt_library = {
-          #   "Custom Prompt" = {
-          #     description = "Prompt the LLM from Neovim";
-          #     opts = {
-          #       index = 3;
-          #       is_default = true;
-          #       is_slash_cmd = false;
-          #       user_prompt = true;
-          #     };
-          #     prompts = [{
-          #       content = {
-          #         __raw = ''
-          #           function(context)
-          #             return fmt(
-          #               [[I want you to act as a senior %s developer. I will ask you specific questions and I want you to return raw code only (no codeblocks and no explanations). If you can't respond with code, respond with nothing]],
-          #               context.filetype
-          #             )
-          #           end
-          #         '';
-          #       };
-          #       opts = {
-          #         tag = "system_tag";
-          #         visible = false;
-          #       };
-          #       role = { __raw = "system"; };
-          #     }];
-          #     strategy = "inline";
-          #   };
-          #   "Generate a Commit Message" = {
-          #     description = "Generate a commit message";
-          #     opts = {
-          #       auto_submit = true;
-          #       index = 10;
-          #       is_default = true;
-          #       is_slash_cmd = true;
-          #       short_name = "commit";
-          #     };
-          #     prompts = [{
-          #       content = {
-          #         __raw = ''
-          #           function()
-          #             return fmt(
-          #               [[You are an expert at following the Conventional Commit specification. Given the git diff listed below, please generate a commit message for me:
-          #
-          #               ```diff
-          #               %s
-          #               ```
-          #               ]],
-          #               vim.fn.system("git diff --no-ext-diff --staged")
-          #             )
-          #           end
-          #         '';
-          #       };
-          #       opts = { contains_code = true; };
-          #       role = "user";
-          #     }];
-          #     strategy = "chat";
-          #   };
-          # };
-          opts = {
-            log_level = "TRACE";
-            send_code = true;
-            use_default_actions = true;
-            use_default_prompts = true;
-          };
-          strategies = {
-            agent = { adapter = "copilot"; };
-            chat = { adapter = "copilot"; };
-            inline = { adapter = "copilot"; };
           };
         };
       };
@@ -775,108 +702,117 @@
         enable = true;
         lspServersToEnable = "all";
       };
-      mini = { enable = true; };
+      mini = {
+        enable = true;
+        mockDevIcons = true;
+        modules = {
+          # Only enable icons module
+          icons = { };
+        };
+      };
       mkdnflow = {
         enable = true;
-        modules = {
-          bib = true;
-          buffers = true;
-          conceal = true;
-          cursor = true;
-          folds = true;
-          links = true;
-          lists = true;
-          maps = true;
-          paths = true;
-          tables = true;
-          yaml = false;
-        };
-        filetypes = {
-          md = true;
-          rmd = true;
-          markdown = true;
-        };
-        createDirs = true;
-        perspective = {
-          priority = "first";
-          fallback = "first";
-          rootTell = false;
-          nvimWdHeel = false;
-          update = true;
-        };
-        wrap = true; # Disabled - let autocmds handle wrap setting
-        bib = {
-          defaultPath = null;
-          findInRoot = true;
-        };
-        silent = false;
-        links = {
-          style = "markdown";
-          conceal = false;
-          context = 0;
-          implicitExtension = null;
-          transformExplicit = false;
-          transformImplicit = ''
-            function(text)
-              text = text:gsub(" ", "-")
-              text = text:lower()
-              text = os.date('%Y-%m-%d_')..text
-              return(text)
-            end
-          '';
-        };
-        toDo = {
-          symbols = [ " " "-" "X" ];
-          updateParents = true;
-          notStarted = " ";
-          inProgress = "-";
-          complete = "X";
-        };
-        tables = {
-          trimWhitespace = true;
-          formatOnMove = true;
-          autoExtendRows = false;
-          autoExtendCols = false;
-        };
-        yaml = { bib = { override = false; }; };
-        mappings = {
-          MkdnCreateLink = false;
-          MkdnCreateLinkFromClipboard = false;
-          MkdnDecreaseHeading = false;
-          MkdnDestroyLink = false;
-          MkdnEnter = false;
-          MkdnExtendList = false;
-          MkdnFoldSection = false;
-          MkdnFollowLink = false;
-          MkdnGoBack = false;
-          MkdnGoForward = false;
-          MkdnIncreaseHeading = false;
-          MkdnMoveSource = false;
-          MkdnNewListItem = false;
-          MkdnNewListItemAboveInsert = false;
-          MkdnNewListItemBelowInsert = false;
-          MkdnNextHeading = false;
-          MkdnNextLink = false;
-          MkdnPrevHeading = false;
-          MkdnPrevLink = false;
-          MkdnSTab = false;
-          MkdnTab = false;
-          MkdnTableNewColAfter = false;
-          MkdnTableNewColBefore = false;
-          MkdnTableNewRowAbove = false;
-          MkdnTableNewRowBelow = false;
-          MkdnTableNextCell = false;
-          MkdnTableNextRow = false;
-          MkdnTablePrevCell = false;
-          MkdnTablePrevRow = false;
-          MkdnToggleToDo = false;
-          MkdnUnfoldSection = false;
-          MkdnUpdateNumbering = false;
-          MkdnYankAnchorLink = false;
-          MkdnYankFileAnchorLink = false;
-          MkdnTableFormat = {
-            key = "<leader>ft";
-            modes = "n";
+        settings = {
+          mappings = {
+            MkdnCreateLink = false;
+            MkdnCreateLinkFromClipboard = false;
+            MkdnDecreaseHeading = false;
+            MkdnDestroyLink = false;
+            MkdnEnter = false;
+            MkdnExtendList = false;
+            MkdnFoldSection = false;
+            MkdnFollowLink = false;
+            MkdnGoBack = false;
+            MkdnGoForward = false;
+            MkdnIncreaseHeading = false;
+            MkdnMoveSource = false;
+            MkdnNewListItem = false;
+            MkdnNewListItemAboveInsert = false;
+            MkdnNewListItemBelowInsert = false;
+            MkdnNextHeading = false;
+            MkdnNextLink = false;
+            MkdnPrevHeading = false;
+            MkdnPrevLink = false;
+            MkdnSTab = false;
+            MkdnTab = false;
+            MkdnTableNewColAfter = false;
+            MkdnTableNewColBefore = false;
+            MkdnTableNewRowAbove = false;
+            MkdnTableNewRowBelow = false;
+            MkdnTableNextCell = false;
+            MkdnTableNextRow = false;
+            MkdnTablePrevCell = false;
+            MkdnTablePrevRow = false;
+            MkdnToggleToDo = false;
+            MkdnUnfoldSection = false;
+            MkdnUpdateNumbering = false;
+            MkdnYankAnchorLink = false;
+            MkdnYankFileAnchorLink = false;
+            MkdnTableFormat = {
+              key = "<leader>ft";
+              modes = "n";
+            };
+          };
+          yaml = { bib = { override = false; }; };
+          tables = {
+            trim_whitespace = true;
+            format_on_move = true;
+            auto_extend_rows = false;
+            auto_extend_cols = false;
+          };
+          toDo = {
+            symbols = [ " " "-" "X" ];
+            update_parents = true;
+            not_started = " ";
+            in_progress = "-";
+            complete = "X";
+          };
+          links = {
+            style = "markdown";
+            conceal = false;
+            context = 0;
+            implicit_extension = null;
+            transform_explicit = false;
+            transform_implicit = ''
+              function(text)
+                text = text:gsub(" ", "-")
+                text = text:lower()
+                text = os.date('%Y-%m-%d_')..text
+                return(text)
+              end
+            '';
+          };
+          silent = false;
+          bib = {
+            default_path = null;
+            find_in_root = true;
+          };
+          wrap = true; # Disabled - let autocmds handle wrap setting
+          perspective = {
+            priority = "first";
+            fallback = "first";
+            root_tell = false;
+            nvim_wd_heel = false;
+            update = true;
+          };
+          createDirs = true;
+          filetypes = {
+            md = true;
+            rmd = true;
+            markdown = true;
+          };
+          modules = {
+            bib = true;
+            buffers = true;
+            conceal = true;
+            cursor = true;
+            folds = true;
+            links = true;
+            lists = true;
+            maps = true;
+            paths = true;
+            tables = true;
+            yaml = false;
           };
         };
       };
@@ -946,7 +882,7 @@
                     function()
                         local msg = ""
                         local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-                        local clients = vim.lsp.get_active_clients()
+                        local clients = vim.lsp.get_clients()
                         if next(clients) == nil then
                             return msg
                         end
@@ -1000,41 +936,44 @@
       };
       neo-tree = {
         enable = true;
-        autoCleanAfterSessionRestore = true;
-        closeIfLastWindow = true;
-        window.position = "left";
-        filesystem = {
-          followCurrentFile.enabled = true;
-          filteredItems = {
-            hideHidden = false;
-            hideDotfiles = false;
-            forceVisibleInEmptyFolder = true;
-            hideGitignored = false;
-          };
-        };
-        eventHandlers = {
-          file_opened = ''
-            function(file_path)
-              -- Auto close neo-tree when a file is opened
-              require("neo-tree").close_all()
-            end
-          '';
-        };
-        defaultComponentConfigs = {
-          diagnostics = {
-            symbols = {
-              hint = "";
-              info = "";
-              warn = "";
-              error = "";
-            };
-            highlights = {
-              hint = "DiagnosticSignHint";
-              info = "DiagnosticSignInfo";
-              warn = "DiagnosticSignWarn";
-              error = "DiagnosticSignError";
+        settings = {
+          log_level = "info";
+          auto_clean_after_session_restore = true;
+          close_if_last_window = true;
+          default_component_configs = {
+            diagnostics = {
+              symbols = {
+                hint = "";
+                info = "";
+                warn = "";
+                error = "";
+              };
+              highlights = {
+                hint = "DiagnosticSignHint";
+                info = "DiagnosticSignInfo";
+                warn = "DiagnosticSignWarn";
+                error = "DiagnosticSignError";
+              };
             };
           };
+          event_handlers = {
+            file_opened = ''
+              function(file_path)
+                -- Auto close neo-tree when a file is opened
+                require("neo-tree").close_all()
+              end
+            '';
+          };
+          filesystem = {
+            follow_current_file.enabled = true;
+            filtered_items = {
+              hide_hidden = false;
+              hide_dotfiles = false;
+              force_visible_in_empty_folder = true;
+              hide_gitignored = false;
+            };
+          };
+          window.position = "left";
         };
       };
       nix.enable = true;
@@ -1129,10 +1068,6 @@
           "gd" = {
             action = "lsp_definitions";
             options = { desc = "Telescope LSP Definitions"; };
-          };
-          "gr" = {
-            action = "lsp_references";
-            options = { desc = "Telescope LSP References"; };
           };
         };
         # themes: dropdown, cursor, ivy
@@ -1340,7 +1275,7 @@
           yaml
         ];
         settings = {
-          auto_install = true;
+          auto_install = false;
           highlight.enable = true;
           indent.enable = true;
         };

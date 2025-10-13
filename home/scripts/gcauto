@@ -17,10 +17,38 @@ command -v claude >/dev/null 2>&1 || {
 
 set -e
 
-PROMPT="Look at the staged git changes and create a conventional commit message (e.g., 'feat: Add new feature', 'fix: Resolve bug', 'refactor: Refactor old code', 'docs: Update documentation'). Only respond with the complete message, including the type and scope if applicable, and no affirmation."
+PROMPT="Look at the staged git changes and create a conventional commit message following the Conventional Commits specification (conventionalcommits.org v1.0.0).
+
+Note: Keywords MUST, SHOULD, MAY, etc. are interpreted per RFC 2119.
+
+REQUIRED FORMAT:
+<type>[optional scope][optional !]: <description>
+
+[optional body]
+
+[optional footer(s)]
+
+SPECIFICATION RULES:
+- Commits MUST be prefixed with a type (noun: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert)
+- Type 'feat' MUST be used when adding a new feature
+- Type 'fix' MUST be used when representing a bug fix
+- A scope MAY be provided after type in parenthesis, e.g., 'fix(parser):'
+- Description MUST immediately follow the colon and space
+- Description is a short summary of code changes
+- A longer body MAY be provided after the description (one blank line after)
+- Body is free-form and MAY consist of multiple newline-separated paragraphs
+- Footers MAY be provided one blank line after the body
+- Each footer MUST consist of: word token + (': ' or ' #') + string value
+- Footer tokens MUST use '-' instead of spaces, e.g., 'Acked-by:' (except BREAKING CHANGE)
+- Breaking changes MUST be indicated by '!' before ':' OR 'BREAKING CHANGE:' footer
+- If '!' is used, 'BREAKING CHANGE:' footer MAY be omitted
+- BREAKING CHANGE MUST be uppercase when used as footer token
+- BREAKING-CHANGE is synonymous with BREAKING CHANGE
+
+IMPORTANT: Only respond with the complete commit message. No affirmation, explanation, or markdown formatting."
 COMMIT_MSG=$(claude -p "${PROMPT}")
 
-git commit -m "${COMMIT_MSG}" "$@" || {
-  echo "Message: ${COMMIT_MSG}"
-  exit 1
+git "$@" commit -m "${COMMIT_MSG}" || {
+	echo "Message: ${COMMIT_MSG}"
+	exit 1
 }
