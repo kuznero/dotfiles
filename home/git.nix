@@ -43,7 +43,7 @@
     };
     includes = [{
       path = "~/.config/git/bc-config";
-      condition = "gitdir:~/Data/Projects/bc/";
+      condition = "gitdir/i:**/data/projects/bc/";
     }];
   };
 
