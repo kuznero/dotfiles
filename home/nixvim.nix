@@ -641,7 +641,7 @@
             untracked = { text = "┆"; };
           };
           linehl = true;
-          show_deleted = true;
+          show_deleted = false;
           current_line_blame = true;
           current_line_blame_opts = {
             virt_text = true;
