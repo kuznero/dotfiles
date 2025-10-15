@@ -469,6 +469,19 @@
         action = "<cmd>lua vim.diagnostic.goto_prev()<CR>";
         options = { desc = "Go to previous diagnostic"; };
       }
+      # Gitsigns hunk navigation
+      {
+        mode = "n";
+        key = "]c";
+        action = "<cmd>Gitsigns next_hunk<CR>";
+        options = { desc = "Go to next git hunk"; };
+      }
+      {
+        mode = "n";
+        key = "[c";
+        action = "<cmd>Gitsigns prev_hunk<CR>";
+        options = { desc = "Go to previous git hunk"; };
+      }
     ];
 
     editorconfig.enable = true;
@@ -615,7 +628,28 @@
       comment.enable = true;
       coverage.enable = true;
       dressing.enable = true;
-      gitsigns.enable = true;
+      gitsigns = {
+        enable = true;
+        settings = {
+          base = "origin/main";
+          signs = {
+            add = { text = "│"; };
+            change = { text = "│"; };
+            delete = { text = "_"; };
+            topdelete = { text = "‾"; };
+            changedelete = { text = "~"; };
+            untracked = { text = "┆"; };
+          };
+          linehl = true;
+          show_deleted = true;
+          current_line_blame = true;
+          current_line_blame_opts = {
+            virt_text = true;
+            virt_text_pos = "eol";
+            delay = 1000;
+          };
+        };
+      };
       lazygit.enable = true;
       helm.enable = true;
       lint = {
