@@ -5,7 +5,6 @@
     [
       bat
       btop
-      (pkgs.callPackage ../nixpkgs/ccusage { })
       (pkgs.callPackage ../nixpkgs/claude-code { })
       cmatrix
       coreutils-full
