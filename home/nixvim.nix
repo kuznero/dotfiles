@@ -326,6 +326,11 @@
       }
       {
         mode = "n";
+        key = "<leader>o";
+        action = "<cmd>AerialNavToggle<CR>";
+      }
+      {
+        mode = "n";
         key = "<leader>c";
         action = "<cmd>CodeCompanionActions<CR>";
       }
