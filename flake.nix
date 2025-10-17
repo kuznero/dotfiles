@@ -215,7 +215,7 @@
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "Agave Nerd Font";
-                fontSize = "20";
+                fontSize = "22";
                 adjustCellHeight = "0%";
               })
               ./home/git.nix
