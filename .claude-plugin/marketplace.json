@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dotfiles-plugins",
+  "version": "1.0.0",
+  "description": "Bundled plugins for Dotfiles",
+  "owner": {
+    "name": "Roman Kuznetsov",
+    "email": "roman@kuznero.com"
+  },
+  "plugins": [
+    {
+      "name": "devflow",
+      "description": "Development workflow automation for git and GitHub",
+      "source": "./.claude/plugins/devflow",
+      "category": "development"
+    }
+  ]
+}

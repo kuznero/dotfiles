@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "dotfiles-plugins": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  },
+  "enabledPlugins": {
+    "devflow@dotfiles-plugins": true
+  }
+}
