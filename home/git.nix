@@ -9,7 +9,7 @@
       condition = "gitdir/i:**/data/projects/bc/";
     }];
     settings = {
-      aliases = {
+      alias = {
         st = "status";
         ci = "commit";
         co = "checkout";
