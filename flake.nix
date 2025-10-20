@@ -153,7 +153,6 @@
               ./home/bcompare.nix
               ./home/browsers.nix
               ./home/common.nix
-              # ./home/cursor.nix
               ./home/dotfiles.nix
               ./home/filezilla.nix
               ./home/fzf.nix
@@ -163,7 +162,7 @@
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "Agave Nerd Font";
-                fontSize = "16";
+                fontSize = "18";
                 adjustCellHeight = "0%";
               })
               ./home/git.nix

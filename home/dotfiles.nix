@@ -10,8 +10,8 @@
       source = ./dotfiles/config/Code/User;
       recursive = true;
     };
-    ".config/ghostty" = {
-      source = ./dotfiles/config/ghostty;
+    ".config/ghostty/themes" = {
+      source = ./dotfiles/config/ghostty/themes;
       recursive = true;
     };
     ".config/k9s" = {
