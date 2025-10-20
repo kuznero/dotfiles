@@ -9,6 +9,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # ref: https://github.com/NixOS/nixpkgs/issues/448088
+  boot.kernelParams = [ "mt7921_common.disable_clc=1" ];
+
   networking.hostName = "moon";
   networking.networkmanager.enable = true;
 
