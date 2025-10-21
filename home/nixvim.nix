@@ -6,12 +6,13 @@
 {
   imports = [ inputs.nixvim.homeModules.nixvim ];
 
-  home.packages = with pkgs; [ chafa gomodifytags impl ueberzugpp viu ];
+  home.packages = with pkgs; [ chafa ueberzugpp viu ];
 
   programs.nixvim = {
     enable = true;
     package = pkgs.neovim-unwrapped;
-    extraPackages = with pkgs; [ gotools gofumpt delve ];
+    # Go tools removed - should be provided by project devShell
+    # to avoid Go version conflicts: gotools, gofumpt, delve
 
     extraPlugins = with pkgs; [
       vimPlugins.ayu-vim
@@ -674,46 +675,9 @@
         enable = true;
         servers = {
           gopls = {
-            enable = true;
-            autostart = true;
-            # ref: https://github.com/nix-community/nixvim/discussions/1442
-            package = pkgs.gopls;
-            extraOptions.settings.gopls = {
-              buildFlags = [ "-tags=unit,integration" ];
-              gofumpt = true;
-              codelenses = {
-                gc_details = false;
-                generate = true;
-                regenerate_cgo = true;
-                run_govulncheck = true;
-                test = true;
-                tidy = true;
-                upgrade_dependency = true;
-                vendor = true;
-              };
-              hints = {
-                assignVariableTypes = true;
-                compositeLiteralFields = true;
-                compositeLiteralTypes = true;
-                constantValues = true;
-                functionTypeParameters = true;
-                parameterNames = true;
-                rangeVariableTypes = true;
-              };
-              analyses = {
-                fieldalignment = true;
-                nilness = true;
-                unusedparams = true;
-                unusedwrite = true;
-                useany = true;
-              };
-              usePlaceholders = true;
-              completeUnimported = true;
-              staticcheck = true;
-              directoryFilters =
-                [ "-.git" "-.vscode" "-.idea" "-.vscode-test" "-node_modules" ];
-              semanticTokens = true;
-            };
+            # Disabled - manually configured in extraConfigLua to avoid bundling Go
+            # Actual configuration is at the bottom of this file in extraConfigLua
+            enable = false;
           };
           helm_ls.enable = true;
           buf_ls = {
@@ -831,10 +795,16 @@
           };
           diagnostics = {
             buf.enable = true;
-            golangci_lint.enable = true;
+            golangci_lint = {
+              enable = true;
+              package = null;
+            };
             hadolint.enable = true;
             markdownlint.enable = true;
-            staticcheck.enable = true;
+            staticcheck = {
+              enable = true;
+              package = null;
+            };
             terraform_validate = {
               enable = true;
               package = pkgs.terraform;
@@ -847,8 +817,14 @@
           };
           formatting = {
             # buf.enable = true;
-            gofumpt.enable = true;
-            goimports.enable = true;
+            gofumpt = {
+              enable = true;
+              package = null;
+            };
+            goimports = {
+              enable = true;
+              package = null;
+            };
             markdownlint.enable = true;
             nixfmt.enable = true;
             pg_format.enable = true;
@@ -1406,5 +1382,62 @@
       };
       zig.enable = true;
     };
+
+    # Manual gopls configuration to use version from PATH
+    # instead of nixvim bundling Go binary
+    extraConfigLua = ''
+      -- Configure gopls manually to use from PATH (project devShell)
+      -- Using new nvim 0.11+ API instead of deprecated lspconfig
+      vim.lsp.config.gopls = {
+        cmd = { 'gopls' },
+        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+        root_markers = { 'go.work', 'go.mod', '.git' },
+        settings = {
+          gopls = {
+            buildFlags = { "-tags=unit,integration" },
+            gofumpt = true,
+            codelenses = {
+              gc_details = false,
+              generate = true,
+              regenerate_cgo = true,
+              run_govulncheck = true,
+              test = true,
+              tidy = true,
+              upgrade_dependency = true,
+              vendor = true,
+            },
+            hints = {
+              assignVariableTypes = true,
+              compositeLiteralFields = true,
+              compositeLiteralTypes = true,
+              constantValues = true,
+              functionTypeParameters = true,
+              parameterNames = true,
+              rangeVariableTypes = true,
+            },
+            analyses = {
+              fieldalignment = true,
+              nilness = true,
+              unusedparams = true,
+              unusedwrite = true,
+              useany = true,
+            },
+            usePlaceholders = true,
+            completeUnimported = true,
+            staticcheck = true,
+            directoryFilters = { "-.git", "-.vscode", "-.idea", "-.vscode-test", "-node_modules" },
+            semanticTokens = true,
+          },
+        },
+      }
+
+      -- Enable gopls for Go files
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'go', 'gomod', 'gowork', 'gotmpl' },
+        callback = function(args)
+          vim.lsp.enable('gopls')
+        end,
+      })
+    '';
   };
 }
