@@ -14,8 +14,10 @@
     # Go tools removed - should be provided by project devShell
     # to avoid Go version conflicts: gotools, gofumpt, delve
 
+    # ref: https://vimcolorschemes.com/
     extraPlugins = with pkgs; [
       vimPlugins.ayu-vim
+      vimPlugins.base16-nvim
       vimPlugins.catppuccin-nvim
       vimPlugins.dracula-nvim
       vimPlugins.everforest
@@ -24,7 +26,10 @@
       vimPlugins.melange-nvim
       vimPlugins.monokai-pro-nvim
       vimPlugins.monokai-pro-nvim
+      vimPlugins.neomodern-nvim
       vimPlugins.nightfox-nvim
+      vimPlugins.oceanic-material
+      vimPlugins.oceanic-next
       vimPlugins.onedark-nvim
       vimPlugins.oxocarbon-nvim
       vimPlugins.vscode-nvim
