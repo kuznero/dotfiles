@@ -803,6 +803,35 @@
             golangci_lint = {
               enable = true;
               package = null;
+              settings = {
+                extra_args = {
+                  __raw = ''
+                    function()
+                      -- Try to find .golangci-lint.yaml in common locations
+                      local config_paths = {
+                        ".golangci-lint.yaml",
+                        ".golangci.yaml",
+                        ".golangci-lint.yml",
+                        ".golangci.yml",
+                        "config/.golangci-lint.yaml",
+                        "config/.golangci.yaml",
+                        "config/.golangci-lint.yml",
+                        "config/.golangci.yml",
+                        -- Add more custom paths as needed
+                      }
+
+                      for _, path in ipairs(config_paths) do
+                        local full_path = vim.fn.getcwd() .. "/" .. path
+                        if vim.fn.filereadable(full_path) == 1 then
+                          return { "--config", full_path }
+                        end
+                      end
+
+                      return {}
+                    end
+                  '';
+                };
+              };
             };
             hadolint.enable = true;
             markdownlint.enable = true;
