@@ -1420,6 +1420,51 @@
     # Manual gopls configuration to use version from PATH
     # instead of nixvim bundling Go binary
     extraConfigLua = ''
+      -- Function to discover all build tags in the project
+      local function discover_build_tags()
+        local root_dir = vim.fn.getcwd()
+        local tags = {}
+
+        -- Find all .go files and extract build tags
+        local find_cmd = string.format(
+          "find %s -type f -name '*.go' -exec grep -h '^//go:build\\|^// +build' {} \\; 2>/dev/null | sort -u",
+          vim.fn.shellescape(root_dir)
+        )
+
+        local handle = io.popen(find_cmd)
+        if handle then
+          for line in handle:lines() do
+            -- Extract tags from //go:build and // +build directives
+            -- Match patterns like: //go:build unit || integration
+            for tag in line:gmatch("([%w_]+)") do
+              if tag ~= "go" and tag ~= "build" and tag ~= "ignore" then
+                tags[tag] = true
+              end
+            end
+          end
+          handle:close()
+        end
+
+        -- Convert to comma-separated list
+        local tag_list = {}
+        for tag, _ in pairs(tags) do
+          table.insert(tag_list, tag)
+        end
+
+        if #tag_list > 0 then
+          local tags_str = table.concat(tag_list, ",")
+          local msg = "[gopls] Discovered build tags: " .. tags_str
+          print(msg)
+          vim.notify(msg, vim.log.levels.INFO)
+          return "-tags=" .. tags_str
+        else
+          local msg = "[gopls] No build tags discovered"
+          print(msg)
+          vim.notify(msg, vim.log.levels.INFO)
+        end
+        return nil
+      end
+
       -- Configure gopls manually to use from PATH (project devShell)
       -- Using new nvim 0.11+ API instead of deprecated lspconfig
       vim.lsp.config.gopls = {
@@ -1428,7 +1473,10 @@
         root_markers = { 'go.work', 'go.mod', '.git' },
         settings = {
           gopls = {
-            buildFlags = { "-tags=unit,integration" },
+            buildFlags = (function()
+              local build_tags = discover_build_tags()
+              return build_tags and { build_tags } or {}
+            end)(),
             gofumpt = true,
             codelenses = {
               gc_details = false,
