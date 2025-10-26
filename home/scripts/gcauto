@@ -45,7 +45,8 @@ SPECIFICATION RULES:
 - BREAKING CHANGE MUST be uppercase when used as footer token
 - BREAKING-CHANGE is synonymous with BREAKING CHANGE
 
-IMPORTANT: Only respond with the complete commit message. No affirmation, explanation, or markdown formatting."
+IMPORTANT: Only respond with the complete commit message. No affirmation, explanation, or markdown formatting.
+IMPORTANT: Do not note Claude Code as a co-author"
 COMMIT_MSG=$(claude -p "${PROMPT}")
 
 git "$@" commit -m "${COMMIT_MSG}" || {
