@@ -1,8 +1,0 @@
-{
-  "name": "devflow",
-  "description": "Development workflow automation for git and GitHub",
-  "version": "0.0.1",
-  "author": {
-    "name": "Roman Kuznetsov"
-  }
-}
