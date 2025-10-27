@@ -8,6 +8,8 @@ let
   tmuxThemeToggle = pkgs.writeShellScriptBin "tmux-theme-toggle" ''
     #!/usr/bin/env bash
 
+    THEME_FILE="$HOME/.config/tmux/theme"
+
     # Get current flavor from tmux
     current_flavor=$(tmux show-option -gqv @catppuccin_flavor)
 
@@ -17,6 +19,9 @@ let
     else
       new_flavor="latte"
     fi
+
+    # Save the new theme to file for persistence
+    echo "$new_flavor" > "$THEME_FILE"
 
     # Unset all theme color variables (they use -o flag so can't be overwritten)
     for var in thm_bg thm_fg thm_rosewater thm_flamingo thm_pink thm_mauve \
@@ -44,10 +49,22 @@ in
 {
   home.packages = [ tmuxThemeToggle ];
 
+  # Create writable theme file if it doesn't exist
+  home.activation.initTmuxTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    THEME_FILE="$HOME/.config/tmux/theme"
+    if [ ! -f "$THEME_FILE" ]; then
+      $DRY_RUN_CMD mkdir -p "$(dirname "$THEME_FILE")"
+      $DRY_RUN_CMD echo "latte" > "$THEME_FILE"
+    fi
+  '';
+
   catppuccin.tmux = {
     enable = true;
     flavor = "latte";
     extraConfig = ''
+      # Load saved theme from file if it exists
+      run-shell 'if [ -f ~/.config/tmux/theme ]; then tmux set-option -g @catppuccin_flavor "$(cat ~/.config/tmux/theme)"; fi'
+
       set -g @catppuccin_window_status_style "basic"
       set -g @catppuccin_window_text " #W"
       set -g @catppuccin_window_current_text " #W"
