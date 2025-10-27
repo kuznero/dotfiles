@@ -105,17 +105,14 @@ function tm() {
     tmux new-session -d -s $SESSION "$COMMAND"
 
     COUNTER=1
-    WINDOWS=("cc" "ops")
+    WINDOWS=("claude" "ops")
     for name in "${WINDOWS[@]}"; do
       COUNTER=$((COUNTER+1))
       tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
     done
 
-    tmux split-window -v -t "$SESSION:$COUNTER"
-    tmux select-pane -t "$SESSION:$COUNTER.1"
-
     tmux select-window -t "$SESSION:1"
-    tmux rename-window -t "$SESSION:1" "$SESSION"
+    tmux rename-window -t "$SESSION:1" "src"
 
     tmux attach-session -t "$SESSION"
   fi
