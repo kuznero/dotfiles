@@ -1,14 +1,57 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, config, lib, ... }:
 
+let
+  # Get the catppuccin plugin path from the Nix store
+  catppuccinPluginPath = "${config.catppuccin.sources.tmux}/share/tmux-plugins/catppuccin";
+
+  # Script to toggle between light and dark themes
+  tmuxThemeToggle = pkgs.writeShellScriptBin "tmux-theme-toggle" ''
+    #!/usr/bin/env bash
+
+    # Get current flavor from tmux
+    current_flavor=$(tmux show-option -gqv @catppuccin_flavor)
+
+    # Toggle between latte and mocha
+    if [[ "$current_flavor" == "latte" ]]; then
+      new_flavor="mocha"
+    else
+      new_flavor="latte"
+    fi
+
+    # Unset all theme color variables (they use -o flag so can't be overwritten)
+    for var in thm_bg thm_fg thm_rosewater thm_flamingo thm_pink thm_mauve \
+               thm_red thm_maroon thm_peach thm_yellow thm_green thm_teal \
+               thm_sky thm_sapphire thm_blue thm_lavender thm_subtext_1 \
+               thm_subtext_0 thm_overlay_2 thm_overlay_1 thm_overlay_0 \
+               thm_surface_2 thm_surface_1 thm_surface_0 thm_mantle thm_crust; do
+      tmux set-option -gu "@$var"
+    done
+
+    # Also unset status module text color variables
+    for module in application cpu session uptime battery; do
+      tmux set-option -gu "@catppuccin_status_''${module}_text_fg"
+      tmux set-option -gu "@catppuccin_status_''${module}_icon_fg"
+    done
+
+    # Set the new flavor in tmux
+    tmux set-option -g @catppuccin_flavor "$new_flavor"
+
+    # Source just the theme config file
+    # This reloads the theme based on the current @catppuccin_flavor value
+    tmux source-file "${catppuccinPluginPath}/catppuccin_tmux.conf"
+  '';
+in
 {
+  home.packages = [ tmuxThemeToggle ];
+
   catppuccin.tmux = {
     enable = true;
     flavor = "latte";
     extraConfig = ''
-      set -g @catppuccin_window_status_style "none"
+      set -g @catppuccin_window_status_style "basic"
       set -g @catppuccin_window_text " #W"
-      set -g @catppuccin_window_current_fill "number"
       set -g @catppuccin_window_current_text " #W"
+
       set -g status-right-length 100
       set -g status-left-length 100
       set -g status-left ""
@@ -37,6 +80,9 @@
 
       # Reload tmux config
       bind -n M-R source-file ~/.config/tmux/tmux.conf \; display "Configuration reloaded"
+
+      # Toggle theme (light/dark)
+      bind -n M-t run-shell "${tmuxThemeToggle}/bin/tmux-theme-toggle"
 
       # Easy navigation
       bind -n M-Left run-shell "if [ $(tmux display-message -p '#{pane_at_left}') -ne 1 ]; then tmux select-pane -L; else tmux select-window -p; fi"
