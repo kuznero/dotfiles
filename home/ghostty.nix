@@ -26,6 +26,7 @@ in {
     shell-integration-features = no-cursor
     cursor-style = block
     mouse-hide-while-typing = true
+    mouse-scroll-multiplier = 1.0
     macos-option-as-alt = true
   '';
 }
