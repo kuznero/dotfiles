@@ -161,7 +161,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Agave Nerd Font";
+                fontFamily = "ZedMono Nerd Font";
                 fontSize = "18";
                 adjustCellHeight = "0%";
               })
@@ -213,7 +213,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Agave Nerd Font";
+                fontFamily = "ZedMono Nerd Font";
                 fontSize = "22";
                 adjustCellHeight = "0%";
               })
