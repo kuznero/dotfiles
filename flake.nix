@@ -169,7 +169,7 @@
               # ./home/jetbrains.nix
               ./home/messengers.nix
               ./home/mkdocs.nix
-              (import ./home/nixvim.nix {
+              (import ./home/nixvim/default.nix {
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
@@ -219,7 +219,7 @@
               })
               ./home/git.nix
               ./home/mkdocs.nix
-              (import ./home/nixvim.nix {
+              (import ./home/nixvim/default.nix {
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
@@ -257,7 +257,7 @@
               ./home/fzf.nix
               ./home/git.nix
               ./home/mkdocs.nix
-              (import ./home/nixvim.nix {
+              (import ./home/nixvim/default.nix {
                 inputs = inputs;
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
