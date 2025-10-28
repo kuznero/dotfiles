@@ -739,7 +739,7 @@
           html.enabled = false;
         };
       };
-      smear-cursor.enable = true;
+      smear-cursor.enable = false;
       fzf-lua.enable = true;
       noice = {
         enable = true;
