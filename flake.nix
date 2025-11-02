@@ -162,7 +162,7 @@
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "ZedMono Nerd Font";
-                fontSize = "18";
+                fontSize = "16";
                 adjustCellHeight = "0%";
               })
               ./home/git.nix
