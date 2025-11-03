@@ -161,8 +161,8 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "ZedMono Nerd Font";
-                fontSize = "16";
+                fontFamily = "Hurmit Nerd Font";
+                fontSize = "14";
                 adjustCellHeight = "0%";
               })
               ./home/git.nix
