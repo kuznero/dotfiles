@@ -213,9 +213,10 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "ZedMono Nerd Font";
-                fontSize = "22";
-                adjustCellHeight = "0%";
+                fontFamily = "Hurmit Nerd Font";
+                fontSize = "20";
+                # adjustCellHeight = "0%";
+                adjustCellWidth = "-10%";
               })
               ./home/git.nix
               ./home/mkdocs.nix

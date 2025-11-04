@@ -1,6 +1,6 @@
 { inputs, pkgs, system, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
-, fontFamily ? "Hurmit Nerd Font", fontSize ? "12", adjustCellHeight ? "-20%"
-, ... }:
+, fontFamily ? "Hurmit Nerd Font", fontSize ? "12", adjustCellHeight ? "0%"
+, adjustCellWidth ? "0%", ... }:
 
 let
   configFile = if builtins.match ".*-darwin" system != null then
@@ -23,6 +23,7 @@ in {
     font-size = ${fontSize}
     font-style-bold = false
     adjust-cell-height = ${adjustCellHeight}
+    adjust-cell-width = ${adjustCellWidth}
     shell-integration-features = no-cursor
     cursor-style = block
     mouse-hide-while-typing = true
