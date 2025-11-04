@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+command -v git >/dev/null 2>&1 || {
+	echo "[error] git is not found"
+	exit 1
+}
+
+TARGET_BRANCH=$1
+TARGET_BRANCH=${TARGET_BRANCH:-"origin/main"}
+
+git reset --soft $(git merge-base HEAD "${TARGET_BRANCH}")
