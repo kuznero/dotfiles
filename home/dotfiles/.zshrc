@@ -85,22 +85,32 @@ function y() {
 }
 
 function tm() {
+  SESSION=$1
+
+  if [ -z "$SESSION" ]; then
+    SESSION="$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")"
+    SESSION=$(echo "$SESSION" | tr '.' '-' | tr '[:upper:]' '[:lower:]')
+  fi
+
+  # Check if we're already in tmux
   if [ -n "$TMUX" ]; then
-    echo "Script is already running inside a tmux session"
-  else
-    SESSION=$1
+    CURRENT_SESSION=$(tmux display-message -p '#S')
 
-    if [ -z "$SESSION" ]; then
-      SESSION="$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")"
-      SESSION=$(echo "$SESSION" | tr '.' '-' | tr '[:upper:]' '[:lower:]')
-    fi
-
-    if tmux has-session -t "$SESSION" 2>/dev/null; then
-      echo "$SESSION session already exists. Attaching..."
-      tmux attach-session -t "$SESSION"
+    # If we're already in the target session, do nothing
+    if [ "$CURRENT_SESSION" = "$SESSION" ]; then
+      echo "Already in session: $SESSION"
       return 0
     fi
 
+    # We're in tmux but targeting a different session
+    if tmux has-session -t "$SESSION" 2>/dev/null; then
+      echo "Switching to existing session: $SESSION"
+      tmux switch-client -t "$SESSION"
+      return 0
+    fi
+
+    # Target session doesn't exist, create it and switch
+    echo "Creating and switching to new session: $SESSION"
     COMMAND="$SHELL"
     tmux new-session -d -s $SESSION "$COMMAND"
 
@@ -114,8 +124,31 @@ function tm() {
     tmux select-window -t "$SESSION:1"
     tmux rename-window -t "$SESSION:1" "claude"
 
-    tmux attach-session -t "$SESSION"
+    tmux switch-client -t "$SESSION"
+    return 0
   fi
+
+  # Not in tmux, use attach/create logic
+  if tmux has-session -t "$SESSION" 2>/dev/null; then
+    echo "$SESSION session already exists. Attaching..."
+    tmux attach-session -t "$SESSION"
+    return 0
+  fi
+
+  COMMAND="$SHELL"
+  tmux new-session -d -s $SESSION "$COMMAND"
+
+  COUNTER=1
+  WINDOWS=("src" "ops")
+  for name in "${WINDOWS[@]}"; do
+    COUNTER=$((COUNTER+1))
+    tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
+  done
+
+  tmux select-window -t "$SESSION:1"
+  tmux rename-window -t "$SESSION:1" "claude"
+
+  tmux attach-session -t "$SESSION"
 }
 
 function ts() {
