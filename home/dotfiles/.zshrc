@@ -119,11 +119,6 @@ function tm() {
 }
 
 function ts() {
-  if ! tmux list-sessions &>/dev/null; then
-    echo "No tmux sessions found"
-    return 1
-  fi
-
   local session
   session=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows (created #{session_created})" 2>/dev/null | \
     fzf --prompt="Switch to session: " --height=40% --reverse --preview="tmux list-windows -t {1} -F '  #{window_index}: #{window_name}'" | \
