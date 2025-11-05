@@ -235,6 +235,19 @@
         action = "<cmd>GoplsDiscoverTags<CR>";
         options = { desc = "Discover Go build tags"; };
       }
+      # Git worktree operations
+      {
+        mode = "n";
+        key = "<leader>gw";
+        action = "<cmd>Telescope git_worktree git_worktree<CR>";
+        options = { desc = "List and switch git worktrees"; };
+      }
+      {
+        mode = "n";
+        key = "<leader>gW";
+        action = "<cmd>Telescope git_worktree create_git_worktree<CR>";
+        options = { desc = "Create new git worktree"; };
+      }
     ];
 
     editorconfig.enable = true;

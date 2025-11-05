@@ -91,7 +91,7 @@ function tm() {
     SESSION=$1
 
     if [ -z "$SESSION" ]; then
-      SESSION=$(basename "$(pwd)")
+      SESSION="$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")"
       SESSION=$(echo "$SESSION" | tr '.' '-' | tr '[:upper:]' '[:lower:]')
     fi
 
@@ -105,16 +105,36 @@ function tm() {
     tmux new-session -d -s $SESSION "$COMMAND"
 
     COUNTER=1
-    WINDOWS=("claude" "ops")
+    WINDOWS=("src" "ops")
     for name in "${WINDOWS[@]}"; do
       COUNTER=$((COUNTER+1))
       tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
     done
 
     tmux select-window -t "$SESSION:1"
-    tmux rename-window -t "$SESSION:1" "src"
+    tmux rename-window -t "$SESSION:1" "claude"
 
     tmux attach-session -t "$SESSION"
+  fi
+}
+
+function ts() {
+  if ! tmux list-sessions &>/dev/null; then
+    echo "No tmux sessions found"
+    return 1
+  fi
+
+  local session
+  session=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows (created #{session_created})" 2>/dev/null | \
+    fzf --prompt="Switch to session: " --height=40% --reverse --preview="tmux list-windows -t {1} -F '  #{window_index}: #{window_name}'" | \
+    cut -d: -f1)
+
+  if [ -n "$session" ]; then
+    if [ -n "$TMUX" ]; then
+      tmux switch-client -t "$session"
+    else
+      tmux attach-session -t "$session"
+    fi
   fi
 }
 
