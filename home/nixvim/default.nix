@@ -380,6 +380,10 @@
       comment.enable = true;
       coverage.enable = true;
       dressing.enable = true;
+      git-worktree = {
+        enable = true;
+        enableTelescope = true;
+      };
       gitsigns = {
         enable = true;
         settings = {
