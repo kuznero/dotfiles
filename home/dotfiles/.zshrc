@@ -247,7 +247,7 @@ function gwtswitch() {
   git status
 }
 
-function gwcd() {
+function gwtcd() {
   local selection worktree
   selection=$(git worktree list | grep -v '(bare)' | fzf --height=40% --reverse --prompt="Select worktree: ")
   if [[ -n "$selection" ]]; then
