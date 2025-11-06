@@ -166,4 +166,85 @@ function ts() {
   fi
 }
 
+function gbclone() {
+  if ! command -v git &>/dev/null; then
+    echo "error: git is required but not installed" >&2
+    return 1
+  fi
+  local repo_url
+  repo_url=$1
+  if [ -z "${repo_url}" ]; then
+    echo "error: gbclone requires REPO_URL argument" >&2
+    return 1
+  fi
+  local default_branch
+  default_branch=$2
+  default_branch="${default_branch:-main}"
+  local repo
+  repo=$(basename "${repo_url}" .git)
+  if [ -d "${repo}" ]; then
+    echo "error: ${repo}/ folder already exists" >&2
+    return 1
+  fi
+  git clone --bare --branch "${default_branch}" --single-branch "${repo_url}" "${repo}" || return 1
+  pushd "${repo}" 2>&1 >/dev/null || return 1
+  git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*' || return 1
+  git fetch origin || return 1
+  # checkout default branch with tracking
+  git worktree add "branches/${default_branch}" "${default_branch}"
+  pushd "branches/${default_branch}" 2>&1 >/dev/null || return 1
+  git branch --set-upstream-to "origin/${default_branch}" "${default_branch}" || return 1
+  popd >/dev/null
+}
+
+function gwtswitch() {
+  if ! command -v git &>/dev/null; then
+    echo "error: git is required but not installed" >&2
+    return 1
+  fi
+  if ! command -v fzf &>/dev/null; then
+    echo "error: fzf is required but not installed" >&2
+    return 1
+  fi
+  local repo_root
+  repo_root=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+  if [ -z "${repo_root}" ]; then
+    echo "error: cannot locate bare Git repository" >&2
+    return 1
+  fi
+  cd "${repo_root}/" || return 1
+  git fetch origin || return 1
+  local branch
+  branch=$(git branch -r | grep -v HEAD | sed 's|origin/||' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | fzf --print-query --prompt="Choose remote branch: " --height=40% --reverse | tail -1)
+  if [ -z "${branch}" ]; then
+    echo "operation cancelled"
+    return 0
+  fi
+  local branch_path
+  branch_path="branches/${branch}"
+  if [ -d "${branch_path}" ]; then
+    echo "navigating to existing worktree ..."
+    cd "${branch_path}/" || return 1
+    git status || return 1
+    return 0
+  fi
+  if git show-ref --verify --quiet "refs/remotes/origin/${branch}"; then
+    # remote branch exists
+    git worktree add "${branch_path}" "${branch}" || return 1
+    cd "${branch_path}/" || return 1
+  else
+    # no remote branch
+    if git show-ref --verify --quiet "refs/heads/${branch}"; then
+      # local branch exists
+      git worktree add "${branch_path}" "${branch}" || return 1
+    else
+    # no local branch -> create one
+      git worktree add -b "${branch}" "${branch_path}" || return 1
+    fi
+    cd "${branch_path}/" || return 1
+    git push -u origin "${branch}" || return 1
+  fi
+  git status
+}
+
 export RPROMPT='$(kube_ps1 | tr -d "()" | sed "s/|/ | /") :: %F{green}$NIX_FLAKE_NAME%f'
