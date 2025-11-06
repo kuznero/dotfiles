@@ -249,7 +249,7 @@ function gwtswitch() {
 
 function gwcd() {
   local selection worktree
-  selection=$(git worktree list | grep -v '(bare)' | fzf --height=40% --reverse --prompt="Select worktree: " --preview='git status {1}' --preview-window=right:50%:wrap)
+  selection=$(git worktree list | grep -v '(bare)' | fzf --height=40% --reverse --prompt="Select worktree: ")
   if [[ -n "$selection" ]]; then
     worktree=$(echo "$selection" | awk '{print $1}')
     cd "$worktree" || return 1
