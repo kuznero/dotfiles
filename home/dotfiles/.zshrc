@@ -247,4 +247,13 @@ function gwtswitch() {
   git status
 }
 
+gwcd() {
+  local selection worktree
+  selection=$(git worktree list | grep -v '(bare)' | fzf --height=40% --reverse --prompt="Select worktree: " --preview='git status {1}' --preview-window=right:50%:wrap)
+  if [[ -n "$selection" ]]; then
+    worktree=$(echo "$selection" | awk '{print $1}')
+    cd "$worktree" || return 1
+  fi
+}
+
 export RPROMPT='$(kube_ps1 | tr -d "()" | sed "s/|/ | /") :: %F{green}$NIX_FLAKE_NAME%f'
