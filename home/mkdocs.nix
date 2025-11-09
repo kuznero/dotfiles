@@ -11,7 +11,7 @@
           mkdocs-material
           mkdocs-material-extensions
           mkdocs-mermaid2-plugin
-          mkdocs-minify
+          mkdocs-minify-plugin
         ]))
     ];
 }

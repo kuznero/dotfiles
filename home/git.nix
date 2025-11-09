@@ -3,7 +3,7 @@
 {
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.git;
+    package = pkgs.git;
     includes = [{
       path = "~/.config/git/bc-config";
       condition = "gitdir/i:**/data/projects/bc/";
