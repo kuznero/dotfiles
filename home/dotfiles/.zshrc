@@ -85,10 +85,67 @@ function y() {
 }
 
 function tm() {
-  SESSION=$1
+  local USE_NIX=true
+  local SESSION=""
+
+  # Parse arguments
+  for arg in "$@"; do
+    if [ "$arg" = "--nonix" ]; then
+      USE_NIX=false
+    else
+      SESSION="$arg"
+    fi
+  done
 
   if [ -z "$SESSION" ]; then
-    SESSION="$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")"
+    # Try to derive session name from git repository
+    if git rev-parse --git-dir >/dev/null 2>&1; then
+      local repo_root
+      repo_root=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+
+      if [ -n "$repo_root" ]; then
+        # Get repository name
+        # For normal repos, repo_root ends with .git, for bare repos it's the repo dir itself
+        local repo_name
+        if [ "$(basename "$repo_root")" = ".git" ]; then
+          # Normal repo: use parent directory name
+          repo_name=$(basename "$(dirname "$repo_root")")
+        else
+          # Bare repo: use repo_root basename
+          repo_name=$(basename "$repo_root")
+        fi
+
+        # Check if we're in a worktree
+        local worktree_path
+        worktree_path=$(git rev-parse --show-toplevel 2>/dev/null)
+
+        if [ -n "$worktree_path" ]; then
+          # For normal repos, check if worktree_path is the repo itself
+          if [ "$(basename "$repo_root")" = ".git" ] && [ "$worktree_path" = "$(dirname "$repo_root")" ]; then
+            # Normal clone (not a worktree): just use repo name
+            SESSION="$repo_name"
+          elif [ "$worktree_path" != "$repo_root" ]; then
+            # We're in a worktree, get the worktree/branch name
+            local worktree_name
+            worktree_name=$(basename "$worktree_path")
+            SESSION="${repo_name}/${worktree_name}"
+          else
+            # In bare repo, indicate with /bare
+            SESSION="${repo_name}/bare"
+          fi
+        else
+          # No worktree (likely in bare repo), indicate with /bare
+          SESSION="${repo_name}/bare"
+        fi
+      else
+        # Fallback to directory-based name
+        SESSION="$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")"
+      fi
+    else
+      # Not a git repo, use directory-based name
+      SESSION="$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")"
+    fi
+
     SESSION=$(echo "$SESSION" | tr '.' '-' | tr '[:upper:]' '[:lower:]')
   fi
 
@@ -124,6 +181,13 @@ function tm() {
     tmux select-window -t "$SESSION:1"
     tmux rename-window -t "$SESSION:1" "claude"
 
+    # Send nix develop to all windows if flake.nix exists and --nonix not set
+    if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
+      tmux send-keys -t "$SESSION:1" "nix develop" C-m
+      tmux send-keys -t "$SESSION:2" "nix develop" C-m
+      tmux send-keys -t "$SESSION:3" "nix develop" C-m
+    fi
+
     tmux switch-client -t "$SESSION"
     return 0
   fi
@@ -147,6 +211,13 @@ function tm() {
 
   tmux select-window -t "$SESSION:1"
   tmux rename-window -t "$SESSION:1" "claude"
+
+  # Send nix develop to all windows if flake.nix exists and --nonix not set
+  if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
+    tmux send-keys -t "$SESSION:1" "nix develop" C-m
+    tmux send-keys -t "$SESSION:2" "nix develop" C-m
+    tmux send-keys -t "$SESSION:3" "nix develop" C-m
+  fi
 
   tmux attach-session -t "$SESSION"
 }
