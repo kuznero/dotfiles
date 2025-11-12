@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  amountOfRunners = 30;
+  amountOfRunners = 50;
   runnerServiceOverrides = {
     CapabilityBoundingSet = [
       "CAP_AUDIT_CONTROL"
@@ -105,6 +105,8 @@ in {
       tokenFile = "/data/github-runner.conf";
       url = "https://github.com/lix-one";
       extraLabels = [ "${config.networking.hostName}" ];
+      workDir =
+        "/data/github-runner-work/${config.networking.hostName}-${toString n}";
       # extraPackages = with pkgs; [ cachix ];
       serviceOverrides = runnerServiceOverrides;
     };
