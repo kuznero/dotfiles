@@ -81,7 +81,7 @@ let
     RestrictRealtime = "no";
     RestrictSUIDSGID = "yes";
 
-    Restart = lib.mkForce "on-failure";
+    Restart = lib.mkForce "always";
     RestartSec = "10s";
   };
 in {
