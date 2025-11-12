@@ -112,6 +112,10 @@ in {
     };
   }) (lib.range 1 amountOfRunners));
 
+  systemd.tmpfiles.rules = map (n:
+    "d /data/github-runner-work/${config.networking.hostName}-${toString n} 0755 github-runner github-runner -"
+  ) (lib.range 1 amountOfRunners);
+
   systemd.services = lib.listToAttrs (map (n: rec {
     name = "github-runners-${config.networking.hostName}-${toString n}";
     value = { path = [ "/run/wrappers" "/run/current-system/sw/bin" ]; };
