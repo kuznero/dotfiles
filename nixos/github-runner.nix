@@ -109,7 +109,13 @@ in {
 
   systemd.services = lib.listToAttrs (map (n: rec {
     name = "github-runners-${config.networking.hostName}-${toString n}";
-    value = { path = [ "/run/wrappers" "/run/current-system/sw/bin" ]; };
+    value = {
+      path = [ "/run/wrappers" "/run/current-system/sw/bin" ];
+      serviceConfig = {
+        Restart = "on-failure";
+        RestartSec = "10s";
+      };
+    };
   }) (lib.range 1 amountOfRunners));
 
   # services.github-runners."${config.networking.hostName}-1" = {
