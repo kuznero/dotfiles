@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  amountOfRunners = 30;
+  amountOfRunners = 50;
   runnerServiceOverrides = {
     CapabilityBoundingSet = [
       "CAP_AUDIT_CONTROL"
