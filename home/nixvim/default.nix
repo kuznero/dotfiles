@@ -17,7 +17,7 @@
     # ref: https://vimcolorschemes.com/
     extraPlugins = with pkgs; [
       vimPlugins.ayu-vim
-      vimPlugins.base16-nvim
+      # vimPlugins.base16-nvim
       vimPlugins.catppuccin-nvim
       vimPlugins.dracula-nvim
       vimPlugins.everforest
