@@ -37,8 +37,10 @@ end
 
 -- Check if directory is in a git repository
 -- Only checks cwd, never searches parent directories
+-- Handles both normal clones (.git directory) and worktrees (.git file)
 local function is_git_repo(dir)
-  return vim.fn.isdirectory(dir .. '/.git') == 1
+  local git_path = dir .. '/.git'
+  return vim.fn.isdirectory(git_path) == 1 or vim.fn.filereadable(git_path) == 1
 end
 
 -- Update gopls build flags dynamically
