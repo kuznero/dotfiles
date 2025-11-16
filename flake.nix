@@ -182,6 +182,7 @@
               ./home/transmission.nix
               ./home/vscode.nix
               # ./home/xfce.nix
+              ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];
