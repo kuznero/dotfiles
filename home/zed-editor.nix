@@ -43,11 +43,13 @@
       terminal = {
         font_family = "Hurmit Nerd Font";
         font_size = 18;
-        # Terminal line height: comfortable (1.618), standard(1.3) or `{ "custom": 2 }`
         line_height = "standard";
+        shell = { program = "zsh"; };
       };
 
       vim_mode = true;
+
+      languages = { Nix = { language_servers = [ "nixd" "!nil" ]; }; };
     };
   };
 }
