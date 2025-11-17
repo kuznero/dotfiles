@@ -230,6 +230,7 @@
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/yabai.nix
+              ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];
