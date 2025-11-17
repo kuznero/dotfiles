@@ -432,6 +432,7 @@
           json = [ "jsonlint" ];
           sh = [ "shellcheck" ];
           bash = [ "shellcheck" ];
+          python = [ "mypy" ];
         };
       };
       lsp = {
@@ -456,6 +457,15 @@
             autostart = true;
           };
           ts_ls = {
+            enable = true;
+            autostart = true;
+          };
+          basedpyright = {
+            enable = true;
+            autostart = true;
+            rootMarkers = [ "pyproject.toml" ];
+          };
+          ruff = {
             enable = true;
             autostart = true;
           };
@@ -558,6 +568,7 @@
           };
           diagnostics = {
             buf.enable = true;
+            mypy.enable = true;
             golangci_lint = {
               enable = true;
               package = null;
@@ -1046,6 +1057,7 @@
           make
           markdown
           nix
+          python
           regex
           terraform
           toml
