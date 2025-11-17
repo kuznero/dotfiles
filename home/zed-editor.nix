@@ -16,7 +16,7 @@
     ];
     extraPackages = [ pkgs.nixd ];
     userSettings = {
-      disable_ai = false;
+      disable_ai = true;
 
       theme = {
         mode = "system";
