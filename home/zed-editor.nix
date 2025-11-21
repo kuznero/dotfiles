@@ -24,16 +24,8 @@
         dark = lib.mkForce "Catppuccin Mocha";
       };
 
-      agent_ui_font_family = ".SystemUIFont";
-      agent_ui_font_size = 18;
-      agent_ui_font_weight = 400;
-
-      agent_buffer_font_family = "Hurmit Nerd Font";
-      agent_buffer_font_size = 18;
-      agent_buffer_font_weight = 400;
-
       ui_font_family = ".SystemUIFont";
-      ui_font_size = 18;
+      ui_font_size = 21;
       ui_font_weight = 400;
 
       buffer_font_family = "Hurmit Nerd Font";
