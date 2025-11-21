@@ -184,8 +184,11 @@ function tm() {
     # Send nix develop to all windows if flake.nix exists and --nonix not set
     if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
       tmux send-keys -t "$SESSION:1" "nix develop" C-m
+      tmux send-keys -t "$SESSION:1" "clear" C-m
       tmux send-keys -t "$SESSION:2" "nix develop" C-m
+      tmux send-keys -t "$SESSION:2" "clear" C-m
       tmux send-keys -t "$SESSION:3" "nix develop" C-m
+      tmux send-keys -t "$SESSION:3" "clear" C-m
     fi
 
     tmux switch-client -t "$SESSION"
@@ -215,8 +218,11 @@ function tm() {
   # Send nix develop to all windows if flake.nix exists and --nonix not set
   if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
     tmux send-keys -t "$SESSION:1" "nix develop" C-m
+    tmux send-keys -t "$SESSION:1" "clear" C-m
     tmux send-keys -t "$SESSION:2" "nix develop" C-m
+    tmux send-keys -t "$SESSION:2" "clear" C-m
     tmux send-keys -t "$SESSION:3" "nix develop" C-m
+    tmux send-keys -t "$SESSION:3" "clear" C-m
   fi
 
   tmux attach-session -t "$SESSION"
