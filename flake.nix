@@ -226,7 +226,7 @@
                 pkgs = nixpkgs-unstable.legacyPackages.${system};
                 system = system;
               })
-              ./home/ollama.nix
+              # ./home/ollama.nix
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/yabai.nix
