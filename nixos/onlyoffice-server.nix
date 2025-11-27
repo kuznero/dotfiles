@@ -9,6 +9,8 @@
     # NOTE: generate with `openssl rand -hex 32`
     # NOTE: when JWT is re-generated, make sure to `sudo systemctl restart onlyoffice-documentserver`
     jwtSecretFile = "/data/onlyoffice-secret.jwt";
+    # NOTE: generate with `openssl rand -hex 32`
+    securityNonceFile = "/data/onlyoffice-security.nonce";
   };
 
   security.acme.defaults.email = "${user}@lix.one";
