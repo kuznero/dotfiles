@@ -103,6 +103,7 @@
               ./nixos/logind.nix
               ./nixos/github-runner.nix
               ./nixos/onlyoffice-server.nix
+              ./nixos/athens.nix
             ];
           };
 
