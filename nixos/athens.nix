@@ -14,7 +14,7 @@
     port = 3000;
 
     # Use upstream proxy on cache miss
-    downloadMode = "async_redirect";
+    downloadMode = "sync";
     downloadURL = "https://proxy.golang.org";
   };
 
