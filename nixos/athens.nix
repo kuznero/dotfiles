@@ -8,7 +8,7 @@
 
     # Storage configuration
     storageType = "disk";
-    disk.rootPath = "/data/packages/go";
+    storage.disk.rootPath = "/data/packages/go";
 
     # Network configuration
     port = 3000;
