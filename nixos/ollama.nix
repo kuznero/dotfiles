@@ -5,6 +5,11 @@ in {
   services.ollama = {
     enable = true;
     package = pkgs-unstable.ollama;
+    environmentVariables = {
+      OLLAMA_NUM_PARALLEL = "4";
+      OLLAMA_MAX_LOADED_MODELS = "2";
+    };
+    loadModels = [ "phi3:mini" ];
   };
 
   services.open-webui = {

@@ -102,6 +102,7 @@
               ./nixos/docker.nix
               ./nixos/logind.nix
               ./nixos/github-runner.nix
+              ./nixos/ollama.nix
               ./nixos/onlyoffice-server.nix
               ./nixos/athens.nix
             ];
