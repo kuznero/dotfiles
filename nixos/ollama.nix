@@ -5,6 +5,7 @@ in {
   services.ollama = {
     enable = true;
     package = pkgs-unstable.ollama;
+    host = "0.0.0.0";
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "4";
       OLLAMA_MAX_LOADED_MODELS = "2";
