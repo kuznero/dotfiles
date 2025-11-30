@@ -16,7 +16,6 @@ let
     tma = "tmux attach -t ";
     tml = "tmux ls";
     tmk = "tmux kill-server";
-    ze = "zeditor";
   };
 in {
   programs.zsh = {

@@ -38,7 +38,13 @@
 
   fonts.fontconfig.enable = true;
 
-  home.stateVersion = "25.05";
+  # # Disable App Management permission check on macOS
+  # # (nix store paths change, so macOS permissions never stick)
+  # targets.darwin.copyApps.enableChecks = lib.mkIf
+  #   (builtins.match ".*-darwin" system != null)
+  #   false;
+
+  home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
 }

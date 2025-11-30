@@ -2,7 +2,7 @@
   description = "Roku Labs NixOS and Home-Manager flake";
 
   inputs = {
-    nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-25.05"; };
+    nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-25.11"; };
     nixpkgs-unstable = { url = "github:nixos/nixpkgs/nixos-unstable"; };
     # ref: https://github.com/NixOS/nixos-hardware/tree/master
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
@@ -45,7 +45,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "25.05";
+                system.stateVersion = "25.11";
               }
 
               catppuccin.nixosModules.catppuccin
@@ -91,7 +91,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "25.05";
+                system.stateVersion = "25.11";
               }
 
               # basic configuration & users
@@ -115,7 +115,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
-                system.stateVersion = "25.05";
+                system.stateVersion = "25.11";
               }
 
               catppuccin.nixosModules.catppuccin
@@ -232,7 +232,6 @@
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/yabai.nix
-              ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];

@@ -816,7 +816,7 @@
         enable = true;
         settings.timeout = 2000; # default: 5000
       };
-      spectre.enable = true;
+      spectre.enable = false;
       telescope = {
         enable = true;
         extensions = {
