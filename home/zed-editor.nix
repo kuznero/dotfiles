@@ -42,6 +42,40 @@
       vim_mode = true;
 
       languages = { Nix = { language_servers = [ "nixd" "!nil" ]; }; };
+
+      lsp = {
+        gopls = {
+          initialization_options = {
+            buildFlags = [
+              "-tags=unit,integration,e2e"
+            ];
+          };
+        };
+      };
+
+      # "lsp": {
+      #   "gopls": {
+      #     // "binary": {
+      #     //   "path": "/Users/thorstenball/bin/gopls",
+      #     //   "arguments": ["-debug=0.0.0.0:9090"]
+      #     // },
+      #     "initialization_options": {
+      #       "usePlaceholders": true,
+      #       "buildFlags": ["-tags=debug"],  // <--------------- buildFlags!
+      #       "completeUnimported": true,
+      #       "experimentalPostfixCompletions": true,
+      #       "hints": {
+      #         "assignVariableTypes": false,
+      #         "compositeLiteralFields": false,
+      #         "compositeLiteralTypes": false,
+      #         "constantValues": true,
+      #         "functionTypeParameters": true,
+      #         "parameterNames": true,
+      #         "rangeVariableTypes": true
+      #       }
+      #     }
+      #   }
+      # }
     };
   };
 }
