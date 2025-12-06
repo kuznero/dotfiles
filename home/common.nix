@@ -14,6 +14,7 @@
       fish
       flux
       gcc
+      (pkgs.callPackage ../nixpkgs/gemini-cli { })
       gnupg
       go-task
       (pkgs.callPackage ../nixpkgs/k9s { })
