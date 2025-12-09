@@ -172,14 +172,14 @@ function tm() {
     tmux new-session -d -s $SESSION "$COMMAND"
 
     COUNTER=1
-    WINDOWS=("src" "ops")
+    WINDOWS=("gemini" "src" "ops")
     for name in "${WINDOWS[@]}"; do
       COUNTER=$((COUNTER+1))
       tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
     done
 
     tmux select-window -t "$SESSION:1"
-    tmux rename-window -t "$SESSION:1" "butler"
+    tmux rename-window -t "$SESSION:1" "claude"
 
     # Send nix develop to all windows if flake.nix exists and --nonix not set
     if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
@@ -189,6 +189,8 @@ function tm() {
       tmux send-keys -t "$SESSION:2" "clear" C-m
       tmux send-keys -t "$SESSION:3" "nix develop" C-m
       tmux send-keys -t "$SESSION:3" "clear" C-m
+      tmux send-keys -t "$SESSION:4" "nix develop" C-m
+      tmux send-keys -t "$SESSION:4" "clear" C-m
     fi
 
     tmux switch-client -t "$SESSION"
@@ -206,14 +208,14 @@ function tm() {
   tmux new-session -d -s $SESSION "$COMMAND"
 
   COUNTER=1
-  WINDOWS=("src" "ops")
+  WINDOWS=("gemini" "src" "ops")
   for name in "${WINDOWS[@]}"; do
     COUNTER=$((COUNTER+1))
     tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
   done
 
   tmux select-window -t "$SESSION:1"
-  tmux rename-window -t "$SESSION:1" "butler"
+  tmux rename-window -t "$SESSION:1" "claude"
 
   # Send nix develop to all windows if flake.nix exists and --nonix not set
   if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
@@ -223,6 +225,8 @@ function tm() {
     tmux send-keys -t "$SESSION:2" "clear" C-m
     tmux send-keys -t "$SESSION:3" "nix develop" C-m
     tmux send-keys -t "$SESSION:3" "clear" C-m
+    tmux send-keys -t "$SESSION:4" "nix develop" C-m
+    tmux send-keys -t "$SESSION:4" "clear" C-m
   fi
 
   tmux attach-session -t "$SESSION"
