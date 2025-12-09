@@ -179,7 +179,7 @@ function tm() {
     done
 
     tmux select-window -t "$SESSION:1"
-    tmux rename-window -t "$SESSION:1" "claude"
+    tmux rename-window -t "$SESSION:1" "butler"
 
     # Send nix develop to all windows if flake.nix exists and --nonix not set
     if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
@@ -213,7 +213,7 @@ function tm() {
   done
 
   tmux select-window -t "$SESSION:1"
-  tmux rename-window -t "$SESSION:1" "claude"
+  tmux rename-window -t "$SESSION:1" "butler"
 
   # Send nix develop to all windows if flake.nix exists and --nonix not set
   if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
