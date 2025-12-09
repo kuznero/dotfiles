@@ -172,7 +172,7 @@ function tm() {
     tmux new-session -d -s $SESSION "$COMMAND"
 
     COUNTER=1
-    WINDOWS=("src" "ops")
+    WINDOWS=("ops" "src")
     for name in "${WINDOWS[@]}"; do
       COUNTER=$((COUNTER+1))
       tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
@@ -212,7 +212,7 @@ function tm() {
   tmux new-session -d -s $SESSION "$COMMAND"
 
   COUNTER=1
-  WINDOWS=("src" "ops")
+  WINDOWS=("ops" "src")
   for name in "${WINDOWS[@]}"; do
     COUNTER=$((COUNTER+1))
     tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
