@@ -47,7 +47,7 @@
         gopls = {
           initialization_options = {
             buildFlags = [
-              "-tags=unit,integration,e2e"
+              "-tags=unit,integration,e2e,benchmark"
             ];
           };
         };
