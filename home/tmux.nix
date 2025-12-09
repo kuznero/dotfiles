@@ -63,8 +63,8 @@ in
       run-shell 'if [ -f ~/.config/appearance ]; then tmux set-option -g @catppuccin_flavor "$(cat ~/.config/appearance)"; fi'
 
       set -g @catppuccin_window_status_style "basic"
-      set -g @catppuccin_window_text " #W"
-      set -g @catppuccin_window_current_text " #W"
+      set -g @catppuccin_window_text " #W#{?window_zoomed_flag, ●,}"
+      set -g @catppuccin_window_current_text " #W#{?window_zoomed_flag, ●,}"
 
       set -g status-right-length 100
       set -g status-left-length 100
