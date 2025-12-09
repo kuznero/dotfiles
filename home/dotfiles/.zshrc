@@ -172,25 +172,29 @@ function tm() {
     tmux new-session -d -s $SESSION "$COMMAND"
 
     COUNTER=1
-    WINDOWS=("gemini" "src" "ops")
+    WINDOWS=("src" "ops")
     for name in "${WINDOWS[@]}"; do
       COUNTER=$((COUNTER+1))
       tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
     done
 
     tmux select-window -t "$SESSION:1"
-    tmux rename-window -t "$SESSION:1" "claude"
+    tmux rename-window -t "$SESSION:1" "butler"
+    tmux split-window -v -t "$SESSION:1" "$COMMAND"
+    tmux select-pane -t "$SESSION:1.{top}"
 
     # Send nix develop to all windows if flake.nix exists and --nonix not set
     if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
-      tmux send-keys -t "$SESSION:1" "nix develop" C-m
-      tmux send-keys -t "$SESSION:1" "clear" C-m
+      tmux send-keys -t "$SESSION:1.{top}" "nix develop" C-m
+      tmux send-keys -t "$SESSION:1.{top}" "clear" C-m
+      tmux send-keys -t "$SESSION:1.{top}" "claude" C-m
+      tmux send-keys -t "$SESSION:1.{bottom}" "nix develop" C-m
+      tmux send-keys -t "$SESSION:1.{bottom}" "clear" C-m
+      tmux send-keys -t "$SESSION:1.{bottom}" "gemini" C-m
       tmux send-keys -t "$SESSION:2" "nix develop" C-m
       tmux send-keys -t "$SESSION:2" "clear" C-m
       tmux send-keys -t "$SESSION:3" "nix develop" C-m
       tmux send-keys -t "$SESSION:3" "clear" C-m
-      tmux send-keys -t "$SESSION:4" "nix develop" C-m
-      tmux send-keys -t "$SESSION:4" "clear" C-m
     fi
 
     tmux switch-client -t "$SESSION"
@@ -208,25 +212,29 @@ function tm() {
   tmux new-session -d -s $SESSION "$COMMAND"
 
   COUNTER=1
-  WINDOWS=("gemini" "src" "ops")
+  WINDOWS=("src" "ops")
   for name in "${WINDOWS[@]}"; do
     COUNTER=$((COUNTER+1))
     tmux new-window -t "$SESSION:$COUNTER" -n "$name" "$COMMAND"
   done
 
   tmux select-window -t "$SESSION:1"
-  tmux rename-window -t "$SESSION:1" "claude"
+  tmux rename-window -t "$SESSION:1" "butler"
+  tmux split-window -v -t "$SESSION:1" "$COMMAND"
+  tmux select-pane -t "$SESSION:1.{top}"
 
   # Send nix develop to all windows if flake.nix exists and --nonix not set
   if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
-    tmux send-keys -t "$SESSION:1" "nix develop" C-m
-    tmux send-keys -t "$SESSION:1" "clear" C-m
+    tmux send-keys -t "$SESSION:1.{top}" "nix develop" C-m
+    tmux send-keys -t "$SESSION:1.{top}" "clear" C-m
+    tmux send-keys -t "$SESSION:1.{top}" "claude" C-m
+    tmux send-keys -t "$SESSION:1.{bottom}" "nix develop" C-m
+    tmux send-keys -t "$SESSION:1.{bottom}" "clear" C-m
+    tmux send-keys -t "$SESSION:1.{bottom}" "gemini" C-m
     tmux send-keys -t "$SESSION:2" "nix develop" C-m
     tmux send-keys -t "$SESSION:2" "clear" C-m
     tmux send-keys -t "$SESSION:3" "nix develop" C-m
     tmux send-keys -t "$SESSION:3" "clear" C-m
-    tmux send-keys -t "$SESSION:4" "nix develop" C-m
-    tmux send-keys -t "$SESSION:4" "clear" C-m
   fi
 
   tmux attach-session -t "$SESSION"
