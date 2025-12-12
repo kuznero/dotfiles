@@ -22,4 +22,4 @@ tasks:
       vars:
         - NAME
     cmds:
-      - nix run home-manager/master -- switch --flake .#{{.NAME}} -b backup --impure
+      - nix run .#homeConfigurations.{{.NAME}}.activationPackage --impure

@@ -3,12 +3,11 @@
 
   inputs = {
     nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-25.11"; };
-    nixpkgs-unstable = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    # nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
     # ref: https://github.com/NixOS/nixos-hardware/tree/master
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
     home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:nix-community/home-manager/release-25.11";
     };
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -17,13 +16,13 @@
     };
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     catppuccin.url = "github:catppuccin/nix";
     ghostty = { url = "github:ghostty-org/ghostty"; };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, nixos-hardware, home-manager
+  outputs = { self, nixpkgs, nixos-hardware, home-manager
     , nixvim, nixos-wsl, catppuccin, ghostty }@inputs:
     let
       user = "roku";
@@ -31,7 +30,7 @@
     in {
 
       formatter.x86_64-linux = let
-        pkgs-unstable = import nixpkgs-unstable {
+        pkgs-unstable = import nixpkgs {
           system = "x86_64-linux";
           config = { allowUnfree = true; };
         };
@@ -145,7 +144,7 @@
             extraSpecialArgs = {
               inherit inputs system user userName pkgs-stable;
             };
-            pkgs = nixpkgs-unstable.legacyPackages.${system};
+            pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
@@ -160,7 +159,7 @@
               ./home/fzf.nix
               (import ./home/ghostty.nix {
                 inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "Hurmit Nerd Font";
@@ -173,7 +172,7 @@
               ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
               })
               ./home/obsidian.nix
@@ -201,7 +200,7 @@
             extraSpecialArgs = {
               inherit inputs system user userName pkgs-stable;
             };
-            pkgs = nixpkgs-unstable.legacyPackages.${system};
+            pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
@@ -213,7 +212,7 @@
               ./home/fzf.nix
               (import ./home/ghostty.nix {
                 inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "Hurmit Nerd Font";
@@ -225,7 +224,7 @@
               ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
               })
               # ./home/ollama.nix
@@ -248,7 +247,7 @@
             extraSpecialArgs = {
               inherit inputs system user userName pkgs-stable;
             };
-            pkgs = nixpkgs-unstable.legacyPackages.${system};
+            pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
@@ -263,7 +262,7 @@
               ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
-                pkgs = nixpkgs-unstable.legacyPackages.${system};
+                pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
               })
               ./home/obsidian.nix
