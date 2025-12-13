@@ -1,10 +1,9 @@
 { inputs, lib, pkgs, ... }:
 
-let pkgs-unstable = import inputs.nixpkgs-unstable { };
-in {
+{
   services.ollama = {
     enable = true;
-    package = pkgs-unstable.ollama;
+    package = pkgs.ollama;
     host = "0.0.0.0";
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "4";
@@ -15,7 +14,7 @@ in {
 
   services.open-webui = {
     enable = false;
-    package = pkgs-unstable.open-webui;
+    package = pkgs.open-webui;
     host = "0.0.0.0";
     port = 11436;
     openFirewall = false;
