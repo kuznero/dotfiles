@@ -180,17 +180,11 @@ function tm() {
 
     tmux select-window -t "$SESSION:1"
     tmux rename-window -t "$SESSION:1" "butler"
-    tmux split-window -v -t "$SESSION:1" "$COMMAND"
-    tmux select-pane -t "$SESSION:1.{top}"
 
     # Send nix develop to all windows if flake.nix exists and --nonix not set
     if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
-      tmux send-keys -t "$SESSION:1.{top}" "nix develop" C-m
-      tmux send-keys -t "$SESSION:1.{top}" "clear" C-m
-      tmux send-keys -t "$SESSION:1.{top}" "claude" C-m
-      tmux send-keys -t "$SESSION:1.{bottom}" "nix develop" C-m
-      tmux send-keys -t "$SESSION:1.{bottom}" "clear" C-m
-      tmux send-keys -t "$SESSION:1.{bottom}" "gemini" C-m
+      tmux send-keys -t "$SESSION:1" "nix develop" C-m
+      tmux send-keys -t "$SESSION:1" "clear" C-m
       tmux send-keys -t "$SESSION:2" "nix develop" C-m
       tmux send-keys -t "$SESSION:2" "clear" C-m
       tmux send-keys -t "$SESSION:3" "nix develop" C-m
@@ -220,17 +214,11 @@ function tm() {
 
   tmux select-window -t "$SESSION:1"
   tmux rename-window -t "$SESSION:1" "butler"
-  tmux split-window -v -t "$SESSION:1" "$COMMAND"
-  tmux select-pane -t "$SESSION:1.{top}"
 
   # Send nix develop to all windows if flake.nix exists and --nonix not set
   if [ "$USE_NIX" = true ] && [ -f "flake.nix" ]; then
-    tmux send-keys -t "$SESSION:1.{top}" "nix develop" C-m
-    tmux send-keys -t "$SESSION:1.{top}" "clear" C-m
-    tmux send-keys -t "$SESSION:1.{top}" "claude" C-m
-    tmux send-keys -t "$SESSION:1.{bottom}" "nix develop" C-m
-    tmux send-keys -t "$SESSION:1.{bottom}" "clear" C-m
-    tmux send-keys -t "$SESSION:1.{bottom}" "gemini" C-m
+    tmux send-keys -t "$SESSION:1" "nix develop" C-m
+    tmux send-keys -t "$SESSION:1" "clear" C-m
     tmux send-keys -t "$SESSION:2" "nix develop" C-m
     tmux send-keys -t "$SESSION:2" "clear" C-m
     tmux send-keys -t "$SESSION:3" "nix develop" C-m
