@@ -121,7 +121,7 @@ in {
   }) (lib.range 1 amountOfRunners));
 
   systemd.tmpfiles.rules = [
-    "d /data/cache 0755 github-runner github-runner -"
+    "d /data/cache 0777 github-runner github-runner -"
   ] ++ map (n:
     "d /data/github-runner-work/${config.networking.hostName}-${
       toString n
