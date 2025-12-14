@@ -52,6 +52,7 @@ let
     Group = "github-runner";
 
     BindPaths = [ "/var/run/docker.sock" ];
+    ReadWritePaths = [ "/data/cache" ];
 
     Environment = "PATH=/run/wrappers/bin:/run/current-system/sw/bin";
     NoNewPrivileges = "yes";
@@ -119,7 +120,9 @@ in {
     };
   }) (lib.range 1 amountOfRunners));
 
-  systemd.tmpfiles.rules = map (n:
+  systemd.tmpfiles.rules = [
+    "d /data/cache 0755 github-runner github-runner -"
+  ] ++ map (n:
     "d /data/github-runner-work/${config.networking.hostName}-${
       toString n
     } 0755 github-runner github-runner -") (lib.range 1 amountOfRunners);
