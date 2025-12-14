@@ -83,6 +83,13 @@ let
 
     Restart = lib.mkForce "always";
     RestartSec = "10s";
+
+    # Resource limits to prevent noisy neighbor issues
+    CPUQuota = "200%";
+    MemoryMax = "10G";
+    MemoryHigh = "8G";
+    TasksMax = 512;
+    IOWeight = 50;
   };
 in {
   environment.systemPackages = with pkgs; [ coreutils-full ];
