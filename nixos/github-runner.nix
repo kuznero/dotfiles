@@ -85,7 +85,7 @@ let
     RestartSec = "10s";
 
     # Resource limits to prevent noisy neighbor issues
-    CPUQuota = "200%";
+    CPUQuota = "150%";
     MemoryMax = "10G";
     MemoryHigh = "8G";
     TasksMax = 512;
