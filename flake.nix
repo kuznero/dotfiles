@@ -6,9 +6,7 @@
     # nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
     # ref: https://github.com/NixOS/nixos-hardware/tree/master
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
-    };
+    home-manager = { url = "github:nix-community/home-manager/release-25.11"; };
     nixvim = {
       url = "github:nix-community/nixvim";
       # Don't override nixpkgs - let nixvim use its own to avoid package availability issues
@@ -22,8 +20,8 @@
     ghostty = { url = "github:ghostty-org/ghostty"; };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager
-    , nixvim, nixos-wsl, catppuccin, ghostty }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, nixvim, nixos-wsl
+    , catppuccin, ghostty }@inputs:
     let
       user = "roku";
       userName = "Roman Kuznetsov";
@@ -231,6 +229,7 @@
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/yabai.nix
+              ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];

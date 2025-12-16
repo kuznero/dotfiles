@@ -17,11 +17,18 @@
     extraPackages = [ pkgs.nixd ];
     userSettings = {
       disable_ai = true;
+      agent = { enabled = false; };
 
-      theme = {
+      theme = lib.mkForce {
         mode = "system";
-        light = lib.mkForce "Catppuccin Latte";
-        dark = lib.mkForce "Catppuccin Mocha";
+        light = "Catppuccin Latte";
+        dark = "Catppuccin Mocha";
+      };
+
+      icon_theme = lib.mkForce {
+        mode = "system";
+        light = "Catppuccin Latte";
+        dark = "Catppuccin Mocha";
       };
 
       ui_font_family = ".SystemUIFont";
@@ -31,6 +38,11 @@
       buffer_font_family = "Hurmit Nerd Font";
       buffer_font_size = 18;
       buffer_font_weight = 400;
+      buffer_line_height = "standard";
+
+      restore_on_startup = "none";
+
+      git_panel = { sort_by_path = true; };
 
       terminal = {
         font_family = "Hurmit Nerd Font";
@@ -41,41 +53,23 @@
 
       vim_mode = true;
 
-      languages = { Nix = { language_servers = [ "nixd" "!nil" ]; }; };
+      languages = {
+        Go = {
+          inlay_hints = {
+            show_background = true;
+            enabled = true;
+          };
+        };
+        Nix = { language_servers = [ "nixd" "!nil" ]; };
+      };
 
       lsp = {
         gopls = {
           initialization_options = {
-            buildFlags = [
-              "-tags=unit,integration,e2e,benchmark"
-            ];
+            buildFlags = [ "-tags=unit,integration,e2e,benchmark" ];
           };
         };
       };
-
-      # "lsp": {
-      #   "gopls": {
-      #     // "binary": {
-      #     //   "path": "/Users/thorstenball/bin/gopls",
-      #     //   "arguments": ["-debug=0.0.0.0:9090"]
-      #     // },
-      #     "initialization_options": {
-      #       "usePlaceholders": true,
-      #       "buildFlags": ["-tags=debug"],  // <--------------- buildFlags!
-      #       "completeUnimported": true,
-      #       "experimentalPostfixCompletions": true,
-      #       "hints": {
-      #         "assignVariableTypes": false,
-      #         "compositeLiteralFields": false,
-      #         "compositeLiteralTypes": false,
-      #         "constantValues": true,
-      #         "functionTypeParameters": true,
-      #         "parameterNames": true,
-      #         "rangeVariableTypes": true
-      #       }
-      #     }
-      #   }
-      # }
     };
   };
 }
