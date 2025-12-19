@@ -219,7 +219,6 @@
                 adjustCellWidth = "-10%";
               })
               ./home/git.nix
-              ./home/messengers.nix
               ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
