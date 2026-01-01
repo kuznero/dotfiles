@@ -55,7 +55,8 @@
               ./nixos/user.nix
 
               # desktop
-              ./nixos/gnome.nix
+              # ./nixos/gnome.nix
+              ./nixos/kde-plasma.nix
               # ./nixos/xfce.nix
               # {
               #   services.xserver.resolutions = [{
