@@ -14,6 +14,13 @@
   # ref: https://github.com/NixOS/nixpkgs/issues/448088
   boot.kernelParams = [ "mt7921_common.disable_clc=1" ];
 
+  # Graphical boot splash - hides tiny 4K console text
+  boot.initrd.systemd.enable = true;
+  boot.plymouth = {
+    enable = true;
+    theme = "breeze";
+  };
+
   networking.hostName = "moon";
   networking.networkmanager.enable = true;
 
