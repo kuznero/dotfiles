@@ -156,6 +156,7 @@
               ./home/dotfiles.nix
               ./home/filezilla.nix
               ./home/fzf.nix
+              ./home/games.nix
               (import ./home/ghostty.nix {
                 inputs = inputs;
                 pkgs = nixpkgs.legacyPackages.${system};
