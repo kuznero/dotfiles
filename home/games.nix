@@ -1,5 +1,5 @@
 { pkgs, pkgs-stable, ... }:
 
 {
-  home.packages = with pkgs; [ principia ];
+  home.packages = with pkgs; [ principia torcs ];
 }
