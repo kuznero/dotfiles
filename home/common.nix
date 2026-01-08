@@ -45,9 +45,6 @@
       nerd-fonts.zed-mono
       nodejs_24
       pass
-      podman
-      podman-compose
-      podman-tui
       poppler
       ripgrep
       rsync
