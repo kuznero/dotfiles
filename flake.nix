@@ -18,10 +18,13 @@
     };
     catppuccin.url = "github:catppuccin/nix";
     ghostty = { url = "github:ghostty-org/ghostty"; };
+    # Pinned nixpkgs for zed-editor (binary cached version)
+    nixpkgs-zed.url =
+      "github:NixOS/nixpkgs/1327e798cb055f96f92685df444e9a2c326ab5ed";
   };
 
   outputs = { self, nixpkgs, nixos-hardware, home-manager, nixvim, nixos-wsl
-    , catppuccin, ghostty }@inputs:
+    , catppuccin, ghostty, nixpkgs-zed }@inputs:
     let
       user = "roku";
       userName = "Roman Kuznetsov";
@@ -132,9 +135,13 @@
               system = system;
               config.allowUnfree = true;
             };
+            pkgs-zed = import nixpkgs-zed {
+              system = system;
+              config.allowUnfree = true;
+            };
           in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit inputs system user userName pkgs-stable;
+              inherit inputs system user userName pkgs-stable pkgs-zed;
             };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
@@ -187,9 +194,13 @@
               system = system;
               config.allowUnfree = true;
             };
+            pkgs-zed = import nixpkgs-zed {
+              system = system;
+              config.allowUnfree = true;
+            };
           in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit inputs system user userName pkgs-stable;
+              inherit inputs system user userName pkgs-stable pkgs-zed;
             };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [

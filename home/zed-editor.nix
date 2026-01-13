@@ -1,9 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, pkgs-zed, lib, ... }:
 
 {
   programs.zed-editor = {
     enable = true;
-    package = pkgs.zed-editor;
+    # Use pinned nixpkgs for binary cached version
+    package = pkgs-zed.zed-editor;
     mutableUserSettings = true;
     extensions = [
       "catppuccin"
