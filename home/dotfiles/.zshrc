@@ -4,12 +4,6 @@ if [[ -f "/opt/homebrew/bin/brew" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-if [[ "$TERM_PROGRAM" = vscode ]]; then
-  export EDITOR=code;
-  alias vim=code;
-  alias v=code;
-fi
-
 if [ -d "/Applications/1Password.app/Contents/MacOS" ]; then
   export PATH=$PATH:/Applications/1Password.app/Contents/MacOS
 fi

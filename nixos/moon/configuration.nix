@@ -5,6 +5,9 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Limit nix-daemon to 6 CPU cores to manage thermals during heavy builds
+  systemd.services.nix-daemon.serviceConfig.AllowedCPUs = "0-5";
+
   programs.nix-ld.enable = true;
 
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];

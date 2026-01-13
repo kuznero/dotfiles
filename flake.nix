@@ -57,13 +57,6 @@
               # desktop
               # ./nixos/gnome.nix
               ./nixos/kde-plasma.nix
-              # ./nixos/xfce.nix
-              # {
-              #   services.xserver.resolutions = [{
-              #     x = 1680;
-              #     y = 1050;
-              #   }];
-              # }
 
               # features
               ./nixos/displaylink.nix
@@ -181,8 +174,6 @@
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/transmission.nix
-              ./home/vscode.nix
-              # ./home/xfce.nix
               ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix

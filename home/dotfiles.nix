@@ -2,45 +2,30 @@
 
 {
   home.file = {
-    "Library/Application Support/Code/User" = {
-      source = ./dotfiles/config/Code/User;
-      recursive = true;
-    };
-    ".config/Code/User" = {
-      source = ./dotfiles/config/Code/User;
-      recursive = true;
-    };
     ".config/ghostty/themes" = {
       source = ./dotfiles/config/ghostty/themes;
       recursive = true;
+      force = true;
     };
     ".config/k9s" = {
       source = ./dotfiles/config/k9s;
       recursive = true;
+      force = true;
     };
     "Library/Application Support/k9s" = {
       source = ./dotfiles/config/k9s;
       recursive = true;
+      force = true;
     };
     ".config/mc" = {
       source = ./dotfiles/config/mc;
       recursive = true;
-    };
-    ".config/wallpapers" = {
-      source = ./dotfiles/config/wallpapers;
-      recursive = true;
-    };
-    ".config/xsettingsd" = {
-      source = ./dotfiles/config/xsettingsd;
-      recursive = true;
+      force = true;
     };
     ".config/yazi" = {
       source = ./dotfiles/config/yazi;
       recursive = true;
-    };
-    ".local/share/xfce4/terminal/colorschemes" = {
-      source = ./dotfiles/local/share/xfce4/terminal/colorschemes;
-      recursive = true;
+      force = true;
     };
   };
 }
