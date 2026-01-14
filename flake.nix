@@ -2,8 +2,8 @@
   description = "Roku Labs NixOS and Home-Manager flake";
 
   inputs = {
-    nixpkgs = { url = "github:NixOS/nixpkgs?ref=nixos-25.11"; };
-    # nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
+    nixpkgs-stable = { url = "github:NixOS/nixpkgs?ref=nixos-25.11"; };
     # ref: https://github.com/NixOS/nixos-hardware/tree/master
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; };
@@ -23,11 +23,23 @@
       "github:NixOS/nixpkgs/1327e798cb055f96f92685df444e9a2c326ab5ed";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, nixvim, nixos-wsl
-    , catppuccin, ghostty, nixpkgs-zed }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixos-hardware, home-manager
+    , nixvim, nixos-wsl, catppuccin, ghostty, nixpkgs-zed }@inputs:
     let
       user = "roku";
       userName = "Roman Kuznetsov";
+
+      # Overlay to fix setproctitle test failures in sandboxed builds
+      setproctitleOverlay = final: prev: {
+        python3 = prev.python3.override {
+          packageOverrides = pyFinal: pyPrev: {
+            setproctitle = pyPrev.setproctitle.overrideAttrs (old: {
+              doCheck = false;
+            });
+          };
+        };
+        python3Packages = final.python3.pkgs;
+      };
     in {
 
       formatter.x86_64-linux = let
@@ -190,9 +202,15 @@
         mac = # home-manager switch --flake .#mac
           let
             system = "aarch64-darwin";
-            pkgs-stable = import inputs.nixpkgs {
+            pkgs = import nixpkgs {
               system = system;
               config.allowUnfree = true;
+              overlays = [ setproctitleOverlay ];
+            };
+            pkgs-stable = import nixpkgs-stable {
+              system = system;
+              config.allowUnfree = true;
+              overlays = [ setproctitleOverlay ];
             };
             pkgs-zed = import nixpkgs-zed {
               system = system;
@@ -202,7 +220,7 @@
             extraSpecialArgs = {
               inherit inputs system user userName pkgs-stable pkgs-zed;
             };
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = pkgs;
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 

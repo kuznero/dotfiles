@@ -6,6 +6,7 @@
       bat
       btop
       (pkgs.callPackage ../nixpkgs/claude-code { })
+      (pkgs.callPackage ../nixpkgs/opencode { })
       cmatrix
       coreutils-full
       eza
