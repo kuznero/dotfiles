@@ -1,7 +1,6 @@
 version: "3"
 
 tasks:
-
   nixos:switch:
     desc: Switches nixos configuration
     dir: "{{.ROOT_DIR}}"
@@ -23,3 +22,14 @@ tasks:
         - NAME
     cmds:
       - nix run .#homeConfigurations.{{.NAME}}.activationPackage --impure
+
+  update-nixpkgs:
+    desc: Update all nixpkgs/
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - |
+        find nixpkgs -type f -name update.sh | xargs -I {} bash -c '
+        pushd $(dirname {})
+        ./update.sh
+        popd
+        '
