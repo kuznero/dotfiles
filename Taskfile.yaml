@@ -25,6 +25,7 @@ tasks:
 
   update-nixpkgs:
     desc: Update all nixpkgs/
+    silent: true
     dir: "{{.ROOT_DIR}}"
     cmds:
       - |

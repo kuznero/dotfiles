@@ -33,9 +33,8 @@
       setproctitleOverlay = final: prev: {
         python3 = prev.python3.override {
           packageOverrides = pyFinal: pyPrev: {
-            setproctitle = pyPrev.setproctitle.overrideAttrs (old: {
-              doCheck = false;
-            });
+            setproctitle =
+              pyPrev.setproctitle.overrideAttrs (old: { doCheck = false; });
           };
         };
         python3Packages = final.python3.pkgs;
@@ -236,7 +235,7 @@
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "Hurmit Nerd Font";
-                fontSize = "18";
+                fontSize = "20";
                 # adjustCellHeight = "0%";
                 adjustCellWidth = "-10%";
               })
