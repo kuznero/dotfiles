@@ -38,7 +38,8 @@ _afmagic_short_pwd() {
 }
 
 # primary prompt: directory and vcs info (no dashed separator)
-PS1='${FG[032]}$(_afmagic_short_pwd)$(git_prompt_info)$(hg_prompt_info) ${FG[105]}%(!.#.λ)%{$reset_color%} '
+# λ is normal color on success, red with [ERROR_CODE] on failure
+PS1='${FG[032]}$(_afmagic_short_pwd)$(git_prompt_info)$(hg_prompt_info) %(?.${FG[105]}.%{$fg[red]%}[%?] )%(!.#.λ)%{$reset_color%} '
 PS2="%{$fg[red]%}\ %{$reset_color%}"
 
 # right prompt: return code, virtualenv and context (user@host)
