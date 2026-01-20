@@ -4,10 +4,10 @@
   programs.git = {
     enable = true;
     package = pkgs.git;
-    includes = [{
-      path = "~/.config/git/bc-config";
-      condition = "gitdir/i:**/data/projects/bc/";
-    }];
+    # includes = [{
+    #   path = "~/.config/git/bc-config";
+    #   condition = "gitdir/i:**/data/projects/bc/";
+    # }];
     settings = {
       alias = {
         st = "status";
@@ -49,16 +49,16 @@
     };
   };
 
-  # Create the bc-specific config that disables signing
-  home.file.".config/git/bc-config".text = ''
-    [user]
-      email = "xramk@bankingcircle.com"
-      signingkey = ""
-    [gpg]
-      format = ""
-    [gpg "ssh"]
-      program = ""
-    [commit]
-      gpgsign = false
-  '';
+  # # Create the bc-specific config that disables signing
+  # home.file.".config/git/bc-config".text = ''
+  #   [user]
+  #     email = "xramk@bankingcircle.com"
+  #     signingkey = ""
+  #   [gpg]
+  #     format = ""
+  #   [gpg "ssh"]
+  #     program = ""
+  #   [commit]
+  #     gpgsign = false
+  # '';
 }

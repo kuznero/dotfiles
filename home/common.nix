@@ -15,6 +15,8 @@
       fish
       flux
       gcc
+      git
+      git-town
       gnupg
       go-task
       (pkgs.callPackage ../nixpkgs/k9s { })
