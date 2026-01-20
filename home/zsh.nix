@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   shellAliases = {
@@ -10,6 +10,7 @@ let
     gst = "git status";
     lzd = "lazydocker";
     lzg = "lazygit";
+    oc = "opencode";
     # v = "nvim";
     # vv = "nvim '+colorscheme dracula'";
     # vl = "nvim '+colorscheme vscode' '+set background=light'";
@@ -33,9 +34,11 @@ in {
 
     oh-my-zsh = {
       enable = true;
-      plugins = [ "fzf" "git" "git-extras" "kube-ps1" "man" "systemd" "tmux" ];
+      plugins =
+        [ "fzf" "git" "git-extras" "kube-ps1" "man" "sudo" "systemd" "tmux" ];
       # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
       theme = "af-magic";
+      custom = "$HOME/.local/share/zsh-custom";
     };
 
     # ref: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.zsh.initContent

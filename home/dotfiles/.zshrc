@@ -327,4 +327,4 @@ function gwtcd() {
   fi
 }
 
-export RPROMPT='$(kube_ps1 | tr -d "()" | sed "s/|/ | /") :: %F{green}$NIX_FLAKE_NAME%f'
+export RPROMPT='$([[ "$KUBE_PS1_CONTEXT" == "N/A" ]] || echo "%F{red}$KUBE_PS1_CONTEXT%f "):: %F{green}$NIX_FLAKE_NAME%f'
