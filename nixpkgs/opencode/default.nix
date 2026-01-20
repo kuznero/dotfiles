@@ -9,6 +9,7 @@
   nix-update-script,
   ripgrep,
   installShellFiles,
+  sysctl,
   versionCheckHook,
   writableTmpDirAsHomeHook,
 }:
@@ -127,18 +128,25 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postInstall
   '';
 
-  postInstall = lib.optionalString (stdenvNoCC.buildPlatform.canExecute stdenvNoCC.hostPlatform) ''
+  # NOTE: shell completion generation fails in the nix sandbox on darwin (empty output)
+  postInstall = lib.optionalString
+    (stdenvNoCC.buildPlatform.canExecute stdenvNoCC.hostPlatform && !stdenvNoCC.hostPlatform.isDarwin) ''
     installShellCompletion --cmd opencode \
-      --bash <($out/bin/opencode completion)
+      --bash <($out/bin/opencode completion) \
+      --zsh <(SHELL=/bin/zsh $out/bin/opencode completion)
   '';
 
   postFixup = ''
     wrapProgram $out/bin/opencode \
      --prefix PATH : ${
-       lib.makeBinPath [
-         fzf
-         ripgrep
-       ]
+       lib.makeBinPath (
+         [
+           fzf
+           ripgrep
+         ]
+         # bun runs sysctl to detect if running on rosetta2
+         ++ lib.optional stdenvNoCC.hostPlatform.isDarwin sysctl
+       )
      }
   '';
 
@@ -146,7 +154,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     versionCheckHook
     writableTmpDirAsHomeHook
   ];
-  doInstallCheck = true;
+  # NOTE: version check fails in the nix sandbox on darwin
+  doInstallCheck = !stdenvNoCC.hostPlatform.isDarwin;
   versionCheckKeepEnvironment = [ "HOME" ];
   versionCheckProgramArg = "--version";
 
