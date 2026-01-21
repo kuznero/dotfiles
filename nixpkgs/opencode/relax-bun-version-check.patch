@@ -15,10 +15,10 @@ diff --git a/packages/script/src/index.ts b/packages/script/src/index.ts
 index 141d2b75..de06d0dc 100644
 --- a/packages/script/src/index.ts
 +++ b/packages/script/src/index.ts
-@@ -13,7 +13,7 @@ if (!expectedBunVersion) {
+@@ -14,7 +14,7 @@ if (!expectedBunVersion) {
  const expectedBunVersionRange = `^${expectedBunVersion}`
 
- if (!satisfies(process.versions.bun, expectedBunVersionRange)) {
+ if (!semver.satisfies(process.versions.bun, expectedBunVersionRange)) {
 -  throw new Error(`This script requires bun@${expectedBunVersionRange}, but you are using bun@${process.versions.bun}`)
 +  console.warn(`Warning: This script expects bun@${expectedBunVersionRange}, but you are using bun@${process.versions.bun}`)
  }
