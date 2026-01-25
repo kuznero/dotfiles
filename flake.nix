@@ -190,6 +190,7 @@
               ./home/office.nix
               ./home/pcloud.nix
               ./home/scripts.nix
+              ./home/spotify.nix
               ./home/tmux.nix
               ./home/transmission.nix
               ./home/zed-editor.nix
