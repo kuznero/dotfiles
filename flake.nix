@@ -180,7 +180,6 @@
               ./home/git.nix
               # ./home/jetbrains.nix
               ./home/messengers.nix
-              ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
                 pkgs = nixpkgs.legacyPackages.${system};
@@ -241,7 +240,6 @@
                 adjustCellWidth = "-10%";
               })
               ./home/git.nix
-              ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
                 pkgs = nixpkgs.legacyPackages.${system};
@@ -280,7 +278,6 @@
               ./home/dotfiles.nix
               ./home/fzf.nix
               ./home/git.nix
-              ./home/mkdocs.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
                 pkgs = nixpkgs.legacyPackages.${system};
