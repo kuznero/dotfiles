@@ -72,7 +72,6 @@ in
       set -g status-right "#{E:@catppuccin_status_application}"
       set -agF status-right "#{E:@catppuccin_status_cpu}"
       set -ag status-right "#{E:@catppuccin_status_session}"
-      set -ag status-right "#{E:@catppuccin_status_uptime}"
       set -agF status-right "#{E:@catppuccin_status_battery}"
     '';
   };
@@ -129,7 +128,7 @@ in
       # Set default escape-time
       set-option -sg escape-time 10
 
-      set-option -g status-position bottom
+      set-option -g status-position top
     '';
   };
 
