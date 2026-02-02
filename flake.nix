@@ -188,6 +188,7 @@
               ./home/obsidian.nix
               ./home/office.nix
               ./home/pcloud.nix
+              ./home/rustdesk.nix
               ./home/scripts.nix
               ./home/spotify.nix
               ./home/tmux.nix
