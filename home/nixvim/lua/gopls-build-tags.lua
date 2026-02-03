@@ -12,24 +12,27 @@ local function log(msg, notify)
   end
 end
 
--- Get the Go project root
--- Simply returns cwd - we search for build tags across all Go files under cwd
+-- Get the Go project root (synchronous, lightweight check)
+-- Simply returns cwd if go.mod exists, avoiding heavy filesystem scans
 local function find_go_root()
   local cwd = vim.fn.getcwd()
 
-  -- Verify there are actually Go files in this directory tree
-  local check_cmd = string.format(
-    "find %s -maxdepth 6 -type f -name '*.go' -print -quit 2>/dev/null",
-    vim.fn.shellescape(cwd)
-  )
+  -- Quick check: look for go.mod in cwd or parent directories
+  local check_paths = {
+    cwd .. "/go.mod",
+    cwd .. "/go.work",
+  }
 
-  local handle = io.popen(check_cmd)
-  if handle then
-    local result = handle:read("*l")
-    handle:close()
-    if result and result ~= "" then
+  for _, path in ipairs(check_paths) do
+    if vim.fn.filereadable(path) == 1 then
       return cwd
     end
+  end
+
+  -- Fallback: check if any .go file exists in immediate directory
+  local go_files = vim.fn.glob(cwd .. "/*.go", false, true)
+  if #go_files > 0 then
+    return cwd
   end
 
   return nil

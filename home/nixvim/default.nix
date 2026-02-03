@@ -25,7 +25,6 @@
       vimPlugins.kanagawa-nvim
       vimPlugins.melange-nvim
       vimPlugins.monokai-pro-nvim
-      vimPlugins.monokai-pro-nvim
       vimPlugins.neomodern-nvim
       vimPlugins.nightfox-nvim
       vimPlugins.oceanic-material
@@ -36,9 +35,24 @@
     ];
 
     autoCmd = [{
-      event = "FileType";
-      pattern = [ "helm" ];
-      command = "LspRestart";
+      # Only restart LSP once per buffer, not on every FileType event
+      event = "BufEnter";
+      pattern = [ "*/templates/*.yaml" "*/templates/*.tpl" "*.gotmpl" ];
+      callback = {
+        __raw = ''
+          function(args)
+            -- Only restart if helm_ls is attached and hasn't been restarted for this buffer
+            if vim.b[args.buf].helm_lsp_restarted then
+              return
+            end
+            local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "helm_ls" })
+            if #clients > 0 then
+              vim.b[args.buf].helm_lsp_restarted = true
+              vim.cmd("LspRestart helm_ls")
+            end
+          end
+        '';
+      };
       desc =
         "ref: https://github.com/nix-community/nixvim/issues/989#issuecomment-2333728503";
     }];
@@ -133,7 +147,7 @@
         action = ":DapContinue<cr>";
         options = {
           silent = true;
-          desc = "Dap: Continue";
+          desc = "Dap: Continue/Start";
         };
       }
       {
@@ -165,15 +179,6 @@
       }
       {
         mode = "n";
-        key = "<f5>";
-        action = ":DapNew<cr>";
-        options = {
-          silent = true;
-          desc = "Dap: Start";
-        };
-      }
-      {
-        mode = "n";
         key = "<f17>"; # shift-f5
         action = ":DapTerminate<cr>";
         options = {
@@ -181,27 +186,7 @@
           desc = "Dap: Terminate";
         };
       }
-      # Unmap Neovim's built-in comment keymaps to avoid conflicts with Comment.nvim
-      {
-        mode = [ "n" "x" ];
-        key = "gc";
-        action = "<Nop>";
-      }
-      {
-        mode = [ "n" "x" ];
-        key = "gb";
-        action = "<Nop>";
-      }
-      {
-        mode = "n";
-        key = "gcc";
-        action = "<Nop>";
-      }
-      {
-        mode = "n";
-        key = "gbc";
-        action = "<Nop>";
-      }
+
       # Diagnostic navigation
       {
         mode = "n";
@@ -279,7 +264,7 @@
       tabstop = 2;
       termguicolors = true;
       undofile = true;
-      updatetime = 50; # Faster completion
+      updatetime = 250; # Balance between responsiveness and CPU usage
       winbar = "";
       wrap = false;
     };
@@ -324,7 +309,6 @@
         settings = {
           appearance = {
             nerd_font_variant = "normal";
-            use_nvim_cmp_as_default = true;
           };
           completion = {
             accept = {
@@ -368,7 +352,8 @@
         };
       };
       cmp-dap.enable = false;
-      conform-nvim.enable = true;
+      # Disabled - using none-ls for formatting instead
+      conform-nvim.enable = false;
       dap = {
         enable = true;
         adapters = { };
@@ -423,7 +408,7 @@
       lint = {
         enable = true;
         lintersByFt = {
-          # Explicitly configure linters to avoid auto-detection of vale
+          # Using nvim-lint for linting - none-ls diagnostics disabled to avoid duplicates
           markdown = [ "markdownlint" ];
           yaml = [ "yamllint" ];
           dockerfile = [ "hadolint" ];
@@ -473,9 +458,9 @@
           zls.enable = true;
         };
       };
+      # Disabled - none-ls handles formatting with enableLspFormat = true
       lsp-format = {
-        enable = true;
-        lspServersToEnable = "all";
+        enable = false;
       };
       mini = {
         enable = true;
@@ -559,7 +544,8 @@
       };
       none-ls = {
         enable = true;
-        enableLspFormat = true;
+        # Disable lsp-format integration - using none-ls's own formatting
+        enableLspFormat = false;
         sources = {
           code_actions = {
             gomodifytags.enable = true;
@@ -567,43 +553,9 @@
             # ts_node_action.enable = true;
           };
           diagnostics = {
+            # Note: Most linting moved to nvim-lint plugin to avoid duplicates
+            # Only keeping diagnostics not covered by nvim-lint here
             buf.enable = true;
-            mypy.enable = true;
-            golangci_lint = {
-              enable = true;
-              package = null;
-              settings = {
-                extra_args = {
-                  __raw = ''
-                    function()
-                      -- Try to find .golangci-lint.yaml in common locations
-                      local config_paths = {
-                        ".golangci-lint.yaml",
-                        ".golangci.yaml",
-                        ".golangci-lint.yml",
-                        ".golangci.yml",
-                        "config/.golangci-lint.yaml",
-                        "config/.golangci.yaml",
-                        "config/.golangci-lint.yml",
-                        "config/.golangci.yml",
-                        -- Add more custom paths as needed
-                      }
-
-                      for _, path in ipairs(config_paths) do
-                        local full_path = vim.fn.getcwd() .. "/" .. path
-                        if vim.fn.filereadable(full_path) == 1 then
-                          return { "--config", full_path }
-                        end
-                      end
-
-                      return {}
-                    end
-                  '';
-                };
-              };
-            };
-            hadolint.enable = true;
-            markdownlint.enable = true;
             staticcheck = {
               enable = true;
               package = null;
@@ -616,7 +568,6 @@
             todo_comments.enable = true;
             trail_space.enable = true;
             trivy.enable = true;
-            yamllint.enable = true;
           };
           formatting = {
             # buf.enable = true;
@@ -661,23 +612,23 @@
               "diagnostics"
               {
                 __unkeyed-1 = {
-                  __raw = ''
-                    function()
-                        local msg = ""
-                        local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-                        local clients = vim.lsp.get_clients()
-                        if next(clients) == nil then
-                            return msg
-                        end
-                        for _, client in ipairs(clients) do
-                            local filetypes = client.config.filetypes
-                            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                                return client.name
-                            end
-                        end
-                        return msg
-                    end
-                  '';
+                __raw = ''
+                  function()
+                      local msg = ""
+                      local buf_ft = vim.bo[0].filetype
+                      local clients = vim.lsp.get_clients({ bufnr = 0 })
+                      if next(clients) == nil then
+                          return msg
+                      end
+                      for _, client in ipairs(clients) do
+                          local filetypes = client.config.filetypes
+                          if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                              return client.name
+                          end
+                      end
+                      return msg
+                  end
+                '';
                 };
                 color = { fg = "#ffffff"; };
                 icon = "";
@@ -686,35 +637,11 @@
               "fileformat"
               "filetype"
             ];
-            lualine_y = [{
-              __unkeyed-1 = "aerial";
-              colored = true;
-              cond = {
-                __raw = ''
-                  function()
-                    local buf_size_limit = 1024 * 1024
-                    if vim.api.nvim_buf_get_offset(0, vim.api.nvim_buf_line_count(0)) > buf_size_limit then
-                      return false
-                    end
-
-                    return true
-                  end
-                '';
-              };
-              dense = false;
-              dense_sep = ".";
-              depth = { __raw = "nil"; };
-              sep = " ) ";
-            }];
+            lualine_y = [ "progress" ];
             lualine_z = [{ __unkeyed-1 = "location"; }];
           };
-          tabline = {
-            lualine_a = [{
-              __unkeyed-1 = "buffers";
-              symbols = { alternate_file = ""; };
-            }];
-            lualine_z = [ "tabs" ];
-          };
+          # Tabline disabled - using barbar plugin for buffer management instead
+          tabline = { };
         };
       };
       neo-tree = {
@@ -1046,14 +973,19 @@
       treesitter = {
         enable = true;
         folding = {
-          enable = true;
+          # Disabled - treesitter folding causes "Index out of bounds" errors
+          # and performance issues on large files. Use manual folding instead.
+          enable = false;
         };
         grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
           bash
+          css
           go
           gomod
           gosum
           gowork
+          html
+          javascript
           json
           lua
           make
@@ -1063,6 +995,8 @@
           regex
           terraform
           toml
+          tsx
+          typescript
           vim
           vimdoc
           xml
