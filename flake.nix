@@ -9,8 +9,7 @@
     home-manager = { url = "github:nix-community/home-manager/release-25.11"; };
     nixvim = {
       url = "github:nix-community/nixvim";
-      # Don't override nixpkgs - let nixvim use its own to avoid package availability issues
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
