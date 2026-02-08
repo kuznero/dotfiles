@@ -164,9 +164,7 @@
               ./home/browsers.nix
               ./home/common.nix
               ./home/dotfiles.nix
-              ./home/filezilla.nix
               ./home/fzf.nix
-              ./home/games.nix
               (import ./home/ghostty.nix {
                 inputs = inputs;
                 pkgs = nixpkgs.legacyPackages.${system};
@@ -177,7 +175,6 @@
                 adjustCellHeight = "0%";
               })
               ./home/git.nix
-              # ./home/jetbrains.nix
               ./home/messengers.nix
               (import ./home/nixvim/default.nix {
                 inputs = inputs;
@@ -187,7 +184,6 @@
               ./home/obsidian.nix
               ./home/office.nix
               ./home/pcloud.nix
-              ./home/rustdesk.nix
               ./home/scripts.nix
               ./home/spotify.nix
               ./home/tmux.nix
