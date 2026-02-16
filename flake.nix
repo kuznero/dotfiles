@@ -231,7 +231,7 @@
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
                 fontFamily = "Hurmit Nerd Font";
-                fontSize = "20";
+                fontSize = "18";
                 # adjustCellHeight = "0%";
                 adjustCellWidth = "-10%";
               })
