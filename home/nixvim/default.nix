@@ -1,5 +1,9 @@
 { inputs, pkgs, ... }:
 
+let
+  fastProfile = true;
+in
+
 # NOTE: after installing nixvim, start it, and run `checkhealth` command to ensure no errors.
 # NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
 
@@ -15,24 +19,28 @@
     # to avoid Go version conflicts: gotools, gofumpt, delve
 
     # ref: https://vimcolorschemes.com/
-    extraPlugins = with pkgs; [
-      vimPlugins.ayu-vim
-      # vimPlugins.base16-nvim
-      vimPlugins.catppuccin-nvim
-      vimPlugins.dracula-nvim
-      vimPlugins.everforest
-      vimPlugins.gruvbox-nvim
-      vimPlugins.kanagawa-nvim
-      vimPlugins.melange-nvim
-      vimPlugins.monokai-pro-nvim
-      vimPlugins.neomodern-nvim
-      vimPlugins.nightfox-nvim
-      vimPlugins.oceanic-material
-      vimPlugins.oceanic-next
-      vimPlugins.onedark-nvim
-      vimPlugins.oxocarbon-nvim
-      vimPlugins.vscode-nvim
-    ];
+    extraPlugins =
+      if fastProfile then
+        [ ]
+      else
+        with pkgs; [
+          vimPlugins.ayu-vim
+          # vimPlugins.base16-nvim
+          vimPlugins.catppuccin-nvim
+          vimPlugins.dracula-nvim
+          vimPlugins.everforest
+          vimPlugins.gruvbox-nvim
+          vimPlugins.kanagawa-nvim
+          vimPlugins.melange-nvim
+          vimPlugins.monokai-pro-nvim
+          vimPlugins.neomodern-nvim
+          vimPlugins.nightfox-nvim
+          vimPlugins.oceanic-material
+          vimPlugins.oceanic-next
+          vimPlugins.onedark-nvim
+          vimPlugins.oxocarbon-nvim
+          vimPlugins.vscode-nvim
+        ];
 
     autoCmd = [{
       # Only restart LSP once per buffer, not on every FileType event
@@ -76,16 +84,6 @@
     keymaps = [
       {
         mode = "n";
-        key = "<leader>a";
-        action = "<cmd>AerialToggle<CR>";
-      }
-      {
-        mode = "n";
-        key = "<leader>o";
-        action = "<cmd>AerialNavToggle<CR>";
-      }
-      {
-        mode = "n";
         key = "<leader>c";
         action = "<cmd>CodeCompanionActions<CR>";
       }
@@ -108,6 +106,64 @@
         mode = "n";
         key = "<leader>t";
         action = "<cmd>Telescope<CR>";
+      }
+
+      # Diagnostic navigation
+      {
+        mode = "n";
+        key = "]d";
+        action = "<cmd>lua vim.diagnostic.goto_next()<CR>";
+        options = { desc = "Go to next diagnostic"; };
+      }
+      {
+        mode = "n";
+        key = "[d";
+        action = "<cmd>lua vim.diagnostic.goto_prev()<CR>";
+        options = { desc = "Go to previous diagnostic"; };
+      }
+      # Gitsigns hunk navigation
+      {
+        mode = "n";
+        key = "]c";
+        action = "<cmd>Gitsigns next_hunk<CR>";
+        options = { desc = "Go to next git hunk"; };
+      }
+      {
+        mode = "n";
+        key = "[c";
+        action = "<cmd>Gitsigns prev_hunk<CR>";
+        options = { desc = "Go to previous git hunk"; };
+      }
+      # Gopls build tags discovery
+      {
+        mode = "n";
+        key = "<leader>gt";
+        action = "<cmd>GoplsDiscoverTags<CR>";
+        options = { desc = "Discover Go build tags"; };
+      }
+      # Git worktree operations
+      {
+        mode = "n";
+        key = "<leader>gw";
+        action = "<cmd>Telescope git_worktree git_worktree<CR>";
+        options = { desc = "List and switch git worktrees"; };
+      }
+      {
+        mode = "n";
+        key = "<leader>gW";
+        action = "<cmd>Telescope git_worktree create_git_worktree<CR>";
+        options = { desc = "Create new git worktree"; };
+      }
+    ] ++ (if fastProfile then [ ] else [
+      {
+        mode = "n";
+        key = "<leader>a";
+        action = "<cmd>AerialToggle<CR>";
+      }
+      {
+        mode = "n";
+        key = "<leader>o";
+        action = "<cmd>AerialNavToggle<CR>";
       }
       {
         mode = "n";
@@ -186,54 +242,7 @@
           desc = "Dap: Terminate";
         };
       }
-
-      # Diagnostic navigation
-      {
-        mode = "n";
-        key = "]d";
-        action = "<cmd>lua vim.diagnostic.goto_next()<CR>";
-        options = { desc = "Go to next diagnostic"; };
-      }
-      {
-        mode = "n";
-        key = "[d";
-        action = "<cmd>lua vim.diagnostic.goto_prev()<CR>";
-        options = { desc = "Go to previous diagnostic"; };
-      }
-      # Gitsigns hunk navigation
-      {
-        mode = "n";
-        key = "]c";
-        action = "<cmd>Gitsigns next_hunk<CR>";
-        options = { desc = "Go to next git hunk"; };
-      }
-      {
-        mode = "n";
-        key = "[c";
-        action = "<cmd>Gitsigns prev_hunk<CR>";
-        options = { desc = "Go to previous git hunk"; };
-      }
-      # Gopls build tags discovery
-      {
-        mode = "n";
-        key = "<leader>gt";
-        action = "<cmd>GoplsDiscoverTags<CR>";
-        options = { desc = "Discover Go build tags"; };
-      }
-      # Git worktree operations
-      {
-        mode = "n";
-        key = "<leader>gw";
-        action = "<cmd>Telescope git_worktree git_worktree<CR>";
-        options = { desc = "List and switch git worktrees"; };
-      }
-      {
-        mode = "n";
-        key = "<leader>gW";
-        action = "<cmd>Telescope git_worktree create_git_worktree<CR>";
-        options = { desc = "Create new git worktree"; };
-      }
-    ];
+    ]);
 
     editorconfig.enable = true;
     colorschemes = { catppuccin.enable = true; };
@@ -271,7 +280,7 @@
 
     # ref: https://nix-community.github.io/nixvim/index.html
     plugins = {
-      aerial.enable = true;
+      aerial.enable = !fastProfile;
       barbar = {
         enable = true;
         settings = {
@@ -355,7 +364,7 @@
       # Disabled - using none-ls for formatting instead
       conform-nvim.enable = false;
       dap = {
-        enable = true;
+        enable = !fastProfile;
         adapters = { };
         signs = {
           dapBreakpoint = {
@@ -372,12 +381,12 @@
           };
         };
       };
-      dap-go.enable = true;
-      dap-ui.enable = true;
-      dap-virtual-text.enable = true;
+      dap-go.enable = !fastProfile;
+      dap-ui.enable = !fastProfile;
+      dap-virtual-text.enable = !fastProfile;
       comment.enable = true;
-      coverage.enable = true;
-      dressing.enable = true;
+      coverage.enable = !fastProfile;
+      dressing.enable = !fastProfile;
       git-worktree = {
         enable = true;
         enableTelescope = true;
@@ -404,9 +413,9 @@
         };
       };
       lazygit.enable = true;
-      helm.enable = true;
+      helm.enable = !fastProfile;
       lint = {
-        enable = true;
+        enable = !fastProfile;
         lintersByFt = {
           # Using nvim-lint for linting - none-ls diagnostics disabled to avoid duplicates
           markdown = [ "markdownlint" ];
@@ -428,17 +437,17 @@
             # Actual configuration is at the bottom of this file in extraConfigLua
             enable = false;
           };
-          helm_ls.enable = true;
+          helm_ls.enable = !fastProfile;
           buf_ls = {
-            enable = true;
+            enable = !fastProfile;
             autostart = true;
           };
           terraformls = {
-            enable = true;
+            enable = !fastProfile;
             autostart = true;
           };
           tflint = {
-            enable = true;
+            enable = !fastProfile;
             autostart = true;
           };
           ts_ls = {
@@ -446,16 +455,16 @@
             autostart = true;
           };
           basedpyright = {
-            enable = true;
+            enable = !fastProfile;
             autostart = true;
             rootMarkers = [ "pyproject.toml" ];
           };
           ruff = {
-            enable = true;
+            enable = !fastProfile;
             autostart = true;
           };
           yamlls.enable = true;
-          zls.enable = true;
+          zls.enable = !fastProfile;
         };
       };
       # Disabled - none-ls handles formatting with enableLspFormat = true
@@ -471,7 +480,7 @@
         };
       };
       mkdnflow = {
-        enable = true;
+        enable = !fastProfile;
         settings = {
           mappings = {
             MkdnTableFormat = {
@@ -555,19 +564,19 @@
           diagnostics = {
             # Note: Most linting moved to nvim-lint plugin to avoid duplicates
             # Only keeping diagnostics not covered by nvim-lint here
-            buf.enable = true;
+            buf.enable = !fastProfile;
             staticcheck = {
               enable = true;
               package = null;
             };
             terraform_validate = {
-              enable = true;
+              enable = !fastProfile;
               package = pkgs.terraform;
             };
-            tidy.enable = true;
-            todo_comments.enable = true;
-            trail_space.enable = true;
-            trivy.enable = true;
+            tidy.enable = !fastProfile;
+            todo_comments.enable = !fastProfile;
+            trail_space.enable = !fastProfile;
+            trivy.enable = !fastProfile;
           };
           formatting = {
             # buf.enable = true;
@@ -579,17 +588,20 @@
               enable = true;
               package = null;
             };
-            markdownlint.enable = true;
+            markdownlint.enable = !fastProfile;
             nixfmt.enable = true;
-            pg_format.enable = true;
-            prettier.enable = false; # due to ts_ls being enabled (lsp)
+            pg_format.enable = !fastProfile;
+            prettier = {
+              enable = true;
+              disableTsServerFormatter = true;
+            };
             shfmt.enable = true;
             terraform_fmt = {
-              enable = true;
+              enable = !fastProfile;
               package = pkgs.terraform;
             };
-            tidy.enable = true;
-            yamlfmt.enable = true;
+            tidy.enable = !fastProfile;
+            yamlfmt.enable = !fastProfile;
           };
         };
       };
@@ -688,16 +700,16 @@
       };
       nix.enable = true;
       render-markdown = {
-        enable = true;
+        enable = !fastProfile;
         settings = {
           latex.enabled = false;
           html.enabled = false;
         };
       };
       smear-cursor.enable = false;
-      fzf-lua.enable = true;
+      fzf-lua.enable = false;
       noice = {
-        enable = true;
+        enable = !fastProfile;
         settings = {
           lsp.override = {
             "vim.lsp.util.convert_input_to_markdown_lines" = true;
@@ -740,7 +752,7 @@
         };
       };
       notify = {
-        enable = true;
+        enable = !fastProfile;
         settings.timeout = 2000; # default: 5000
       };
       spectre.enable = false;
@@ -943,7 +955,7 @@
       };
       todo-comments.enable = true;
       transparent = {
-        enable = true;
+        enable = !fastProfile;
         settings = {
           exclude_groups = [ "StatusLine" "CursorLine" ];
           extra_groups = [
@@ -977,31 +989,50 @@
           # and performance issues on large files. Use manual folding instead.
           enable = false;
         };
-        grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
-          bash
-          css
-          go
-          gomod
-          gosum
-          gowork
-          html
-          javascript
-          json
-          lua
-          make
-          markdown
-          nix
-          python
-          regex
-          terraform
-          toml
-          tsx
-          typescript
-          vim
-          vimdoc
-          xml
-          yaml
-        ];
+        grammarPackages =
+          with pkgs.vimPlugins.nvim-treesitter.builtGrammars;
+          if fastProfile then
+            [
+              go
+              gomod
+              gosum
+              gowork
+              javascript
+              json
+              lua
+              nix
+              tsx
+              typescript
+              vim
+              vimdoc
+              yaml
+            ]
+          else
+            [
+              bash
+              css
+              go
+              gomod
+              gosum
+              gowork
+              html
+              javascript
+              json
+              lua
+              make
+              markdown
+              nix
+              python
+              regex
+              terraform
+              toml
+              tsx
+              typescript
+              vim
+              vimdoc
+              xml
+              yaml
+            ];
         settings = {
           auto_install = false;
           highlight.enable = true;
@@ -1031,8 +1062,8 @@
       };
       ts-autotag.enable = true;
       ts-context-commentstring.enable = true;
-      twilight.enable = true;
-      vim-css-color.enable = true;
+      twilight.enable = !fastProfile;
+      vim-css-color.enable = !fastProfile;
       web-devicons.enable = true;
       which-key = {
         enable = true;
