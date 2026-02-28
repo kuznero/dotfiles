@@ -12,8 +12,6 @@
       eza
       fd
       ffmpegthumbnailer
-      fish
-      flux
       gcc
       git
       git-town
@@ -22,11 +20,8 @@
       (pkgs.callPackage ../nixpkgs/k9s { })
       kubectl
       kubeswitch
-      lan-mouse
       lazydocker
       lazygit
-      mc
-      neofetch
       nerd-fonts._0xproto
       nerd-fonts.agave
       nerd-fonts.envy-code-r
@@ -53,11 +48,9 @@
       rsync
       tree
       tree-sitter
-      tt
       vim
       wget
       xclip
-      zoxide
       zsh
     ] ++ (with pkgs-stable; [ yazi ]);
 }
