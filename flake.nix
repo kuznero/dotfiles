@@ -199,9 +199,9 @@
                 pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Hurmit Nerd Font";
-                fontSize = "12";
-                adjustCellHeight = "0%";
+                fontFamily = "Mononoki Nerd Font";
+                fontSize = "14";
+                adjustCellHeight = "10%";
               })
               ./home/git.nix
               ./home/messengers.nix
