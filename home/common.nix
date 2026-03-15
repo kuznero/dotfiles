@@ -22,25 +22,6 @@
       kubeswitch
       lazydocker
       lazygit
-      nerd-fonts._0xproto
-      nerd-fonts.agave
-      nerd-fonts.envy-code-r
-      nerd-fonts.fantasque-sans-mono
-      nerd-fonts.hurmit
-      nerd-fonts.iosevka
-      nerd-fonts.iosevka-term
-      nerd-fonts.iosevka-term-slab
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.lekton
-      nerd-fonts.meslo-lg
-      nerd-fonts.monaspace
-      nerd-fonts.monofur
-      nerd-fonts.mononoki
-      nerd-fonts.space-mono
-      nerd-fonts.ubuntu
-      nerd-fonts.ubuntu-mono
-      nerd-fonts.ubuntu-sans
-      nerd-fonts.zed-mono
       nodejs_24
       pass
       poppler
@@ -51,6 +32,7 @@
       vim
       wget
       zsh
-    ] ++ (with pkgs-stable; [ yazi ])
+    ] ++ builtins.attrValues (pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) pkgs.nerd-fonts)
+    ++ (with pkgs-stable; [ yazi ])
     ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isLinux xclip;
 }

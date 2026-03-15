@@ -18,12 +18,9 @@
       jetbrains-mono
       monaspace
       montserrat
-      # nerdfonts
       poppins
       source-sans-pro
       source-serif-pro
-      nerd-fonts.agave
-      nerd-fonts.space-mono
-    ];
+    ] ++ builtins.attrValues (pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) pkgs.nerd-fonts);
   };
 }
