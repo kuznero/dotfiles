@@ -50,7 +50,7 @@
       tree-sitter
       vim
       wget
-      xclip
       zsh
-    ] ++ (with pkgs-stable; [ yazi ]);
+    ] ++ (with pkgs-stable; [ yazi ])
+    ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isLinux xclip;
 }

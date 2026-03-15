@@ -1,4 +1,4 @@
-{ inputs, pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 
 let
   # Get the catppuccin plugin path from the Nix store

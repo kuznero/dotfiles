@@ -1,4 +1,4 @@
-{ inputs, pkgs, system, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
+{ ghostty, pkgs, system, theme ? "dark:catppuccin-mocha,light:catppuccin-latte"
 , fontFamily ? "Hurmit Nerd Font", fontSize ? "12", adjustCellHeight ? "0%"
 , adjustCellWidth ? "0%", ... }:
 
@@ -10,13 +10,12 @@ let
   else
     "./.config/ghostty/config";
 in {
-  home.packages = with inputs;
-    builtins.filter (pkg: pkg != null) [
-      (if system == "x86_64-linux" then
-        ghostty.packages."${system}".default
-      else
-        null)
-    ];
+  home.packages = builtins.filter (pkg: pkg != null) [
+    (if system == "x86_64-linux" then
+      ghostty.packages."${system}".default
+    else
+      null)
+  ];
   home.file."${configFile}".text = ''
     theme = ${theme}
     font-family = ${fontFamily}

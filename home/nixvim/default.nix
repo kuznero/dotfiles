@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ nixvim, pkgs, ... }:
 
 let
   fastProfile = true;
@@ -8,7 +8,7 @@ in
 # NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
 
 {
-  imports = [ inputs.nixvim.homeModules.nixvim ];
+  imports = [ nixvim.homeModules.nixvim ];
 
   home.packages = with pkgs; [ chafa ueberzugpp viu ];
 

@@ -6,7 +6,10 @@
     nixpkgs-stable = { url = "github:NixOS/nixpkgs?ref=nixos-25.11"; };
     # ref: https://github.com/NixOS/nixos-hardware/tree/master
     nixos-hardware = { url = "github:NixOS/nixos-hardware/master"; };
-    home-manager = { url = "github:nix-community/home-manager/release-25.11"; };
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,6 +41,34 @@
         };
         python3Packages = final.python3.pkgs;
       };
+
+      patchedHomeManagerFilesModule = args@{ pkgs, ... }:
+        import "${home-manager.outPath}/modules/files.nix" (args // {
+          pkgs = pkgs // { xorg = { lndir = pkgs.lndir; }; };
+        });
+
+      patchedHomeManagerManualModule = { lib, ... }: {
+        options = {
+          manual.html.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Whether to install the Home Manager HTML manual.";
+          };
+
+          manual.manpages.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Whether to install the Home Manager man page.";
+          };
+
+          manual.json.enable = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Whether to install the Home Manager options JSON file.";
+          };
+        };
+      };
+
     in {
 
       formatter.x86_64-linux = let
@@ -150,9 +181,7 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit inputs system user userName pkgs-stable pkgs-zed;
-            };
+            extraSpecialArgs = { inherit system user userName pkgs-stable pkgs-zed; };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -166,7 +195,7 @@
               ./home/dotfiles.nix
               ./home/fzf.nix
               (import ./home/ghostty.nix {
-                inputs = inputs;
+                ghostty = ghostty;
                 pkgs = nixpkgs.legacyPackages.${system};
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
@@ -177,9 +206,8 @@
               ./home/git.nix
               ./home/messengers.nix
               (import ./home/nixvim/default.nix {
-                inputs = inputs;
+                nixvim = nixvim;
                 pkgs = nixpkgs.legacyPackages.${system};
-                system = system;
               })
               ./home/obsidian.nix
               ./home/office.nix
@@ -212,11 +240,13 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit inputs system user userName pkgs-stable pkgs-zed;
-            };
+            extraSpecialArgs = { inherit system user userName pkgs-stable pkgs-zed; };
             pkgs = pkgs;
             modules = [
+              {
+                disabledModules = [ "files.nix" "manual.nix" ];
+                imports = [ patchedHomeManagerFilesModule patchedHomeManagerManualModule ];
+              }
               { nixpkgs.config.allowUnfree = true; }
 
               catppuccin.homeModules.catppuccin
@@ -226,20 +256,19 @@
               ./home/dotfiles.nix
               ./home/fzf.nix
               (import ./home/ghostty.nix {
-                inputs = inputs;
-                pkgs = nixpkgs.legacyPackages.${system};
+                ghostty = ghostty;
+                pkgs = pkgs;
                 system = system;
                 theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Hurmit Nerd Font";
-                fontSize = "18";
-                # adjustCellHeight = "0%";
-                adjustCellWidth = "-10%";
+                fontFamily = "Mononoki Nerd Font";
+                fontSize = "20";
+                adjustCellHeight = "10%";
+                adjustCellWidth = "0%";
               })
               ./home/git.nix
               (import ./home/nixvim/default.nix {
-                inputs = inputs;
-                pkgs = nixpkgs.legacyPackages.${system};
-                system = system;
+                nixvim = nixvim;
+                pkgs = pkgs;
               })
               # ./home/ollama.nix
               ./home/scripts.nix
@@ -259,9 +288,7 @@
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit inputs system user userName pkgs-stable;
-            };
+            extraSpecialArgs = { inherit system user userName pkgs-stable; };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -275,9 +302,8 @@
               ./home/fzf.nix
               ./home/git.nix
               (import ./home/nixvim/default.nix {
-                inputs = inputs;
+                nixvim = nixvim;
                 pkgs = nixpkgs.legacyPackages.${system};
-                system = system;
               })
               ./home/obsidian.nix
               ./home/scripts.nix
