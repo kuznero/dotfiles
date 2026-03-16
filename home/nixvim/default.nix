@@ -10,7 +10,13 @@ in
 {
   imports = [ nixvim.homeModules.nixvim ];
 
-  home.packages = with pkgs; [ chafa ueberzugpp viu ];
+  home.packages = with pkgs; [
+    bash-language-server
+    chafa
+    shellcheck
+    ueberzugpp
+    viu
+  ];
 
   programs.nixvim = {
     enable = true;
@@ -415,7 +421,7 @@ in
       lazygit.enable = true;
       helm.enable = !fastProfile;
       lint = {
-        enable = !fastProfile;
+        enable = true;
         lintersByFt = {
           # Using nvim-lint for linting - none-ls diagnostics disabled to avoid duplicates
           markdown = [ "markdownlint" ];
@@ -432,6 +438,10 @@ in
       lsp = {
         enable = true;
         servers = {
+          bashls = {
+            enable = true;
+            autostart = true;
+          };
           gopls = {
             # Disabled - manually configured in extraConfigLua to avoid bundling Go
             # Actual configuration is at the bottom of this file in extraConfigLua
@@ -993,6 +1003,7 @@ in
           with pkgs.vimPlugins.nvim-treesitter.builtGrammars;
           if fastProfile then
             [
+              bash
               go
               gomod
               gosum
