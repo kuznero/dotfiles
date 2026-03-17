@@ -26,27 +26,24 @@ in
 
     # ref: https://vimcolorschemes.com/
     extraPlugins =
-      if fastProfile then
-        [ ]
-      else
-        with pkgs; [
-          vimPlugins.ayu-vim
-          # vimPlugins.base16-nvim
-          vimPlugins.catppuccin-nvim
-          vimPlugins.dracula-nvim
-          vimPlugins.everforest
-          vimPlugins.gruvbox-nvim
-          vimPlugins.kanagawa-nvim
-          vimPlugins.melange-nvim
-          vimPlugins.monokai-pro-nvim
-          vimPlugins.neomodern-nvim
-          vimPlugins.nightfox-nvim
-          vimPlugins.oceanic-material
-          vimPlugins.oceanic-next
-          vimPlugins.onedark-nvim
-          vimPlugins.oxocarbon-nvim
-          vimPlugins.vscode-nvim
-        ];
+      with pkgs; [
+        vimPlugins.ayu-vim
+        # vimPlugins.base16-nvim
+        vimPlugins.catppuccin-nvim
+        vimPlugins.dracula-nvim
+        vimPlugins.everforest
+        vimPlugins.gruvbox-nvim
+        vimPlugins.kanagawa-nvim
+        vimPlugins.melange-nvim
+        vimPlugins.monokai-pro-nvim
+        vimPlugins.neomodern-nvim
+        vimPlugins.nightfox-nvim
+        vimPlugins.oceanic-material
+        vimPlugins.oceanic-next
+        vimPlugins.onedark-nvim
+        vimPlugins.oxocarbon-nvim
+        vimPlugins.vscode-nvim
+      ];
 
     autoCmd = [{
       # Only restart LSP once per buffer, not on every FileType event
