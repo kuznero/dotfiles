@@ -16,6 +16,7 @@ in
     shellcheck
     ueberzugpp
     viu
+    yamllint
   ];
 
   programs.nixvim = {
