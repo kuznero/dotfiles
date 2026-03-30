@@ -1,5 +1,6 @@
 {
   lib,
+  coreutils,
   stdenvNoCC,
   bun,
   fetchFromGitHub,
@@ -15,12 +16,12 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "1.3.5";
+  version = "1.3.6";
   src = fetchFromGitHub {
     owner = "anomalyco";
     repo = "opencode";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-6H2zzW0PrNGYAn/WamOzdQsZWP5IAKg1p1qjLBOFIDs=";
+    hash = "sha256-OV76SWqiBguUupfbkJMBVrslJoTqSh4epNjEp/HE/cY=";
   };
 
   node_modules = stdenvNoCC.mkDerivation {
@@ -75,6 +76,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     bun
+    coreutils
     installShellFiles
     makeBinaryWrapper
     models-dev
@@ -92,6 +94,23 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook preConfigure
 
     cp -R ${finalAttrs.node_modules}/. .
+    chmod -R u+w ./node_modules ./packages/*/node_modules
+    patchShebangs --build ./node_modules ./packages/*/node_modules
+    for binDir in ./node_modules/.bin ./packages/*/node_modules/.bin; do
+      [ -d "$binDir" ] || continue
+      for bin in "$binDir"/*; do
+        [ -e "$bin" ] || continue
+        target=$(realpath "$bin")
+        read -r firstLine < "$target" || continue
+        case "$firstLine" in
+          '#!'*'/usr/bin/env'*)
+            chmod u+w "$target"
+            substituteInPlace "$target" \
+              --replace-fail /usr/bin/env ${lib.getExe' coreutils "env"}
+            ;;
+        esac
+      done
+    done
 
     runHook postConfigure
   '';
@@ -101,7 +120,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   env.OPENCODE_CHANNEL = "stable";
 
   preBuild = ''
-    chmod -R u+w ./packages/opencode/node_modules
     pushd ./packages/opencode/node_modules/@opentui/
       for pkg in ../../../../node_modules/.bun/@opentui+core-*; do
         linkName=$(basename "$pkg" | sed 's/@.*+\(.*\)@.*/\1/')

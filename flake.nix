@@ -42,6 +42,13 @@
         python3Packages = final.python3.pkgs;
       };
 
+      openvpn3ProtobufOverlay = final: prev: {
+        openvpn3 = prev.openvpn3.overrideAttrs (old: {
+          buildInputs = builtins.map (pkg:
+            if pkg == prev.protobuf then prev.protobuf_33 else pkg) old.buildInputs;
+        });
+      };
+
       patchedHomeManagerFilesModule = args@{ pkgs, ... }:
         import "${home-manager.outPath}/modules/files.nix" (args // {
           pkgs = pkgs // { xorg = { lndir = pkgs.lndir; }; };
@@ -86,6 +93,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
+                nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
                 system.stateVersion = "25.11";
               }
 
@@ -126,6 +134,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
+                nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
                 system.stateVersion = "25.11";
               }
 
@@ -150,6 +159,7 @@
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
+                nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
                 system.stateVersion = "25.11";
               }
 
