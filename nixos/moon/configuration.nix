@@ -3,7 +3,10 @@
 {
   imports = [ /etc/nixos/hardware-configuration.nix ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    download-buffer-size = 134217728;
+  };
 
   # Limit nix-daemon to 6 CPU cores to manage thermals during heavy builds
   systemd.services.nix-daemon.serviceConfig.AllowedCPUs = "0-5";
