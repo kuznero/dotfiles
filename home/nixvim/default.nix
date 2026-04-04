@@ -602,6 +602,7 @@ in
             prettier = {
               enable = true;
               disableTsServerFormatter = true;
+              package = pkgs.prettier;
             };
             shfmt.enable = true;
             terraform_fmt = {
