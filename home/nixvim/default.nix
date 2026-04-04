@@ -479,14 +479,10 @@ in
       lsp-format = {
         enable = false;
       };
-      mini = {
-        enable = true;
-        mockDevIcons = true;
-        modules = {
-          # Only enable icons module
-          icons = { };
-        };
-      };
+      # Neovim 0.12 triggers a nil filename path inside mini.icons when Barbar
+      # asks for devicons during early buffer creation. Use nvim-web-devicons
+      # directly instead of the mini.nvim compatibility shim.
+      mini.enable = false;
       mkdnflow = {
         enable = !fastProfile;
         settings = {
