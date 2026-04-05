@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   home.file = {
@@ -17,10 +17,28 @@
       recursive = true;
       force = true;
     };
-    ".config/opencode" = {
-      source = ./dotfiles/config/opencode;
-      recursive = true;
-      force = true;
+    ".config/opencode/opencode.json".text = builtins.toJSON {
+      "$schema" = "https://opencode.ai/config.json";
+      mcp = {
+        context7 = {
+          type = "remote";
+          url = "https://mcp.context7.com/mcp";
+        };
+      };
+      plugin = [ "opencode-anthropic-auth@latest" ];
+      provider = {
+        ollama = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Ollama (local)";
+          options = {
+            baseURL = "http://localhost:11434/v1";
+          };
+          models = {
+            "gemma4:latest" = { };
+            "gemma4:e2b" = { };
+          };
+        };
+      };
     };
     "Library/Application Support/k9s" = {
       source = ./dotfiles/config/k9s;
@@ -38,4 +56,34 @@
       force = true;
     };
   };
+
+  home.activation.opencodeAuth = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    auth_dir="$HOME/.local/share/opencode"
+    auth_file="$auth_dir/auth.json"
+    tmp_file="$auth_dir/auth.json.tmp"
+
+    mkdir -p "$auth_dir"
+
+    if [ ! -e "$auth_file" ]; then
+      cat > "$auth_file" <<'EOF'
+    {"ollama":{"type":"api","key":"ollama"}}
+    EOF
+      exit 0
+    fi
+
+    if ! ${pkgs.jq}/bin/jq empty "$auth_file" >/dev/null 2>&1; then
+      echo "warning: $auth_file is not valid JSON; leaving it unchanged" >&2
+      exit 0
+    fi
+
+    ${pkgs.jq}/bin/jq '
+      if has("ollama") then
+        .
+      else
+        . + {"ollama": {"type": "api", "key": "ollama"}}
+      end
+    ' "$auth_file" > "$tmp_file"
+
+    mv "$tmp_file" "$auth_file"
+  '';
 }
