@@ -1,6 +1,5 @@
-{ pkgs, ... }:
+{ pkgs-ollama, ... }:
 
 {
-  home.packages = with pkgs; [ ollama ];
+  home.packages = [ pkgs-ollama.ollama ];
 }
-

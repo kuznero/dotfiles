@@ -1,9 +1,9 @@
-{ inputs, lib, pkgs, ... }:
+{ lib, pkgs, pkgs-ollama, ... }:
 
 {
   services.ollama = {
     enable = true;
-    package = pkgs.ollama;
+    package = pkgs-ollama.ollama;
     host = "0.0.0.0";
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "4";

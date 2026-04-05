@@ -189,6 +189,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-ollama": {
+      "locked": {
+        "lastModified": 1775308907,
+        "narHash": "sha256-/XwhFqQkBZzqwROtVamey8rT3igZsEyAE1bG3L3mwsM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1266aa38aa83f9a7f266c205e2ea6db904525866",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1266aa38aa83f9a7f266c205e2ea6db904525866",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1775002709,
@@ -280,6 +296,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
+        "nixpkgs-ollama": "nixpkgs-ollama",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-zed": "nixpkgs-zed",
         "nixvim": "nixvim"

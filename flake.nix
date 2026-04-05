@@ -20,12 +20,15 @@
     };
     catppuccin.url = "github:catppuccin/nix";
     ghostty = { url = "github:ghostty-org/ghostty"; };
+    # Pinned nixpkgs main for ollama 0.20.2
+    nixpkgs-ollama.url =
+      "github:NixOS/nixpkgs/1266aa38aa83f9a7f266c205e2ea6db904525866";
     # Pinned nixpkgs for zed-editor (binary cached version)
     nixpkgs-zed.url =
       "github:NixOS/nixpkgs/1327e798cb055f96f92685df444e9a2c326ab5ed";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixos-hardware, home-manager
+  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-ollama, nixos-hardware, home-manager
     , nixvim, nixos-wsl, catppuccin, ghostty, nixpkgs-zed }@inputs:
     let
       user = "roku";
@@ -76,6 +79,12 @@
         };
       };
 
+      pkgsForOllama = system:
+        import nixpkgs-ollama {
+          inherit system;
+          config.allowUnfree = true;
+        };
+
     in {
 
       formatter.x86_64-linux = let
@@ -89,7 +98,10 @@
         moon = # sudo nixos-rebuild switch --flake .#moon --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user userName; };
+            specialArgs = {
+              inherit inputs system user userName;
+              pkgs-ollama = pkgsForOllama system;
+            };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -130,7 +142,10 @@
         sun = # sudo nixos-rebuild switch --flake .#sun --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user userName; };
+            specialArgs = {
+              inherit inputs system user userName;
+              pkgs-ollama = pkgsForOllama system;
+            };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -155,7 +170,10 @@
         wsl = # sudo nixos-rebuild switch --flake .#wsl --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = { inherit inputs system user userName; };
+            specialArgs = {
+              inherit inputs system user userName;
+              pkgs-ollama = pkgsForOllama system;
+            };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
@@ -186,12 +204,15 @@
               system = system;
               config.allowUnfree = true;
             };
+            pkgs-ollama = pkgsForOllama system;
             pkgs-zed = import nixpkgs-zed {
               system = system;
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit system user userName pkgs-stable pkgs-zed; };
+            extraSpecialArgs = {
+              inherit system user userName pkgs-stable pkgs-ollama pkgs-zed;
+            };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -245,12 +266,15 @@
               config.allowUnfree = true;
               overlays = [ setproctitleOverlay ];
             };
+            pkgs-ollama = pkgsForOllama system;
             pkgs-zed = import nixpkgs-zed {
               system = system;
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit system user userName pkgs-stable pkgs-zed; };
+            extraSpecialArgs = {
+              inherit system user userName pkgs-stable pkgs-ollama pkgs-zed;
+            };
             pkgs = pkgs;
             modules = [
               {
@@ -297,8 +321,9 @@
               system = system;
               config.allowUnfree = true;
             };
+            pkgs-ollama = pkgsForOllama system;
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit system user userName pkgs-stable; };
+            extraSpecialArgs = { inherit system user userName pkgs-stable pkgs-ollama; };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
