@@ -38,6 +38,22 @@
             "gemma4:e2b" = { };
           };
         };
+        llama-cpp = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "llama-server (local)";
+          options = {
+            baseURL = "http://127.0.0.1:8080/v1";
+          };
+          models = {
+            gemma-4-26b-a4b-it = {
+              name = "Gemma 4 26B-A4B-it (local)";
+              limit = {
+                context = 256000;
+                output = 65536;
+              };
+            };
+          };
+        };
       };
     };
     "Library/Application Support/k9s" = {
