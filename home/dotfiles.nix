@@ -38,6 +38,7 @@
             "gemma4:e2b" = { };
           };
         };
+        # $ llama-server -hf bartowski/google_gemma-4-26B-A4B-it-GGUF:Q8_0 -c 256000 -ngl 99
         llama-cpp = {
           npm = "@ai-sdk/openai-compatible";
           name = "llama-server (local)";
