@@ -16,6 +16,7 @@ tasks:
     desc: Switches home-manager configuration
     dir: "{{.ROOT_DIR}}"
     env:
+      HOME_MANAGER_BACKUP_EXT: "bak"
       NIXPKGS_ALLOW_UNFREE: "1"
     requires:
       vars:
