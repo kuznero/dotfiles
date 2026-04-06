@@ -52,6 +52,14 @@
                 context = 256000;
                 output = 65536;
               };
+              variants = {
+                think = {
+                  reasoningEffort = "high";
+                };
+                fast = {
+                  reasoningEffort = "low";
+                };
+              };
             };
           };
         };
