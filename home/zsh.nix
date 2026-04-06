@@ -17,6 +17,7 @@ let
     tma = "tmux attach -t ";
     tml = "tmux ls";
     tmk = "tmux kill-server";
+    llms = "llama-server -c 131072 -ngl 99 --reasoning-budget 32768";
   };
 in {
   programs.zsh = {
