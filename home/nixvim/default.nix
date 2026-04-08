@@ -1067,7 +1067,7 @@ in
         };
       };
       ts-autotag.enable = true;
-      ts-context-commentstring.enable = true;
+      ts-context-commentstring.enable = false;
       twilight.enable = !fastProfile;
       vim-css-color.enable = !fastProfile;
       web-devicons.enable = true;
