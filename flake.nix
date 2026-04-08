@@ -289,16 +289,16 @@
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              (import ./home/ghostty.nix {
-                ghostty = ghostty;
-                pkgs = pkgs;
-                system = system;
-                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Mononoki Nerd Font";
-                fontSize = "20";
-                adjustCellHeight = "10%";
-                adjustCellWidth = "0%";
-              })
+              # (import ./home/ghostty.nix {
+              #   ghostty = ghostty;
+              #   pkgs = pkgs;
+              #   system = system;
+              #   theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+              #   fontFamily = "Mononoki Nerd Font";
+              #   fontSize = "20";
+              #   adjustCellHeight = "10%";
+              #   adjustCellWidth = "0%";
+              # })
               ./home/git.nix
               (import ./home/nixvim/default.nix {
                 nixvim = nixvim;
@@ -308,7 +308,7 @@
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/yabai.nix
-              ./home/zed-editor.nix
+              # ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];
