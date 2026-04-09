@@ -23,6 +23,15 @@ in {
   programs.zsh = {
     inherit shellAliases;
     enable = true;
+    envExtra = ''
+      if [ -d "/Applications/1Password.app/Contents/MacOS" ]; then
+        export PATH="$PATH:/Applications/1Password.app/Contents/MacOS"
+      fi
+
+      if [ -d "/opt/1Password" ]; then
+        export PATH="$PATH:/opt/1Password"
+      fi
+    '';
     autosuggestion.enable = true;
     enableCompletion = true;
     history = {

@@ -204,14 +204,9 @@
               system = system;
               config.allowUnfree = true;
             };
-            pkgs-ollama = pkgsForOllama system;
-            pkgs-zed = import nixpkgs-zed {
-              system = system;
-              config.allowUnfree = true;
-            };
           in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit system user userName pkgs-stable pkgs-ollama pkgs-zed;
+              inherit system user userName pkgs-stable;
             };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
@@ -220,34 +215,33 @@
               catppuccin.homeModules.catppuccin
 
               ./home/user.nix
-              ./home/bcompare.nix
               ./home/browsers.nix
-              ./home/common.nix
+              ./home/common-ext.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              (import ./home/ghostty.nix {
-                ghostty = ghostty;
-                pkgs = nixpkgs.legacyPackages.${system};
-                system = system;
-                theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-                fontFamily = "Mononoki Nerd Font";
-                fontSize = "14";
-                adjustCellHeight = "10%";
-              })
+              # (import ./home/ghostty.nix {
+              #   ghostty = ghostty;
+              #   pkgs = nixpkgs.legacyPackages.${system};
+              #   system = system;
+              #   theme = "dark:catppuccin-mocha,light:catppuccin-latte";
+              #   fontFamily = "Mononoki Nerd Font";
+              #   fontSize = "14";
+              #   adjustCellHeight = "10%";
+              # })
               ./home/git.nix
-              ./home/messengers.nix
+              # ./home/messengers.nix
               (import ./home/nixvim/default.nix {
                 nixvim = nixvim;
                 pkgs = nixpkgs.legacyPackages.${system};
               })
-              ./home/obsidian.nix
-              ./home/office.nix
-              ./home/pcloud.nix
+              # ./home/obsidian.nix
+              # ./home/office.nix
+              # ./home/pcloud.nix
               ./home/scripts.nix
-              ./home/spotify.nix
+              # ./home/spotify.nix
               ./home/tmux.nix
-              ./home/transmission.nix
-              ./home/zed-editor.nix
+              # ./home/transmission.nix
+              # ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];
