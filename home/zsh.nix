@@ -35,6 +35,10 @@ in {
       if [ -d "$HOME/.local/bin" ]; then
         export PATH="$PATH:$HOME/.local/bin"
       fi
+
+      if [ -d "$HOME/.opencode/bin" ]; then
+        export PATH="$PATH:$HOME/.opencode/bin:$PATH"
+      fi
     '';
     autosuggestion.enable = true;
     enableCompletion = true;
