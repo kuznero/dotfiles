@@ -31,6 +31,10 @@ in {
       if [ -d "/opt/1Password" ]; then
         export PATH="$PATH:/opt/1Password"
       fi
+
+      if [ -d "$HOME/.local/bin" ]; then
+        export PATH="$PATH:$HOME/.local/bin"
+      fi
     '';
     autosuggestion.enable = true;
     enableCompletion = true;
