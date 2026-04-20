@@ -58,16 +58,17 @@ let
 
     selection="$({
       tmux list-panes -a -F '#{session_id}	#{window_id}	#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_current_path}' |
+        while IFS=$'\t' read -r session_id window_id pane_id session_label window_name pane_path; do
+          branch=""
+
+          if git -C "$pane_path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            branch=$(git -C "$pane_path" branch --show-current 2>/dev/null || true)
+          fi
+
+          printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$session_id" "$window_id" "$pane_id" "$session_label" "$window_name" "$branch"
+        done |
         awk -F '\t' '
           function truncate(value, width) {
-            if (length(value) <= width) {
-              return value
-            }
-
-            return substr(value, 1, width - 3) "..."
-          }
-
-          function compact_path(value, width) {
             if (length(value) <= width) {
               return value
             }
@@ -78,7 +79,7 @@ let
           BEGIN { OFS = "\t" }
 
           {
-            printf "%s\t%s\t%s\t%-30s | %-6s | %s\n", $1, $2, $3, truncate($4, 30), truncate($5, 6), compact_path($6, 68)
+            printf "%s\t%s\t%s\t%-32s | %-6s | %-50s\n", $1, $2, $3, truncate($6, 32), truncate($5, 6), truncate($4, 50)
           }
         ' |
         fzf \
