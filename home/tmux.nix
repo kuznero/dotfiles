@@ -57,17 +57,38 @@ let
     set -euo pipefail
 
     selection="$({
-      tmux list-panes -a -F '#{session_id}	#{window_id}	#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_current_command}	#{pane_current_path}' |
+      tmux list-panes -a -F '#{session_id}	#{window_id}	#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_current_path}' |
+        awk -F '\t' '
+          function truncate(value, width) {
+            if (length(value) <= width) {
+              return value
+            }
+
+            return substr(value, 1, width - 3) "..."
+          }
+
+          function compact_path(value, width) {
+            if (length(value) <= width) {
+              return value
+            }
+
+            return substr(value, 1, width - 3) "..."
+          }
+
+          BEGIN { OFS = "\t" }
+
+          {
+            printf "%s\t%s\t%s\t%-30s | %-6s | %s\n", $1, $2, $3, truncate($4, 30), truncate($5, 6), compact_path($6, 68)
+          }
+        ' |
         fzf \
           --no-color \
           --prompt='tmux> ' \
           --delimiter=$'\t' \
-          --with-nth=4,5,6,7 \
+          --with-nth=4 \
           --layout=reverse \
           --height=100% \
-          --border \
-          --preview 'tmux capture-pane -p -t {3} -S -80' \
-          --preview-window='right,60%'
+          --border
     } || true)"
 
     [ -n "''${selection}" ] || exit 0
