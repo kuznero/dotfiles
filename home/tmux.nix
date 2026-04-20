@@ -78,8 +78,8 @@ let
 
           BEGIN { OFS = "\t" }
 
-          {
-            printf "%s\t%s\t%s\t%-32s | %-6s | %-50s\n", $1, $2, $3, truncate($6, 32), truncate($5, 6), truncate($4, 50)
+          $5 == "butler" {
+            printf "%s\t%s\t%s\t%-32s | %-50s\n", $1, $2, $3, truncate($6, 32), truncate($4, 50)
           }
         ' |
         fzf \
