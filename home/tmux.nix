@@ -51,9 +51,36 @@ let
     # This reloads the theme based on the current @catppuccin_flavor value
     tmux source-file "${catppuccinPluginPath}/catppuccin_tmux.conf"
   '';
+
+  tmuxSessionPicker = pkgs.writeShellScriptBin "tmux-session-picker" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    selection="$({
+      tmux list-panes -a -F '#{session_id}	#{window_id}	#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_current_command}	#{pane_current_path}' |
+        fzf \
+          --no-color \
+          --prompt='tmux> ' \
+          --delimiter=$'\t' \
+          --with-nth=4,5,6,7 \
+          --layout=reverse \
+          --height=100% \
+          --border \
+          --preview 'tmux capture-pane -p -t {3} -S -80' \
+          --preview-window='right,60%'
+    } || true)"
+
+    [ -n "''${selection}" ] || exit 0
+
+    IFS=$'\t' read -r session_id window_id pane_id _ <<< "''${selection}"
+
+    tmux switch-client -t "''${session_id}"
+    tmux select-window -t "''${window_id}"
+    tmux select-pane -t "''${pane_id}"
+  '';
 in
 {
-  home.packages = [ tmuxThemeToggle ];
+  home.packages = [ tmuxThemeToggle tmuxSessionPicker ];
 
   catppuccin.tmux = {
     enable = true;
@@ -102,6 +129,9 @@ in
 
       # Toggle theme (light/dark)
       bind -n M-t run-shell "${tmuxThemeToggle}/bin/tmux-theme-toggle"
+
+      # Fuzzy picker for jumping across sessions/windows/panes
+      bind -n M-p display-popup -E -w 90% -h 85% "${tmuxSessionPicker}/bin/tmux-session-picker"
 
       # Easy navigation
       bind -n M-Left run-shell "if [ $(tmux display-message -p '#{pane_at_left}') -ne 1 ]; then tmux select-pane -L; else tmux select-window -p; fi"
