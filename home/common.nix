@@ -5,8 +5,6 @@
     [
       bat
       btop
-      # (pkgs.callPackage ../nixpkgs/claude-code { })
-      # (pkgs.callPackage ../nixpkgs/opencode { })
       cmatrix
       coreutils-full
       eza
@@ -17,7 +15,6 @@
       git-town
       gnupg
       go-task
-      # (pkgs.callPackage ../nixpkgs/k9s { })
       kubectl
       kubeswitch
       lazydocker

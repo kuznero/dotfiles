@@ -216,7 +216,7 @@
 
               ./home/user.nix
               ./home/browsers.nix
-              ./home/common-ext.nix
+              ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
               # (import ./home/ghostty.nix {
