@@ -153,7 +153,7 @@ in
       bind -n M-t run-shell "${tmuxThemeToggle}/bin/tmux-theme-toggle"
 
       # Fuzzy picker for jumping across sessions/windows/panes
-      bind -n M-p display-popup -E -w 70% -h 60% "${tmuxSessionPicker}/bin/tmux-session-picker"
+      bind -n M-p display-popup -E -w 50% -h 40% "${tmuxSessionPicker}/bin/tmux-session-picker"
 
       # Easy navigation
       bind -n M-Left run-shell "if [ $(tmux display-message -p '#{pane_at_left}') -ne 1 ]; then tmux select-pane -L; else tmux select-window -p; fi"
