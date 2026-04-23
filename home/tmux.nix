@@ -1,57 +1,6 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, ... }:
 
 let
-  # Get the catppuccin plugin path from the Nix store
-  catppuccinPluginPath = "${config.catppuccin.sources.tmux}/share/tmux-plugins/catppuccin";
-
-  # Script to toggle between light and dark themes
-  tmuxThemeToggle = pkgs.writeShellScriptBin "tmux-theme-toggle" ''
-    #!/usr/bin/env bash
-
-    APPEARANCE_FILE="$HOME/.config/appearance"
-
-    # Initialize appearance file with latte if it doesn't exist
-    if [ ! -f "$APPEARANCE_FILE" ]; then
-      mkdir -p "$(dirname "$APPEARANCE_FILE")"
-      echo "latte" > "$APPEARANCE_FILE"
-    fi
-
-    # Read current flavor from appearance file
-    current_flavor=$(cat "$APPEARANCE_FILE")
-
-    # Toggle between latte and mocha
-    if [[ "$current_flavor" == "latte" ]]; then
-      new_flavor="mocha"
-    else
-      new_flavor="latte"
-    fi
-
-    # Save the new theme to file for persistence
-    echo "$new_flavor" > "$APPEARANCE_FILE"
-
-    # Unset all theme color variables (they use -o flag so can't be overwritten)
-    for var in thm_bg thm_fg thm_rosewater thm_flamingo thm_pink thm_mauve \
-               thm_red thm_maroon thm_peach thm_yellow thm_green thm_teal \
-               thm_sky thm_sapphire thm_blue thm_lavender thm_subtext_1 \
-               thm_subtext_0 thm_overlay_2 thm_overlay_1 thm_overlay_0 \
-               thm_surface_2 thm_surface_1 thm_surface_0 thm_mantle thm_crust; do
-      tmux set-option -gu "@$var"
-    done
-
-    # Also unset status module text color variables
-    for module in application cpu session uptime battery; do
-      tmux set-option -gu "@catppuccin_status_''${module}_text_fg"
-      tmux set-option -gu "@catppuccin_status_''${module}_icon_fg"
-    done
-
-    # Set the new flavor in tmux
-    tmux set-option -g @catppuccin_flavor "$new_flavor"
-
-    # Source just the theme config file
-    # This reloads the theme based on the current @catppuccin_flavor value
-    tmux source-file "${catppuccinPluginPath}/catppuccin_tmux.conf"
-  '';
-
   tmuxSessionPicker = pkgs.writeShellScriptBin "tmux-session-picker" ''
     #!/usr/bin/env bash
     set -euo pipefail
@@ -100,30 +49,114 @@ let
     tmux select-window -t "''${window_id}"
     tmux select-pane -t "''${pane_id}"
   '';
+
+  tmuxApplyAppearance = pkgs.writeShellScriptBin "tmux-apply-appearance" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    appearance_file="$HOME/.config/appearance"
+    appearance="light"
+
+    if [ -f "$appearance_file" ]; then
+      appearance_value="$(tr -d '\r' < "$appearance_file" | head -n 1)"
+
+      case "$appearance_value" in
+        dark)
+          appearance="dark"
+          ;;
+        light)
+          appearance="light"
+          ;;
+        mocha)
+          appearance="dark"
+          printf 'dark\n' > "$appearance_file"
+          ;;
+        latte)
+          appearance="light"
+          printf 'light\n' > "$appearance_file"
+          ;;
+        *)
+          printf 'light\n' > "$appearance_file"
+          ;;
+      esac
+    else
+      mkdir -p "$HOME/.config"
+      printf 'light\n' > "$appearance_file"
+    fi
+
+    if [ "$appearance" = "dark" ]; then
+      tmux set-option -g status-style "bg=#0f172a,fg=#cbd5e1"
+      tmux set-option -g mode-style "bg=#f59e0b,fg=#0f172a"
+      tmux set-option -g message-style "bg=#1e293b,fg=#e2e8f0"
+      tmux set-option -g message-command-style "bg=#2dd4bf,fg=#0f172a"
+      tmux set-option -g pane-border-style "fg=#334155"
+      tmux set-option -g pane-active-border-style "fg=#2dd4bf"
+      tmux set-option -g display-panes-colour "#94a3b8"
+      tmux set-option -g display-panes-active-colour "#f59e0b"
+      tmux set-option -g popup-style "bg=#111827,fg=#cbd5e1"
+      tmux set-option -g popup-border-style "fg=#2dd4bf"
+      tmux set-option -g window-status-format " #[fg=#94a3b8,bg=#1e293b] #I:#W "
+      tmux set-option -g window-status-current-format " #[fg=#0f172a,bg=#2dd4bf,bold] #I:#W "
+      tmux set-option -g window-status-last-style "fg=#f59e0b"
+      tmux set-option -g window-status-activity-style "fg=#f59e0b,bold"
+      tmux set-option -g status-right "#{?client_prefix,#[fg=#0f172a,bg=#f59e0b,bold] PREFIX ,}#[fg=#e2e8f0,bg=#1e293b] #S #[fg=#0f172a,bg=#2dd4bf] %a %H:%M "
+    else
+      tmux set-option -g status-style "bg=#e8eef5,fg=#334155"
+      tmux set-option -g mode-style "bg=#d97706,fg=#fff7ed"
+      tmux set-option -g message-style "bg=#dbe4f0,fg=#1e293b"
+      tmux set-option -g message-command-style "bg=#0f766e,fg=#f8fafc"
+      tmux set-option -g pane-border-style "fg=#cbd5e1"
+      tmux set-option -g pane-active-border-style "fg=#0f766e"
+      tmux set-option -g display-panes-colour "#64748b"
+      tmux set-option -g display-panes-active-colour "#d97706"
+      tmux set-option -g popup-style "bg=#f8fafc,fg=#334155"
+      tmux set-option -g popup-border-style "fg=#0f766e"
+      tmux set-option -g window-status-format " #[fg=#64748b,bg=#dbe4f0] #I:#W "
+      tmux set-option -g window-status-current-format " #[fg=#f8fafc,bg=#0f766e,bold] #I:#W "
+      tmux set-option -g window-status-last-style "fg=#b45309"
+      tmux set-option -g window-status-activity-style "fg=#b45309,bold"
+      tmux set-option -g status-right "#{?client_prefix,#[fg=#fff7ed,bg=#d97706,bold] PREFIX ,}#[fg=#1e293b,bg=#dbe4f0] #S #[fg=#f8fafc,bg=#0f766e] %a %H:%M "
+    fi
+  '';
+
+  tmuxToggleAppearance = pkgs.writeShellScriptBin "tmux-toggle-appearance" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    appearance_file="$HOME/.config/appearance"
+    appearance="light"
+
+    mkdir -p "$HOME/.config"
+
+    if [ -f "$appearance_file" ]; then
+      IFS= read -r appearance_value < "$appearance_file" || appearance_value=""
+
+      case "$appearance_value" in
+        dark|mocha)
+          appearance="dark"
+          ;;
+        light|latte)
+          appearance="light"
+          ;;
+      esac
+    fi
+
+    if [ "$appearance" = "dark" ]; then
+      next_appearance="light"
+    else
+      next_appearance="dark"
+    fi
+
+    printf '%s\n' "$next_appearance" > "$appearance_file"
+
+    if [ -n "''${TMUX:-}" ]; then
+      "${tmuxApplyAppearance}/bin/tmux-apply-appearance"
+      tmux display-message "Appearance: $next_appearance"
+    fi
+  '';
 in
 {
-  home.packages = [ tmuxThemeToggle tmuxSessionPicker ];
-
-  catppuccin.tmux = {
-    enable = true;
-    flavor = "latte";
-    extraConfig = ''
-      # Load saved theme from appearance file if it exists
-      run-shell 'if [ -f ~/.config/appearance ]; then tmux set-option -g @catppuccin_flavor "$(cat ~/.config/appearance)"; fi'
-
-      set -g @catppuccin_window_status_style "basic"
-      set -g @catppuccin_window_text " #W#{?window_zoomed_flag, ●,}"
-      set -g @catppuccin_window_current_text " #W#{?window_zoomed_flag, ●,}"
-
-      set -g status-right-length 100
-      set -g status-left-length 100
-      set -g status-left ""
-      set -g status-right "#{E:@catppuccin_status_application}"
-      set -agF status-right "#{E:@catppuccin_status_cpu}"
-      set -ag status-right "#{E:@catppuccin_status_session}"
-      set -agF status-right "#{E:@catppuccin_status_battery}"
-    '';
-  };
+  home.packages = [ tmuxSessionPicker tmuxApplyAppearance tmuxToggleAppearance ];
 
   programs.tmux = {
     enable = true;
@@ -149,9 +182,6 @@ in
       # Reload tmux config
       bind -n M-R source-file ~/.config/tmux/tmux.conf \; display "Configuration reloaded"
 
-      # Toggle theme (light/dark)
-      bind -n M-t run-shell "${tmuxThemeToggle}/bin/tmux-theme-toggle"
-
       # Fuzzy picker for jumping across sessions/windows/panes
       bind -n M-p display-popup -E -w 50% -h 40% "${tmuxSessionPicker}/bin/tmux-session-picker"
 
@@ -165,6 +195,7 @@ in
       bind -n M-Up run-shell "if [ $(tmux display-message -p '#{pane_at_top}') -ne 1 ]; then tmux select-pane -U; fi"
       bind -n M-k run-shell "if [ $(tmux display-message -p '#{pane_at_top}') -ne 1 ]; then tmux select-pane -U; fi"
       bind -n M-n run-shell "tmux new-window"
+      bind -n M-t run-shell "${tmuxToggleAppearance}/bin/tmux-toggle-appearance"
       bind -n M-z run-shell "tmux resize-pane -Z"
 
       # Toggles to sync panes
@@ -180,7 +211,18 @@ in
       # Set default escape-time
       set-option -sg escape-time 10
 
+      # Shared tmux layout; colors are loaded from ~/.config/appearance.
       set-option -g status-position top
+      set-option -g status-interval 5
+      set-option -g status-justify left
+
+      set-option -g window-status-separator ""
+
+      set-option -g status-left ""
+      set-option -g status-right-length 100
+      set-option -g status-left-length 100
+
+      run-shell "${tmuxApplyAppearance}/bin/tmux-apply-appearance"
     '';
   };
 

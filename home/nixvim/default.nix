@@ -1,4 +1,5 @@
 { nixvim, pkgs, ... }:
+{ config, ... }:
 
 let
   fastProfile = true;
@@ -249,7 +250,6 @@ in
     ]);
 
     editorconfig.enable = true;
-    colorschemes = { catppuccin.enable = true; };
     # colorscheme set dynamically in extraConfigLua based on ~/.config/appearance
 
     opts = {
@@ -995,7 +995,7 @@ in
           enable = false;
         };
         grammarPackages =
-          with pkgs.vimPlugins.nvim-treesitter.builtGrammars;
+          with config.programs.nixvim.plugins.treesitter.package.builtGrammars;
           if fastProfile then
             [
               bash

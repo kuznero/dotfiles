@@ -14,22 +14,10 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    catppuccin.url = "github:catppuccin/nix";
-    ghostty = { url = "github:ghostty-org/ghostty"; };
-    # Pinned nixpkgs main for ollama 0.20.2
-    nixpkgs-ollama.url =
-      "github:NixOS/nixpkgs/1266aa38aa83f9a7f266c205e2ea6db904525866";
-    # Pinned nixpkgs for zed-editor (binary cached version)
-    nixpkgs-zed.url =
-      "github:NixOS/nixpkgs/1327e798cb055f96f92685df444e9a2c326ab5ed";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, nixpkgs-ollama, nixos-hardware, home-manager
-    , nixvim, nixos-wsl, catppuccin, ghostty, nixpkgs-zed }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, nixos-hardware, home-manager
+    , nixvim }@inputs:
     let
       user = "roku";
       userName = "Roman Kuznetsov";
@@ -79,12 +67,6 @@
         };
       };
 
-      pkgsForOllama = system:
-        import nixpkgs-ollama {
-          inherit system;
-          config.allowUnfree = true;
-        };
-
     in {
 
       formatter.x86_64-linux = let
@@ -100,7 +82,6 @@
           in nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs system user userName;
-              pkgs-ollama = pkgsForOllama system;
             };
             modules = [
               {
@@ -108,8 +89,6 @@
                 nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
                 system.stateVersion = "25.11";
               }
-
-              catppuccin.nixosModules.catppuccin
 
               # ref: https://github.com/NixOS/nixos-hardware/blob/master/flake.nix
               nixos-hardware.nixosModules.lenovo-thinkpad-x1-10th-gen
@@ -130,7 +109,6 @@
               # ./nixos/gaming.nix
               ./nixos/logind.nix
               ./nixos/media.nix
-              ./nixos/ollama.nix
               # ./nixos/podman.nix
               ./nixos/vpn.nix
 
@@ -144,7 +122,6 @@
           in nixpkgs.lib.nixosSystem {
             specialArgs = {
               inherit inputs system user userName;
-              pkgs-ollama = pkgsForOllama system;
             };
             modules = [
               {
@@ -161,39 +138,11 @@
               ./nixos/docker.nix
               ./nixos/logind.nix
               ./nixos/github-runner.nix
-              # ./nixos/ollama.nix
               ./nixos/onlyoffice-server.nix
               ./nixos/athens.nix
             ];
           };
 
-        wsl = # sudo nixos-rebuild switch --flake .#wsl --impure
-          let system = "x86_64-linux";
-          in nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs system user userName;
-              pkgs-ollama = pkgsForOllama system;
-            };
-            modules = [
-              {
-                nixpkgs.config.allowUnfree = true;
-                nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
-                system.stateVersion = "25.11";
-              }
-
-              catppuccin.nixosModules.catppuccin
-
-              # basic configuration & users
-              ./nixos/wsl/configuration.nix
-              ./nixos/user.nix
-
-              # features
-              ./nixos/docker.nix
-              ./nixos/flatpak.nix
-              ./nixos/gnupg.nix
-              # ./nixos/podman.nix
-            ];
-          };
       };
 
       homeConfigurations = {
@@ -212,22 +161,11 @@
             modules = [
               { nixpkgs.config.allowUnfree = true; }
 
-              catppuccin.homeModules.catppuccin
-
               ./home/user.nix
               ./home/browsers.nix
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              # (import ./home/ghostty.nix {
-              #   ghostty = ghostty;
-              #   pkgs = nixpkgs.legacyPackages.${system};
-              #   system = system;
-              #   theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-              #   fontFamily = "Mononoki Nerd Font";
-              #   fontSize = "14";
-              #   adjustCellHeight = "10%";
-              # })
               ./home/git.nix
               # ./home/messengers.nix
               (import ./home/nixvim/default.nix {
@@ -241,7 +179,6 @@
               # ./home/spotify.nix
               ./home/tmux.nix
               # ./home/transmission.nix
-              # ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];
@@ -260,14 +197,9 @@
               config.allowUnfree = true;
               overlays = [ setproctitleOverlay ];
             };
-            pkgs-ollama = pkgsForOllama system;
-            pkgs-zed = import nixpkgs-zed {
-              system = system;
-              config.allowUnfree = true;
-            };
           in home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit system user userName pkgs-stable pkgs-ollama pkgs-zed;
+              inherit system user userName pkgs-stable;
             };
             pkgs = pkgs;
             modules = [
@@ -277,70 +209,23 @@
               }
               { nixpkgs.config.allowUnfree = true; }
 
-              catppuccin.homeModules.catppuccin
-
               ./home/user.nix
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              # (import ./home/ghostty.nix {
-              #   ghostty = ghostty;
-              #   pkgs = pkgs;
-              #   system = system;
-              #   theme = "dark:catppuccin-mocha,light:catppuccin-latte";
-              #   fontFamily = "Mononoki Nerd Font";
-              #   fontSize = "20";
-              #   adjustCellHeight = "10%";
-              #   adjustCellWidth = "0%";
-              # })
               ./home/git.nix
               (import ./home/nixvim/default.nix {
                 nixvim = nixvim;
                 pkgs = pkgs;
               })
-              # ./home/ollama.nix
               ./home/scripts.nix
               ./home/tmux.nix
               ./home/yabai.nix
-              # ./home/zed-editor.nix
               ./home/zoxide.nix
               ./home/zsh.nix
             ];
           };
 
-        wsl = # home-manager switch --flake .#wsl
-          let
-            system = "x86_64-linux";
-            pkgs-stable = import inputs.nixpkgs {
-              system = system;
-              config.allowUnfree = true;
-            };
-            pkgs-ollama = pkgsForOllama system;
-          in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = { inherit system user userName pkgs-stable pkgs-ollama; };
-            pkgs = nixpkgs.legacyPackages.${system};
-            modules = [
-              { nixpkgs.config.allowUnfree = true; }
-
-              catppuccin.homeModules.catppuccin
-
-              ./home/user.nix
-              ./home/bcompare.nix
-              ./home/common.nix
-              ./home/dotfiles.nix
-              ./home/fzf.nix
-              ./home/git.nix
-              (import ./home/nixvim/default.nix {
-                nixvim = nixvim;
-                pkgs = nixpkgs.legacyPackages.${system};
-              })
-              ./home/obsidian.nix
-              ./home/scripts.nix
-              ./home/tmux.nix
-              ./home/zoxide.nix
-              ./home/zsh.nix
-            ];
-          };
       };
 
       # devShells = {
