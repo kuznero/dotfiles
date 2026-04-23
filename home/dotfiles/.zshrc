@@ -287,7 +287,7 @@ function gwtswitch() {
   cd "${repo_root}/" || return 1
   git fetch origin || return 1
   local branch
-  branch=$(git branch -r | grep -v HEAD | sed 's|origin/||' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | fzf --print-query --prompt="Choose remote branch: " --height=40% --reverse | tail -1)
+  branch=$(git branch -r | grep -v HEAD | sed 's|origin/||' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | fzf --no-color --print-query --prompt="Choose remote branch: " --height=40% --reverse | tail -1)
   if [ -z "${branch}" ]; then
     echo "operation cancelled"
     return 0
@@ -326,7 +326,7 @@ function gwtcd() {
     branch=$NF
     gsub(/[\[\]]/, "", branch)
     print branch "\t" path
-  }' | fzf --height=40% --reverse --prompt="Worktree: " --with-nth=1)
+  }' | fzf --no-color --height=40% --reverse --prompt="Worktree: " --with-nth=1)
   if [[ -n "$selection" ]]; then
     worktree=$(echo "$selection" | cut -f2)
     cd "$worktree" || return 1
