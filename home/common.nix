@@ -19,6 +19,7 @@
       kubeswitch
       lazydocker
       lazygit
+      mc
       nodejs_24
       pass
       poppler
