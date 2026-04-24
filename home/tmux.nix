@@ -5,18 +5,33 @@ let
     #!/usr/bin/env bash
     set -euo pipefail
 
+    current_branch=""
+    current_repo_name=""
+    current_pane_path="$(tmux display-message -p '#{pane_current_path}')"
+
+    if git -C "$current_pane_path" rev-parse --git-dir >/dev/null 2>&1; then
+      current_branch=$(git -C "$current_pane_path" branch --show-current 2>/dev/null || true)
+      current_origin_url=$(git -C "$current_pane_path" remote get-url origin 2>/dev/null || true)
+      current_repo_name="''${current_origin_url##*/}"
+      current_repo_name="''${current_repo_name%.git}"
+    fi
+
     selection="$({
       tmux list-panes -a -F '#{session_id}	#{window_id}	#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_current_path}' |
         while IFS=$'\t' read -r session_id window_id pane_id session_label window_name pane_path; do
           branch=""
+          repo_name=""
 
-          if git -C "$pane_path" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+          if git -C "$pane_path" rev-parse --git-dir >/dev/null 2>&1; then
             branch=$(git -C "$pane_path" branch --show-current 2>/dev/null || true)
+            origin_url=$(git -C "$pane_path" remote get-url origin 2>/dev/null || true)
+            repo_name="''${origin_url##*/}"
+            repo_name="''${repo_name%.git}"
           fi
 
-          printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$session_id" "$window_id" "$pane_id" "$session_label" "$window_name" "$branch"
+          printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$session_id" "$window_id" "$pane_id" "$session_label" "$window_name" "$branch" "$repo_name"
         done |
-        awk -F '\t' '
+        awk -F '\t' -v current_branch="$current_branch" -v current_repo_name="$current_repo_name" '
           function truncate(value, width) {
             if (length(value) <= width) {
               return value
@@ -28,7 +43,8 @@ let
           BEGIN { OFS = "\t" }
 
           $5 == "butler" {
-            printf "%s\t%s\t%s\t%-47s | %-50s\n", $1, $2, $3, truncate($6, 47), truncate($4, 50)
+            current_marker = ($7 != "" && $7 == current_repo_name && $6 != "" && $6 == current_branch) ? "*" : ""
+            printf "%s\t%s\t%s\t%-1s | %-20s | %-47s\n", $1, $2, $3, current_marker, truncate($7, 20), truncate($6, 47)
           }
         ' |
         fzf \
@@ -42,7 +58,13 @@ let
 
     [ -n "''${selection}" ] || exit 0
 
-    IFS=$'\t' read -r session_id window_id pane_id _ <<< "''${selection}"
+    IFS=$'\t' read -r session_id window_id pane_id display_value <<< "''${selection}"
+
+    case "$display_value" in
+      \**)
+        exit 0
+        ;;
+    esac
 
     tmux switch-client -t "''${session_id}"
     tmux select-window -t "''${window_id}"
