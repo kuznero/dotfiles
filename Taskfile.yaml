@@ -24,14 +24,36 @@ tasks:
     cmds:
       - nix run .#homeConfigurations.{{.NAME}}.activationPackage --impure
 
-  update-nixpkgs:
-    desc: Update all nixpkgs/
-    silent: true
+  flake:show:
+    desc: Shows flake outputs
     dir: "{{.ROOT_DIR}}"
     cmds:
-      - |
-        find nixpkgs -type f -name update.sh | xargs -I {} bash -c '
-        pushd $(dirname {})
-        ./update.sh
-        popd
-        '
+      - nix flake show --all-systems
+
+  fmt:
+    desc: Formats Nix files
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - nix fmt
+
+  home:check:
+    desc: Evaluates home-manager activation package
+    dir: "{{.ROOT_DIR}}"
+    env:
+      NIXPKGS_ALLOW_UNFREE: "1"
+    requires:
+      vars:
+        - NAME
+    cmds:
+      - nix eval .#homeConfigurations.{{.NAME}}.activationPackage.drvPath --impure
+
+  nixos:check:
+    desc: Evaluates NixOS system closure
+    dir: "{{.ROOT_DIR}}"
+    env:
+      NIXPKGS_ALLOW_UNFREE: "1"
+    requires:
+      vars:
+        - NAME
+    cmds:
+      - nix eval .#nixosConfigurations.{{.NAME}}.config.system.build.toplevel.drvPath --impure

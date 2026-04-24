@@ -35,15 +35,17 @@
 
       openvpn3ProtobufOverlay = final: prev: {
         openvpn3 = prev.openvpn3.overrideAttrs (old: {
-          buildInputs = builtins.map (pkg:
-            if pkg == prev.protobuf then prev.protobuf_33 else pkg) old.buildInputs;
+          buildInputs = builtins.map
+            (pkg: if pkg == prev.protobuf then prev.protobuf_33 else pkg)
+            old.buildInputs;
         });
       };
 
+      # Work around Home Manager file installation issues on macOS while keeping
+      # Linux configurations on the upstream modules.
       patchedHomeManagerFilesModule = args@{ pkgs, ... }:
-        import "${home-manager.outPath}/modules/files.nix" (args // {
-          pkgs = pkgs // { xorg = { lndir = pkgs.lndir; }; };
-        });
+        import "${home-manager.outPath}/modules/files.nix"
+        (args // { pkgs = pkgs // { xorg = { lndir = pkgs.lndir; }; }; });
 
       patchedHomeManagerManualModule = { lib, ... }: {
         options = {
@@ -62,30 +64,55 @@
           manual.json.enable = lib.mkOption {
             type = lib.types.bool;
             default = false;
-            description = "Whether to install the Home Manager options JSON file.";
+            description =
+              "Whether to install the Home Manager options JSON file.";
           };
         };
       };
 
     in {
 
-      formatter.x86_64-linux = let
-        pkgs-unstable = import nixpkgs {
-          system = "x86_64-linux";
-          config = { allowUnfree = true; };
-        };
-      in pkgs-unstable.nixfmt-classic;
+      formatter =
+        nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ]
+        (system:
+          let
+            pkgs-unstable = import nixpkgs {
+              inherit system;
+              config = { allowUnfree = true; };
+            };
+          in pkgs-unstable.writeShellApplication {
+            name = "format-nix";
+            runtimeInputs = with pkgs-unstable; [ git nixfmt-classic ];
+            text = ''
+                files=()
+                while IFS= read -r file; do
+                  files+=("$file")
+                done < <(git ls-files '*.nix')
+
+              if [ "$#" -eq 0 ]; then
+                exec nixfmt "''${files[@]}"
+              fi
+
+              case "$1" in
+                -*)
+                  exec nixfmt "$@" "''${files[@]}"
+                  ;;
+                *)
+                  exec nixfmt "$@"
+                  ;;
+              esac
+            '';
+          });
 
       nixosConfigurations = {
         moon = # sudo nixos-rebuild switch --flake .#moon --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs system user userName;
-            };
+            specialArgs = { inherit inputs system user userName; };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
+                nixpkgs.hostPlatform = system;
                 nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
                 system.stateVersion = "25.11";
               }
@@ -120,12 +147,11 @@
         sun = # sudo nixos-rebuild switch --flake .#sun --impure
           let system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs system user userName;
-            };
+            specialArgs = { inherit inputs system user userName; };
             modules = [
               {
                 nixpkgs.config.allowUnfree = true;
+                nixpkgs.hostPlatform = system;
                 nixpkgs.overlays = [ openvpn3ProtobufOverlay ];
                 system.stateVersion = "25.11";
               }
@@ -143,20 +169,35 @@
             ];
           };
 
+        devos = # sudo nixos-rebuild switch --flake .#devos --impure
+          let system = "aarch64-linux";
+          in nixpkgs.lib.nixosSystem {
+            specialArgs = { inherit inputs system user userName; };
+            modules = [
+              {
+                nixpkgs.config.allowUnfree = true;
+                nixpkgs.hostPlatform = system;
+                system.stateVersion = "25.11";
+              }
+
+              # basic configuration & users
+              ./nixos/devos/configuration.nix
+              ./nixos/user.nix
+            ];
+          };
+
       };
 
       homeConfigurations = {
         moon = # home-manager switch --flake .#moon
           let
             system = "x86_64-linux";
-            pkgs-stable = import inputs.nixpkgs {
+            pkgs-stable = import nixpkgs-stable {
               system = system;
               config.allowUnfree = true;
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit system user userName pkgs-stable;
-            };
+            extraSpecialArgs = { inherit system user userName pkgs-stable; };
             pkgs = nixpkgs.legacyPackages.${system};
             modules = [
               { nixpkgs.config.allowUnfree = true; }
@@ -184,6 +225,35 @@
             ];
           };
 
+        devos = # home-manager switch --flake .#devos
+          let
+            system = "aarch64-linux";
+            pkgs-stable = import nixpkgs-stable {
+              system = system;
+              config.allowUnfree = true;
+            };
+          in home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = { inherit system user userName pkgs-stable; };
+            pkgs = nixpkgs.legacyPackages.${system};
+            modules = [
+              { nixpkgs.config.allowUnfree = true; }
+
+              ./home/user.nix
+              ./home/common.nix
+              ./home/dotfiles.nix
+              ./home/fzf.nix
+              ./home/git.nix
+              (import ./home/nixvim/default.nix {
+                nixvim = nixvim;
+                pkgs = nixpkgs.legacyPackages.${system};
+              })
+              ./home/scripts.nix
+              ./home/tmux.nix
+              ./home/zoxide.nix
+              ./home/zsh.nix
+            ];
+          };
+
         mac = # home-manager switch --flake .#mac
           let
             system = "aarch64-darwin";
@@ -198,14 +268,15 @@
               overlays = [ setproctitleOverlay ];
             };
           in home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit system user userName pkgs-stable;
-            };
+            extraSpecialArgs = { inherit system user userName pkgs-stable; };
             pkgs = pkgs;
             modules = [
               {
                 disabledModules = [ "files.nix" "manual.nix" ];
-                imports = [ patchedHomeManagerFilesModule patchedHomeManagerManualModule ];
+                imports = [
+                  patchedHomeManagerFilesModule
+                  patchedHomeManagerManualModule
+                ];
               }
               { nixpkgs.config.allowUnfree = true; }
 

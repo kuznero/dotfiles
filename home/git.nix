@@ -27,8 +27,10 @@
         ps = "push";
       };
       user = {
-        Name = "${userName}";
-        Email = "${user}@lix.one";
+        name = "${userName}";
+        email = "${user}@lix.one";
+        signingkey =
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPnftuCpJhWOWkLVrKarVSDH1+PZ5tH8lfvZo2fTzNa5";
       };
       init = { defaultBranch = "main"; };
       core = { autocrlf = "input"; };
@@ -39,10 +41,6 @@
       mergetool.bc = { trustExitCode = true; };
       pull = { rebase = false; };
       push = { default = "simple"; };
-      user = {
-        signingkey =
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPnftuCpJhWOWkLVrKarVSDH1+PZ5tH8lfvZo2fTzNa5";
-      };
       gpg = { format = "ssh"; };
       gpg.ssh = { program = "op-ssh-sign"; };
       commit = { gpgsign = true; };

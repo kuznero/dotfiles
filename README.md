@@ -28,6 +28,15 @@ task home:switch NAME=mac USER="myuser" USER_NAME="My Full Name"
 
 If not provided, defaults to `USER=roku` and `USER_NAME="Roman Kuznetsov"`.
 
+You can validate configurations before switching:
+
+```bash
+task flake:show
+task fmt
+task nixos:check NAME=moon
+task home:check NAME=mac
+```
+
 ### DevOS Virtual Machine (`aarch64-linux`)
 
 ```bash

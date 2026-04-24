@@ -3,12 +3,11 @@
 
 let
   fastProfile = true;
-in
 
-# NOTE: after installing nixvim, start it, and run `checkhealth` command to ensure no errors.
-# NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
+  # NOTE: after installing nixvim, start it, and run `checkhealth` command to ensure no errors.
+  # NOTE: sometimes, it might be required to run `TSUpdate` command to clear some of the errors/warnings.
 
-{
+in {
   imports = [ nixvim.homeModules.nixvim ];
 
   home.packages = with pkgs; [
@@ -27,25 +26,24 @@ in
     # to avoid Go version conflicts: gotools, gofumpt, delve
 
     # ref: https://vimcolorschemes.com/
-    extraPlugins =
-      with pkgs; [
-        vimPlugins.ayu-vim
-        # vimPlugins.base16-nvim
-        vimPlugins.catppuccin-nvim
-        vimPlugins.dracula-nvim
-        vimPlugins.everforest
-        vimPlugins.gruvbox-nvim
-        vimPlugins.kanagawa-nvim
-        vimPlugins.melange-nvim
-        vimPlugins.monokai-pro-nvim
-        vimPlugins.neomodern-nvim
-        vimPlugins.nightfox-nvim
-        vimPlugins.oceanic-material
-        vimPlugins.oceanic-next
-        vimPlugins.onedark-nvim
-        vimPlugins.oxocarbon-nvim
-        vimPlugins.vscode-nvim
-      ];
+    extraPlugins = with pkgs; [
+      vimPlugins.ayu-vim
+      # vimPlugins.base16-nvim
+      vimPlugins.catppuccin-nvim
+      vimPlugins.dracula-nvim
+      vimPlugins.everforest
+      vimPlugins.gruvbox-nvim
+      vimPlugins.kanagawa-nvim
+      vimPlugins.melange-nvim
+      vimPlugins.monokai-pro-nvim
+      vimPlugins.neomodern-nvim
+      vimPlugins.nightfox-nvim
+      vimPlugins.oceanic-material
+      vimPlugins.oceanic-next
+      vimPlugins.onedark-nvim
+      vimPlugins.oxocarbon-nvim
+      vimPlugins.vscode-nvim
+    ];
 
     autoCmd = [{
       # Only restart LSP once per buffer, not on every FileType event
@@ -159,7 +157,9 @@ in
         action = "<cmd>Telescope git_worktree create_git_worktree<CR>";
         options = { desc = "Create new git worktree"; };
       }
-    ] ++ (if fastProfile then [ ] else [
+    ] ++ (if fastProfile then
+      [ ]
+    else [
       {
         mode = "n";
         key = "<leader>a";
@@ -320,9 +320,7 @@ in
       blink-cmp = {
         enable = true;
         settings = {
-          appearance = {
-            nerd_font_variant = "normal";
-          };
+          appearance = { nerd_font_variant = "normal"; };
           completion = {
             accept = {
               auto_brackets = {
@@ -476,9 +474,7 @@ in
         };
       };
       # Disabled - none-ls handles formatting with enableLspFormat = true
-      lsp-format = {
-        enable = false;
-      };
+      lsp-format = { enable = false; };
       # Neovim 0.12 triggers a nil filename path inside mini.icons when Barbar
       # asks for devicons during early buffer creation. Use nvim-web-devicons
       # directly instead of the mini.nvim compatibility shim.
@@ -629,23 +625,23 @@ in
               "diagnostics"
               {
                 __unkeyed-1 = {
-                __raw = ''
-                  function()
-                      local msg = ""
-                      local buf_ft = vim.bo[0].filetype
-                      local clients = vim.lsp.get_clients({ bufnr = 0 })
-                      if next(clients) == nil then
-                          return msg
-                      end
-                      for _, client in ipairs(clients) do
-                          local filetypes = client.config.filetypes
-                          if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                              return client.name
-                          end
-                      end
-                      return msg
-                  end
-                '';
+                  __raw = ''
+                    function()
+                        local msg = ""
+                        local buf_ft = vim.bo[0].filetype
+                        local clients = vim.lsp.get_clients({ bufnr = 0 })
+                        if next(clients) == nil then
+                            return msg
+                        end
+                        for _, client in ipairs(clients) do
+                            local filetypes = client.config.filetypes
+                            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                                return client.name
+                            end
+                        end
+                        return msg
+                    end
+                  '';
                 };
                 color = { fg = "#ffffff"; };
                 icon = "";
@@ -996,49 +992,46 @@ in
         };
         grammarPackages =
           with config.programs.nixvim.plugins.treesitter.package.builtGrammars;
-          if fastProfile then
-            [
-              bash
-              go
-              gomod
-              gosum
-              gowork
-              javascript
-              json
-              lua
-              nix
-              tsx
-              typescript
-              vim
-              vimdoc
-              yaml
-            ]
-          else
-            [
-              bash
-              css
-              go
-              gomod
-              gosum
-              gowork
-              html
-              javascript
-              json
-              lua
-              make
-              markdown
-              nix
-              python
-              regex
-              terraform
-              toml
-              tsx
-              typescript
-              vim
-              vimdoc
-              xml
-              yaml
-            ];
+          if fastProfile then [
+            bash
+            go
+            gomod
+            gosum
+            gowork
+            javascript
+            json
+            lua
+            nix
+            tsx
+            typescript
+            vim
+            vimdoc
+            yaml
+          ] else [
+            bash
+            css
+            go
+            gomod
+            gosum
+            gowork
+            html
+            javascript
+            json
+            lua
+            make
+            markdown
+            nix
+            python
+            regex
+            terraform
+            toml
+            tsx
+            typescript
+            vim
+            vimdoc
+            xml
+            yaml
+          ];
         settings = {
           auto_install = false;
           highlight.enable = true;

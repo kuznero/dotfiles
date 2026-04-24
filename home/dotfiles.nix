@@ -25,9 +25,7 @@
         llama-cpp = {
           npm = "@ai-sdk/openai-compatible";
           name = "llama-server (local)";
-          options = {
-            baseURL = "http://127.0.0.1:8080/v1";
-          };
+          options = { baseURL = "http://127.0.0.1:8080/v1"; };
           models = {
             # alias llms-e4b="llama-server -hf bartowski/google_gemma-4-E4B-it-GGUF:Q4_0 -c 131072 -ngl 99 --reasoning-budget 32768"
             gemma-4-e4b-it-q4 = {

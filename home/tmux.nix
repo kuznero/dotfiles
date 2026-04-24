@@ -154,9 +154,9 @@ let
       tmux display-message "Appearance: $next_appearance"
     fi
   '';
-in
-{
-  home.packages = [ tmuxSessionPicker tmuxApplyAppearance tmuxToggleAppearance ];
+in {
+  home.packages =
+    [ tmuxSessionPicker tmuxApplyAppearance tmuxToggleAppearance ];
 
   programs.tmux = {
     enable = true;

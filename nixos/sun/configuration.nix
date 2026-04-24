@@ -1,7 +1,16 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
-{
-  imports = [ /etc/nixos/hardware-configuration.nix ];
+let
+  hasHardwareConfig = builtins.pathExists /etc/nixos/hardware-configuration.nix;
+
+in {
+  imports =
+    lib.optional hasHardwareConfig /etc/nixos/hardware-configuration.nix;
+
+  fileSystems."/" = lib.mkIf (!hasHardwareConfig) {
+    device = "none";
+    fsType = "tmpfs";
+  };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 

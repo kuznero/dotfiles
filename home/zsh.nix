@@ -68,6 +68,7 @@ in {
         source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh;
       fi
       ${lib.fileContents ./dotfiles/.zshrc}
+      ${lib.fileContents ./dotfiles/zsh-functions.zsh}
     '';
   };
 }

@@ -30,7 +30,8 @@
       vim
       wget
       zsh
-    ] ++ builtins.attrValues (pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) pkgs.nerd-fonts)
+    ] ++ builtins.attrValues
+    (pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) pkgs.nerd-fonts)
     ++ (with pkgs-stable; [ yazi ])
     ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isLinux xclip;
 }
