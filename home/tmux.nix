@@ -28,7 +28,7 @@ let
           BEGIN { OFS = "\t" }
 
           $5 == "butler" {
-            printf "%s\t%s\t%s\t%-32s | %-50s\n", $1, $2, $3, truncate($6, 32), truncate($4, 50)
+            printf "%s\t%s\t%s\t%-47s | %-50s\n", $1, $2, $3, truncate($6, 47), truncate($4, 50)
           }
         ' |
         fzf \
@@ -37,8 +37,7 @@ let
           --delimiter=$'\t' \
           --with-nth=4 \
           --layout=reverse \
-          --height=100% \
-          --border
+          --height=100%
     } || true)"
 
     [ -n "''${selection}" ] || exit 0
@@ -183,7 +182,7 @@ in {
       bind -n M-R source-file ~/.config/tmux/tmux.conf \; display "Configuration reloaded"
 
       # Fuzzy picker for jumping across sessions/windows/panes
-      bind -n M-p display-popup -E -w 50% -h 40% "${tmuxSessionPicker}/bin/tmux-session-picker"
+      bind -n M-p display-popup -E -B -w 100 -h 20 -x C -y C "${tmuxSessionPicker}/bin/tmux-session-picker"
 
       # Easy navigation
       bind -n M-Left run-shell "if [ $(tmux display-message -p '#{pane_at_left}') -ne 1 ]; then tmux select-pane -L; else tmux select-window -p; fi"
