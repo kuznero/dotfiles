@@ -152,16 +152,81 @@ function tm() {
 }
 
 function ts() {
-  local session
-  session=$(tmux list-sessions -F "#{session_name}: #{session_windows} windows (created #{session_created})" 2>/dev/null | \
-    fzf --prompt="Switch to session: " --height=40% --reverse --preview="tmux list-windows -t {1} -F '  #{window_index}: #{window_name}'" | \
-    cut -d: -f1)
+  local current_branch=""
+  local current_repo_name=""
+  local terminal_cols fzf_width fzf_height fzf_left fzf_right
 
-  if [ -n "$session" ]; then
+  terminal_cols=$(tput cols 2>/dev/null || echo 100)
+  fzf_width=100
+  fzf_height=20
+  fzf_left=$(( (terminal_cols - fzf_width) / 2 ))
+  fzf_right=$fzf_left
+
+  if [ "$fzf_left" -lt 0 ]; then
+    fzf_left=0
+    fzf_right=0
+  fi
+
+  if git -C "$PWD" rev-parse --git-dir >/dev/null 2>&1; then
+    current_branch=$(git -C "$PWD" branch --show-current 2>/dev/null || true)
+    current_origin_url=$(git -C "$PWD" remote get-url origin 2>/dev/null || true)
+    current_repo_name="${current_origin_url##*/}"
+    current_repo_name="${current_repo_name%.git}"
+  fi
+
+  local selection
+  selection=$(tmux list-panes -a -F '#{session_id}	#{window_id}	#{pane_id}	#{session_name}:#{window_index}.#{pane_index}	#{window_name}	#{pane_current_path}' 2>/dev/null |
+    while IFS=$'\t' read -r session_id window_id pane_id session_label window_name pane_path; do
+      local branch=""
+      local repo_name=""
+
+      if git -C "$pane_path" rev-parse --git-dir >/dev/null 2>&1; then
+        branch=$(git -C "$pane_path" branch --show-current 2>/dev/null || true)
+        origin_url=$(git -C "$pane_path" remote get-url origin 2>/dev/null || true)
+        repo_name="${origin_url##*/}"
+        repo_name="${repo_name%.git}"
+      fi
+
+      printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$session_id" "$window_id" "$pane_id" "$session_label" "$window_name" "$branch" "$repo_name"
+    done |
+    awk -F '\t' -v current_branch="$current_branch" -v current_repo_name="$current_repo_name" '
+      function truncate(value, width) {
+        if (length(value) <= width) {
+          return value
+        }
+
+        return substr(value, 1, width - 3) "..."
+      }
+
+      BEGIN { OFS = "\t" }
+
+      $5 == "butler" {
+        current_marker = ($7 != "" && $7 == current_repo_name && $6 != "" && $6 == current_branch) ? "*" : ""
+        printf "%s\t%s\t%s\t%-1s | %-20s | %-47s\n", $1, $2, $3, current_marker, truncate($7, 20), truncate($6, 47)
+      }
+    ' |
+    fzf \
+      --no-color \
+      --prompt='tmux> ' \
+      --delimiter=$'\t' \
+      --with-nth=4 \
+      --layout=reverse \
+      --height="$fzf_height" \
+      --margin="0,$fzf_right,0,$fzf_left" \
+      --border)
+
+  if [ -n "$selection" ]; then
+    local session_id window_id pane_id
+    IFS=$'\t' read -r session_id window_id pane_id _ <<< "$selection"
+
     if [ -n "$TMUX" ]; then
-      tmux switch-client -t "$session"
+      tmux switch-client -t "$session_id"
+      tmux select-window -t "$window_id"
+      tmux select-pane -t "$pane_id"
     else
-      tmux attach-session -t "$session"
+      tmux select-window -t "$window_id"
+      tmux select-pane -t "$pane_id"
+      tmux attach-session -t "$session_id"
     fi
   fi
 }
