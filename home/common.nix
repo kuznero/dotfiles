@@ -20,6 +20,7 @@
       lazydocker
       lazygit
       mc
+      nixd
       nodejs_24
       pass
       poppler

@@ -35,7 +35,7 @@
 
       openvpn3ProtobufOverlay = final: prev: {
         openvpn3 = prev.openvpn3.overrideAttrs (old: {
-          buildInputs = builtins.map
+          buildInputs = map
             (pkg: if pkg == prev.protobuf then prev.protobuf_33 else pkg)
             old.buildInputs;
         });
