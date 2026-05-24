@@ -203,7 +203,7 @@
               { nixpkgs.config.allowUnfree = true; }
 
               ./home/user.nix
-              ./home/browsers.nix
+                # ./home/browsers.nix
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
