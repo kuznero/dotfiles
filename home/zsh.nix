@@ -37,7 +37,11 @@ in {
       fi
 
       if [ -d "$HOME/.opencode/bin" ]; then
-        export PATH="$PATH:$HOME/.opencode/bin:$PATH"
+        export PATH="$PATH:$HOME/.opencode/bin"
+      fi
+
+      if [ -f /etc/arch-release ]; then
+        path=(/usr/local/bin /usr/bin /bin $path)
       fi
     '';
     autosuggestion.enable = true;
@@ -66,6 +70,9 @@ in {
       }
       if [ -e ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh ]; then
         source ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh;
+      fi
+      if [ -f /etc/arch-release ]; then
+        path=(/usr/local/bin /usr/bin /bin $path)
       fi
       ${lib.fileContents ./dotfiles/.zshrc}
       ${lib.fileContents ./dotfiles/zsh-functions.zsh}
