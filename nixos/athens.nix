@@ -14,8 +14,12 @@
     # Network configuration
     port = 3000;
 
-    # Use upstream proxy on cache miss
-    downloadMode = "sync";
+    # Fetch cache misses through the public Go proxy instead of direct VCS access.
+    filterFile = pkgs.writeText "athens-filter" "D\n";
+    globalEndpoint = "https://proxy.golang.org";
+
+    # Avoid client-facing 500s on uncached bursts; warm cache in the background.
+    downloadMode = "async_redirect";
     downloadURL = "https://proxy.golang.org";
   };
 
