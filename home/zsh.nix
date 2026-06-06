@@ -24,6 +24,8 @@ in {
     inherit shellAliases;
     enable = true;
     envExtra = ''
+      export TERM=xterm-256color
+
       if [ -d "/Applications/1Password.app/Contents/MacOS" ]; then
         export PATH="$PATH:/Applications/1Password.app/Contents/MacOS"
       fi
