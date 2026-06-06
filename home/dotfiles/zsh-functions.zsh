@@ -179,6 +179,13 @@ function ts() {
     while IFS=$'\t' read -r session_id window_id pane_id session_label window_name pane_path; do
       local branch=""
       local repo_name=""
+      local display_repo=""
+      local display_context=""
+      local short_path="$pane_path"
+
+      if [ -n "$HOME" ] && { [ "$short_path" = "$HOME" ] || [[ "$short_path" == "$HOME"/* ]]; }; then
+        short_path="~${short_path#"$HOME"}"
+      fi
 
       if git -C "$pane_path" rev-parse --git-dir >/dev/null 2>&1; then
         branch=$(git -C "$pane_path" branch --show-current 2>/dev/null || true)
@@ -187,7 +194,14 @@ function ts() {
         repo_name="${repo_name%.git}"
       fi
 
-      printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$session_id" "$window_id" "$pane_id" "$session_label" "$window_name" "$branch" "$repo_name"
+      display_repo="$repo_name"
+      display_context="$branch"
+
+      if [ -z "$display_repo" ] && [ -z "$display_context" ]; then
+        display_context="$short_path"
+      fi
+
+      printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$session_id" "$window_id" "$pane_id" "$session_label" "$window_name" "$display_repo" "$display_context"
     done |
     awk -F '\t' -v current_branch="$current_branch" -v current_repo_name="$current_repo_name" '
       function truncate(value, width) {
@@ -201,8 +215,8 @@ function ts() {
       BEGIN { OFS = "\t" }
 
       $5 == "butler" {
-        current_marker = ($7 != "" && $7 == current_repo_name && $6 != "" && $6 == current_branch) ? "*" : ""
-        printf "%s\t%s\t%s\t%-1s | %-20s | %-47s\n", $1, $2, $3, current_marker, truncate($7, 20), truncate($6, 47)
+        current_marker = ($6 != "" && $6 == current_repo_name && $7 != "" && $7 == current_branch) ? "*" : ""
+        printf "%s\t%s\t%s\t%-1s | %-20s | %-47s\n", $1, $2, $3, current_marker, truncate($6, 20), truncate($7, 47)
       }
     ' |
     fzf \
