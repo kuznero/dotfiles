@@ -42,7 +42,6 @@
       pull = { rebase = false; };
       push = { default = "simple"; };
       gpg = { format = "ssh"; };
-      gpg.ssh = { program = "op-ssh-sign"; };
       commit = { gpgsign = true; };
     };
   };
