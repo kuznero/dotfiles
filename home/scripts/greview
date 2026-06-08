@@ -5,6 +5,13 @@ command -v git >/dev/null 2>&1 || {
 	exit 1
 }
 
+command -v fzf >/dev/null 2>&1 || {
+	echo "[error] fzf is not found"
+	exit 1
+}
+
+set -e
+
 CURRENT_BRANCH=$(git branch --show-current)
 
 [[ -n "${CURRENT_BRANCH}" ]] || {
@@ -12,16 +19,29 @@ CURRENT_BRANCH=$(git branch --show-current)
 	exit 1
 }
 
-REVIEW_BRANCH="reviews/${CURRENT_BRANCH}"
-
-git show-ref --verify --quiet "refs/heads/${REVIEW_BRANCH}" && {
-	echo "[note] ${REVIEW_BRANCH} already exists"
-	exit 0
-}
+if [[ "${CURRENT_BRANCH}" == reviews/* ]]; then
+	REVIEW_BRANCH="${CURRENT_BRANCH}"
+else
+	REVIEW_BRANCH="reviews/${CURRENT_BRANCH}"
+fi
 
 git fetch origin
 
-SOURCE_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name "${CURRENT_BRANCH}@{upstream}" 2>/dev/null || true)
-SOURCE_BRANCH=${SOURCE_BRANCH:-"${CURRENT_BRANCH}"}
+if [[ "${CURRENT_BRANCH}" == "${REVIEW_BRANCH}" ]]; then
+	echo "[note] already on review branch ${REVIEW_BRANCH}"
+elif git show-ref --verify --quiet "refs/heads/${REVIEW_BRANCH}"; then
+	echo "[note] ${REVIEW_BRANCH} already exists"
+	git switch "${REVIEW_BRANCH}"
+else
+	SOURCE_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name "${CURRENT_BRANCH}@{upstream}" 2>/dev/null || true)
+	SOURCE_BRANCH=${SOURCE_BRANCH:-"${CURRENT_BRANCH}"}
 
-git switch --no-track -c "${REVIEW_BRANCH}" "${SOURCE_BRANCH}"
+	git switch --no-track -c "${REVIEW_BRANCH}" "${SOURCE_BRANCH}"
+fi
+
+git diff --name-only --find-renames origin/main...HEAD | fzf \
+	--height 100% \
+	--layout reverse \
+	--preview 'git diff --color=always --find-renames origin/main...HEAD -- {}' \
+	--bind "enter:execute(${EDITOR:-vi} {})" \
+	--header 'enter: edit file, esc: quit'
