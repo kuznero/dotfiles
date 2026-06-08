@@ -1,12 +1,5 @@
 EDITOR=vim
 
-# SSH agent
-export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR:-$HOME/.ssh}/ssh-agent.sock"
-if ! ssh-add -l >/dev/null 2>&1; then
-  rm -f "$SSH_AUTH_SOCK"
-  eval "$(ssh-agent -a "$SSH_AUTH_SOCK" -s)" >/dev/null
-fi
-
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
