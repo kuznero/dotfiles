@@ -425,7 +425,6 @@ in {
           dockerfile = [ "hadolint" ];
           go = [ "golangcilint" ];
           terraform = [ "tflint" ];
-          json = [ "jsonlint" ];
           sh = [ "shellcheck" ];
           bash = [ "shellcheck" ];
           python = [ "mypy" ];
@@ -457,6 +456,10 @@ in {
             autostart = true;
           };
           ts_ls = {
+            enable = true;
+            autostart = true;
+          };
+          jsonls = {
             enable = true;
             autostart = true;
           };
