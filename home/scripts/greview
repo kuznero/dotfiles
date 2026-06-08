@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+command -v git >/dev/null 2>&1 || {
+	echo "[error] git is not found"
+	exit 1
+}
+
+CURRENT_BRANCH=$(git branch --show-current)
+
+[[ -n "${CURRENT_BRANCH}" ]] || {
+	echo "[error] not on a branch"
+	exit 1
+}
+
+REVIEW_BRANCH="reviews/${CURRENT_BRANCH}"
+
+git show-ref --verify --quiet "refs/heads/${REVIEW_BRANCH}" && {
+	echo "[note] ${REVIEW_BRANCH} already exists"
+	exit 0
+}
+
+git fetch origin
+
+SOURCE_BRANCH=$(git rev-parse --abbrev-ref --symbolic-full-name "${CURRENT_BRANCH}@{upstream}" 2>/dev/null || true)
+SOURCE_BRANCH=${SOURCE_BRANCH:-"${CURRENT_BRANCH}"}
+
+git switch --no-track -c "${REVIEW_BRANCH}" "${SOURCE_BRANCH}"
