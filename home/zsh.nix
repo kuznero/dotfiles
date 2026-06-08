@@ -20,6 +20,12 @@ let
     llms = "llama-server -c 131072 -ngl 99 --reasoning-budget 32768";
   };
 in {
+  programs.keychain = {
+    enable = true;
+    keys = [ "id_ed25519" ];
+    enableZshIntegration = true;
+  };
+
   programs.zsh = {
     inherit shellAliases;
     enable = true;

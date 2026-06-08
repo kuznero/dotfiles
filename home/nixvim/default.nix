@@ -470,7 +470,10 @@ in {
             autostart = true;
           };
           yamlls.enable = true;
-          zls.enable = !fastProfile;
+          zls = {
+            enable = true;
+            packageFallback = true;
+          };
         };
       };
       # Disabled - none-ls handles formatting with enableLspFormat = true
