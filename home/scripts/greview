@@ -12,6 +12,17 @@ command -v fzf >/dev/null 2>&1 || {
 
 set -e
 
+USE_REVIEW_BRANCH=false
+
+case "${1:-}" in
+	"" ) ;;
+	-b|--branch ) USE_REVIEW_BRANCH=true ;;
+	* )
+		echo "usage: greview [-b|--branch]"
+		exit 1
+		;;
+esac
+
 CURRENT_BRANCH=$(git branch --show-current)
 
 [[ -n "${CURRENT_BRANCH}" ]] || {
@@ -27,7 +38,9 @@ fi
 
 git fetch origin
 
-if [[ "${CURRENT_BRANCH}" == "${REVIEW_BRANCH}" ]]; then
+if [[ "${USE_REVIEW_BRANCH}" != true ]]; then
+	echo "[note] reviewing current branch ${CURRENT_BRANCH}"
+elif [[ "${CURRENT_BRANCH}" == "${REVIEW_BRANCH}" ]]; then
 	echo "[note] already on review branch ${REVIEW_BRANCH}"
 elif git show-ref --verify --quiet "refs/heads/${REVIEW_BRANCH}"; then
 	echo "[note] ${REVIEW_BRANCH} already exists"
