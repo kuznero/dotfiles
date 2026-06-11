@@ -1,5 +1,5 @@
 { nixvim, pkgs, ... }:
-{ config, ... }:
+{ config, lib, ... }:
 
 let
   fastProfile = true;
@@ -22,8 +22,23 @@ in {
   programs.nixvim = {
     enable = true;
     package = pkgs.neovim-unwrapped;
-    # Go tools removed - should be provided by project devShell
-    # to avoid Go version conflicts: gotools, gofumpt, delve
+    # Keep gopls and debuggers in project devShells to avoid Go version conflicts.
+    extraPackages = with pkgs; [
+      # none-ls Go code action sources do not expose package options in nixvim.
+      gomodifytags
+      impl
+    ];
+
+    extraConfigLuaPre = ''
+      do
+        local treesitter_install_dir = vim.fn.stdpath("data") .. "/nixvim-treesitter"
+        vim.fn.mkdir(treesitter_install_dir, "p")
+
+        local user_site = vim.fn.stdpath("data") .. "/site"
+        vim.opt.runtimepath:remove(user_site)
+        vim.opt.runtimepath:remove(user_site .. "/after")
+      end
+    '';
 
     # ref: https://vimcolorschemes.com/
     extraPlugins = with pkgs; [
@@ -460,6 +475,12 @@ in {
           ts_ls = {
             enable = true;
             autostart = true;
+            filetypes = lib.mkForce [
+              "javascript"
+              "javascriptreact"
+              "typescript"
+              "typescriptreact"
+            ];
           };
           jsonls = {
             enable = true;
@@ -474,7 +495,10 @@ in {
             enable = !fastProfile;
             autostart = true;
           };
-          yamlls.enable = true;
+          yamlls = {
+            enable = true;
+            filetypes = lib.mkForce [ "yaml" ];
+          };
           zls = {
             enable = true;
             packageFallback = true;
@@ -573,10 +597,7 @@ in {
             # Note: Most linting moved to nvim-lint plugin to avoid duplicates
             # Only keeping diagnostics not covered by nvim-lint here
             buf.enable = !fastProfile;
-            staticcheck = {
-              enable = true;
-              package = null;
-            };
+            staticcheck = { enable = true; };
             terraform_validate = {
               enable = !fastProfile;
               package = pkgs.terraform;
@@ -588,14 +609,8 @@ in {
           };
           formatting = {
             # buf.enable = true;
-            gofumpt = {
-              enable = true;
-              package = null;
-            };
-            goimports = {
-              enable = true;
-              package = null;
-            };
+            gofumpt = { enable = true; };
+            goimports = { enable = true; };
             markdownlint.enable = !fastProfile;
             nixfmt.enable = true;
             pg_format.enable = !fastProfile;
@@ -1044,6 +1059,8 @@ in {
           auto_install = false;
           highlight.enable = true;
           indent.enable = true;
+          parser_install_dir.__raw =
+            ''vim.fn.stdpath("data") .. "/nixvim-treesitter"'';
         };
       };
       treesitter-context.enable = false;
