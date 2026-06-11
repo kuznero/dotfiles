@@ -32,6 +32,7 @@ in {
       vimPlugins.catppuccin-nvim
       vimPlugins.dracula-nvim
       vimPlugins.everforest
+      vimPlugins.github-nvim-theme
       vimPlugins.gruvbox-nvim
       vimPlugins.kanagawa-nvim
       vimPlugins.melange-nvim
@@ -42,6 +43,7 @@ in {
       vimPlugins.oceanic-next
       vimPlugins.onedark-nvim
       vimPlugins.oxocarbon-nvim
+      vimPlugins.vim-one
       vimPlugins.vscode-nvim
     ];
 

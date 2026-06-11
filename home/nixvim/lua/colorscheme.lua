@@ -32,5 +32,5 @@ else
   persist_appearance(appearance)
 end
 
-local colorscheme = appearance == "dark" and "carbonfox" or "catppuccin-latte"
+local colorscheme = appearance == "dark" and "onedark" or "onedark"
 vim.cmd("colorscheme " .. colorscheme)
