@@ -229,7 +229,8 @@ in {
       bind -n M-e setw synchronize-panes on \; display "Sync is ON"
       bind -n M-E setw synchronize-panes off \; display "Sync is OFF"
 
-      # Apply Tc
+      # Keep pane TERM in sync with default-terminal and enable truecolor.
+      set-environment -gu TERM
       set -ga terminal-overrides ",xterm-256color:RGB:smcup@:rmcup@"
 
       # Enable focus-events

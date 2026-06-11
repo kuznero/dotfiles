@@ -21,6 +21,7 @@ in {
 
   programs.nixvim = {
     enable = true;
+    nixpkgs.source = pkgs.path;
     package = pkgs.neovim-unwrapped;
     # Keep gopls and debuggers in project devShells to avoid Go version conflicts.
     extraPackages = with pkgs; [
