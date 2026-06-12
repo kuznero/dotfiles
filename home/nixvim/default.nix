@@ -14,6 +14,7 @@ in {
     bash-language-server
     chafa
     shellcheck
+    tflint
     ueberzugpp
     viu
     yamllint
