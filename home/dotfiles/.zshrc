@@ -68,5 +68,3 @@ command -v ccusage >/dev/null 2>&1 && {
   alias cc-today='ccusage daily --since $(date +%Y%m%d) --until $(date +%Y%m%d)'
   alias cc-live='ccusage blocks --live'
 }
-
-export RPROMPT='$([[ "$KUBE_PS1_CONTEXT" == "N/A" || -z "$KUBE_PS1_CONTEXT" ]] || echo -n "%F{red}$KUBE_PS1_CONTEXT%f "):: $([[ -z "$NIX_FLAKE_NAME" ]] || echo -n "%F{green}$NIX_FLAKE_NAME%f ")@ %F{237}%m%f'

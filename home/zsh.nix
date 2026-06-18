@@ -65,7 +65,7 @@ in {
       plugins =
         [ "fzf" "git" "git-extras" "kube-ps1" "man" "sudo" "systemd" "tmux" ];
       # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-      theme = "af-magic";
+      theme = "kuznero";
       custom = "$HOME/.local/share/zsh-custom";
     };
 
