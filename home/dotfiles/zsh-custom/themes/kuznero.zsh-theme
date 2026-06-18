@@ -59,8 +59,22 @@ _kuznero_visible_length() {
   print -r -- ${#value}
 }
 
+_kuznero_git_prompt_info() {
+  command git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
+
+  local ref
+  ref="$(command git symbolic-ref --quiet --short HEAD 2>/dev/null || command git rev-parse --short HEAD 2>/dev/null)" || return
+
+  local dirty="$ZSH_THEME_GIT_PROMPT_CLEAN"
+  if [[ -n "$(command git status --porcelain --ignore-submodules=dirty 2>/dev/null)" ]]; then
+    dirty="$ZSH_THEME_GIT_PROMPT_DIRTY"
+  fi
+
+  print -nr -- "${ZSH_THEME_GIT_PROMPT_PREFIX}${ref}${dirty}${ZSH_THEME_GIT_PROMPT_SUFFIX}"
+}
+
 _kuznero_prompt_header() {
-  local left="${FG[032]}$(_kuznero_short_pwd)$(git_prompt_info)$(hg_prompt_info)%{$reset_color%}"
+  local left="${FG[032]}$(_kuznero_short_pwd)$(_kuznero_git_prompt_info)$(hg_prompt_info)%{$reset_color%}"
   local right="$(_kuznero_prompt_context)"
   local left_len="$(_kuznero_visible_length "$left")"
   local right_len="$(_kuznero_visible_length "$right")"
@@ -74,9 +88,16 @@ _kuznero_prompt_header() {
   print -nr -- "$right"
 }
 
+_kuznero_prompt_symbol=">"
+case "${LC_ALL:-${LC_CTYPE:-$LANG}}" in
+  *UTF-8*|*utf-8*|*UTF8*|*utf8*)
+    _kuznero_prompt_symbol="λ"
+    ;;
+esac
+
 # First line carries location and context; second line is reserved for typing.
 PS1='$(_kuznero_prompt_header)
-%(?.${FG[105]}.%{$fg[red]%}[%?] )%(!.#.λ)%{$reset_color%} '
+%(?.${FG[105]}.%{$fg[red]%}[%?] )%(!.#.${_kuznero_prompt_symbol})%{$reset_color%} '
 PS2="%{$fg[red]%}\ %{$reset_color%}"
 RPS1=""
 RPROMPT=""
