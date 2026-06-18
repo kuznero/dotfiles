@@ -229,9 +229,11 @@ in {
       bind -n M-e setw synchronize-panes on \; display "Sync is ON"
       bind -n M-E setw synchronize-panes off \; display "Sync is OFF"
 
-      # Keep pane TERM in sync with default-terminal and enable truecolor.
+      # Keep pane TERM managed by tmux and advertise outer terminal features.
       set-environment -gu TERM
-      set -ga terminal-overrides ",xterm-256color:RGB:smcup@:rmcup@"
+      set -as terminal-features ",xterm-ghostty*:RGB"
+      set -as terminal-features ",xterm-256color:RGB"
+      set -as terminal-overrides ",xterm-256color:smcup@:rmcup@"
 
       # Enable focus-events
       set -g focus-events on
