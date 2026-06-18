@@ -39,7 +39,11 @@ function install-terminfo() {
     return 1
   fi
 
-  infocmp -x "$term" | ssh "$host" 'tic -x -'
+  infocmp -x "$term" |
+    awk 'NR == 2 && $0 ~ /\|[^|,]+,$/ { sub(/,$/, " terminal,") } { print }' |
+    ssh "$host" "tic -x - && infocmp -x ${(q)term} >/dev/null" || return 1
+
+  echo "installed terminfo for $term on $host"
 }
 
 function tm() {
