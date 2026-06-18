@@ -7,6 +7,41 @@ function y() {
   rm -f -- "$tmp"
 }
 
+function install-terminfo() {
+  local host="$1"
+  local term="${2:-$TERM}"
+
+  if [ -z "$host" ] || [ "$host" = "-h" ] || [ "$host" = "--help" ]; then
+    printf '%s\n' \
+      "usage: install-terminfo HOST [TERM]" \
+      "" \
+      "Install the local terminfo entry on a remote host over SSH." \
+      "Defaults to the current TERM when TERM is omitted." \
+      "" \
+      "examples:" \
+      "  install-terminfo genesis" \
+      "  install-terminfo genesis xterm-ghostty"
+    return 0
+  fi
+
+  if [ -z "$term" ]; then
+    echo "error: TERM is not set; pass a terminal name explicitly" >&2
+    return 1
+  fi
+
+  if ! command -v infocmp >/dev/null 2>&1; then
+    echo "error: infocmp is required but not installed" >&2
+    return 1
+  fi
+
+  if ! command -v ssh >/dev/null 2>&1; then
+    echo "error: ssh is required but not installed" >&2
+    return 1
+  fi
+
+  infocmp -x "$term" | ssh "$host" 'tic -x -'
+}
+
 function tm() {
   local USE_NIX=true
   local SESSION=""
