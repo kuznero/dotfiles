@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Configure local Ollama + Caddy + Tailscale Serve on Arch Linux.
+#
+# Result:
+#   Ollama:   http://127.0.0.1:11434
+#   Caddy:    http://127.0.0.1:18080 -> http://127.0.0.1:11434
+#   Tailscale https://<current-host>.<tailnet>.ts.net -> Caddy -> Ollama
+#
+# This script intentionally manages only:
+#   /etc/systemd/system/ollama.service.d/override.conf
+#   /etc/caddy/conf.d/ollama
+#   tailscale serve config
+#
+# It does NOT overwrite:
+#   /etc/caddy/Caddyfile
+
+CURRENT_HOST="$(cat /proc/sys/kernel/hostname)"
+
+# Require Arch Linux because package installation and service assumptions below
+# use pacman and Arch package names.
+if [[ ! -r /etc/os-release ]]; then
+  echo "Cannot determine OS: /etc/os-release is missing."
+  exit 1
+fi
+
+# shellcheck disable=SC1091
+source /etc/os-release
+
+if [[ "${ID:-}" != "arch" ]]; then
+  echo "Refusing to run: this script is intended for Arch Linux only."
+  echo "Detected: ID=${ID:-unknown}, PRETTY_NAME=${PRETTY_NAME:-unknown}"
+  exit 1
+fi
+
+echo "==> Configuring Ollama + Caddy + Tailscale Serve on Arch host: ${CURRENT_HOST}"
+
+for cmd in systemctl tailscale curl pacman; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "Missing required command: $cmd"
+    exit 1
+  fi
+done
+
+# jq is used only to discover the Tailscale DNS name at the end.
+sudo pacman -S --needed ollama caddy jq
+
+echo "==> Writing Ollama systemd override"
+
+sudo mkdir -p /etc/systemd/system/ollama.service.d
+
+sudo tee /etc/systemd/system/ollama.service.d/override.conf >/dev/null <<'EOF'
+[Service]
+# Keep Ollama local-only. External access goes through:
+#   Tailscale Serve -> Caddy -> Ollama
+Environment="HOME=/var/lib/ollama"
+Environment="OLLAMA_MODELS=/var/lib/ollama"
+Environment="OLLAMA_HOST=127.0.0.1:11434"
+Environment="OLLAMA_KEEP_ALIVE=30m"
+Environment="OLLAMA_NO_CLOUD=1"
+
+# Permissive because access is already constrained by localhost + Tailscale.
+# Caddy also rewrites Host/Origin to localhost before forwarding.
+Environment="OLLAMA_ORIGINS=*"
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now ollama
+sudo systemctl restart ollama
+
+echo "==> Testing Ollama locally"
+curl -fsS http://127.0.0.1:11434/api/tags >/dev/null
+echo "Ollama OK: http://127.0.0.1:11434"
+
+echo "==> Checking Caddy conf.d import"
+
+if [[ ! -f /etc/caddy/Caddyfile ]]; then
+  echo "Refusing to continue: /etc/caddy/Caddyfile does not exist."
+  exit 1
+fi
+
+# This script intentionally does not modify /etc/caddy/Caddyfile.
+# It expects the main Caddyfile to already import /etc/caddy/conf.d/*.
+if ! sudo grep -Eq '^[[:space:]]*import[[:space:]]+/etc/caddy/conf\.d/\*' /etc/caddy/Caddyfile; then
+  echo "Refusing to continue: /etc/caddy/Caddyfile does not import /etc/caddy/conf.d/*"
+  echo "Expected a line like:"
+  echo "  import /etc/caddy/conf.d/*"
+  exit 1
+fi
+
+echo "==> Writing /etc/caddy/conf.d/ollama"
+
+sudo mkdir -p /etc/caddy/conf.d
+
+# This listener is host-agnostic on purpose.
+#
+# Do NOT use "http://127.0.0.1:18080" here:
+# Tailscale Serve forwards Host: <host>.<tailnet>.ts.net, and a host-specific
+# Caddy site block may not match that request correctly.
+#
+# Caddy rewrites Host and Origin so Ollama sees a normal localhost request.
+sudo tee /etc/caddy/conf.d/ollama >/dev/null <<'EOF'
+:18080 {
+	reverse_proxy 127.0.0.1:11434 {
+		header_up Host 127.0.0.1:11434
+		header_up Origin http://127.0.0.1:11434
+	}
+}
+EOF
+
+sudo systemctl enable --now caddy
+sudo systemctl reload caddy
+
+echo "==> Testing Caddy local proxy"
+curl -fsS http://127.0.0.1:18080/api/tags >/dev/null
+curl -fsS http://127.0.0.1:18080/v1/models >/dev/null
+echo "Caddy OK: http://127.0.0.1:18080"
+
+echo "==> Configuring Tailscale Serve"
+
+# Remove old Serve config to avoid stale proxy targets.
+sudo tailscale serve reset || true
+
+# Publish the local Caddy proxy privately inside the tailnet.
+#
+# Expected result:
+#   https://<host>.<tailnet>.ts.net -> http://127.0.0.1:18080
+sudo tailscale serve --bg http://127.0.0.1:18080
+
+echo "==> Tailscale Serve status"
+tailscale serve status
+
+DNS_NAME="$(tailscale status --json | jq -r '.Self.DNSName // empty')"
+DNS_NAME="${DNS_NAME%.}"
+
+if [[ -n "$DNS_NAME" ]]; then
+  echo "==> Testing HTTPS endpoint through Tailscale Serve"
+  curl -fsS "https://${DNS_NAME}/api/tags" >/dev/null
+  curl -fsS "https://${DNS_NAME}/v1/models" >/dev/null
+
+  echo
+  echo "Done."
+  echo "Current host:"
+  echo "  ${CURRENT_HOST}"
+  echo
+  echo "Endpoints:"
+  echo "  https://${DNS_NAME}/api/tags"
+  echo "  https://${DNS_NAME}/v1/models"
+  echo "  https://${DNS_NAME}/v1/chat/completions"
+  echo
+  echo "OpenCode baseURL:"
+  echo "  https://${DNS_NAME}/v1"
+else
+  echo
+  echo "Done, but could not auto-detect Tailscale DNS name."
+  echo "Run:"
+  echo "  tailscale serve status"
+fi

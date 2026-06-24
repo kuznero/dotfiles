@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Configure OpenCode to use a remote Ollama server over Tailscale Serve.
+#
+# Usage:
+#   configure-ollama-opencode genesis
+#
+# Optional env:
+#   MODEL_NAME=qwen3-coder:30b
+#   PROVIDER_ID=genesis-ollama
+#
+# This script preserves existing OpenCode config.
+# It only updates:
+#   .provider[PROVIDER_ID]
+#
+# It does NOT update:
+#   .model
+
+SERVER_HOST="${1:-}"
+MODEL_NAME="${MODEL_NAME:-qwen3-coder:30b}"
+
+if [[ -z "$SERVER_HOST" ]]; then
+  echo "Usage: $0 <ollama-server-hostname>"
+  echo "Example: $0 genesis"
+  exit 1
+fi
+
+PROVIDER_ID="${PROVIDER_ID:-${SERVER_HOST}-ollama}"
+
+for cmd in tailscale curl jq; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "Missing required command: $cmd"
+    exit 1
+  fi
+done
+
+echo "==> Configuring OpenCode provider '${PROVIDER_ID}' for remote Ollama host: ${SERVER_HOST}"
+
+SELF_DNS_NAME="$(tailscale status --json | jq -r '.Self.DNSName // empty')"
+SELF_DNS_NAME="${SELF_DNS_NAME%.}"
+
+if [[ -z "$SELF_DNS_NAME" ]]; then
+  echo "Could not determine this machine's Tailscale DNS name."
+  echo "Is Tailscale running and MagicDNS enabled?"
+  exit 1
+fi
+
+# Example:
+#   romans-macbook-pro.taile62f6b.ts.net
+# becomes:
+#   taile62f6b.ts.net
+TAILNET_DNS_SUFFIX="${SELF_DNS_NAME#*.}"
+
+if [[ "$TAILNET_DNS_SUFFIX" == "$SELF_DNS_NAME" || -z "$TAILNET_DNS_SUFFIX" ]]; then
+  echo "Could not derive tailnet DNS suffix from: ${SELF_DNS_NAME}"
+  exit 1
+fi
+
+SERVER_DNS_NAME="${SERVER_HOST}.${TAILNET_DNS_SUFFIX}"
+BASE_URL="https://${SERVER_DNS_NAME}/v1"
+
+echo "==> Deduced server DNS:"
+echo "    ${SERVER_DNS_NAME}"
+echo "==> Base URL:"
+echo "    ${BASE_URL}"
+
+echo "==> Checking remote Ollama model endpoint"
+
+MODELS_JSON="$(curl -fsS "${BASE_URL}/models")"
+
+if ! echo "$MODELS_JSON" | jq -e --arg model "$MODEL_NAME" '.data[]? | select(.id == $model)' >/dev/null; then
+  echo "Remote Ollama endpoint is reachable, but model '${MODEL_NAME}' was not found."
+  echo
+  echo "Models returned:"
+  echo "$MODELS_JSON" | jq .
+  exit 1
+fi
+
+echo "Remote model found: ${MODEL_NAME}"
+
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
+CONFIG_FILE="${CONFIG_DIR}/opencode.json"
+
+mkdir -p "$CONFIG_DIR"
+
+# If config is missing, empty, or whitespace-only, create a minimal valid config.
+if [[ ! -s "$CONFIG_FILE" ]] || ! grep -q '[^[:space:]]' "$CONFIG_FILE"; then
+  cat > "$CONFIG_FILE" <<'EOF'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {}
+}
+EOF
+fi
+
+# Validate existing JSON before editing.
+jq empty "$CONFIG_FILE" >/dev/null
+
+BACKUP_FILE="${CONFIG_FILE}.bak.$(date +%Y%m%d%H%M%S)"
+cp "$CONFIG_FILE" "$BACKUP_FILE"
+
+echo "==> Backed up existing config:"
+echo "    ${BACKUP_FILE}"
+
+TMP_FILE="$(mktemp)"
+
+# Preserve the existing config.
+#
+# This does exactly:
+#   1. ensure .provider exists
+#   2. remove .provider[PROVIDER_ID] if it already exists
+#   3. add the new .provider[PROVIDER_ID]
+#
+# It deliberately does NOT modify .model or any other keys.
+jq \
+  --arg provider_id "$PROVIDER_ID" \
+  --arg provider_name "Ollama on ${SERVER_HOST}" \
+  --arg base_url "$BASE_URL" \
+  --arg model_name "$MODEL_NAME" \
+  --arg model_display_name "Qwen3 Coder 30B on ${SERVER_HOST}" \
+  '
+  .provider = (.provider // {})
+  | .provider = (.provider | del(.[$provider_id]))
+  | .provider[$provider_id] = {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": $provider_name,
+      "options": {
+        "baseURL": $base_url
+      },
+      "models": {
+        ($model_name): {
+          "name": $model_display_name,
+          "tool_call": true
+        }
+      }
+    }
+  ' "$CONFIG_FILE" > "$TMP_FILE"
+
+mv "$TMP_FILE" "$CONFIG_FILE"
+
+echo
+echo "Done."
+echo
+echo "Updated:"
+echo "  ${CONFIG_FILE}"
+echo
+echo "Provider:"
+echo "  ${PROVIDER_ID}"
+echo
+echo "Model available as:"
+echo "  ${PROVIDER_ID}/${MODEL_NAME}"
+echo
+echo "Base URL:"
+echo "  ${BASE_URL}"
+echo
+echo "Backup:"
+echo "  ${BACKUP_FILE}"
