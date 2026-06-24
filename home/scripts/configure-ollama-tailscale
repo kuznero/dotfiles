@@ -43,6 +43,23 @@ for cmd in systemctl tailscale curl pacman; do
   fi
 done
 
+wait_for_url() {
+  local label="$1"
+  local url="$2"
+  local attempts="${3:-30}"
+
+  for ((i = 1; i <= attempts; i++)); do
+    if curl -fsS --max-time 2 "$url" >/dev/null 2>&1; then
+      return 0
+    fi
+
+    sleep 1
+  done
+
+  echo "Timed out waiting for ${label}: ${url}"
+  return 1
+}
+
 # jq is used only to discover the Tailscale DNS name at the end.
 sudo pacman -S --needed ollama caddy jq
 
@@ -70,7 +87,11 @@ sudo systemctl enable --now ollama
 sudo systemctl restart ollama
 
 echo "==> Testing Ollama locally"
-curl -fsS http://127.0.0.1:11434/api/tags >/dev/null
+if ! wait_for_url "Ollama" "http://127.0.0.1:11434/api/tags"; then
+  sudo systemctl --no-pager --full status ollama || true
+  sudo journalctl -u ollama --no-pager -n 80 || true
+  exit 1
+fi
 echo "Ollama OK: http://127.0.0.1:11434"
 
 echo "==> Checking Caddy conf.d import"
@@ -113,8 +134,12 @@ sudo systemctl enable --now caddy
 sudo systemctl reload caddy
 
 echo "==> Testing Caddy local proxy"
-curl -fsS http://127.0.0.1:18080/api/tags >/dev/null
-curl -fsS http://127.0.0.1:18080/v1/models >/dev/null
+if ! wait_for_url "Caddy Ollama proxy" "http://127.0.0.1:18080/api/tags"; then
+  sudo systemctl --no-pager --full status caddy || true
+  sudo journalctl -u caddy --no-pager -n 80 || true
+  exit 1
+fi
+curl -fsS --max-time 10 http://127.0.0.1:18080/v1/models >/dev/null
 echo "Caddy OK: http://127.0.0.1:18080"
 
 echo "==> Configuring Tailscale Serve"
