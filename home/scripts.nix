@@ -7,5 +7,6 @@
     (writeShellScriptBin "gcauto" (builtins.readFile ./scripts/gcauto))
     (writeShellScriptBin "greview" (builtins.readFile ./scripts/greview))
     (writeShellScriptBin "gsreset" (builtins.readFile ./scripts/gsreset))
+    (writeShellScriptBin "sshex" (builtins.readFile ./scripts/sshex))
   ];
 }

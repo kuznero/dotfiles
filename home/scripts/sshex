@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+appearance_file="$HOME/.config/appearance"
+appearance="light"
+
+persist_appearance() {
+	mkdir -p "$HOME/.config"
+	printf '%s\n' "$1" > "$appearance_file"
+}
+
+if [ -f "$appearance_file" ]; then
+	IFS= read -r appearance_value < "$appearance_file" || appearance_value=""
+
+	case "$appearance_value" in
+		dark|light)
+			appearance="$appearance_value"
+			;;
+		mocha)
+			appearance="dark"
+			persist_appearance "$appearance"
+			;;
+		latte)
+			appearance="light"
+			persist_appearance "$appearance"
+			;;
+		*)
+			persist_appearance "$appearance"
+			;;
+	esac
+else
+	persist_appearance "$appearance"
+fi
+
+if [ "$appearance" = "dark" ]; then
+	remote_bg="#1b1111"
+else
+	remote_bg="#fff1e6"
+fi
+
+tmux_pane_style=""
+
+if [ -n "${TMUX:-}" ]; then
+	tmux_pane_style=$(tmux display-message -p -t "${TMUX_PANE:?}" '#{pane_style}')
+fi
+
+send_osc() {
+	local sequence=$1
+
+	if [ -n "${TMUX:-}" ]; then
+		printf '\033Ptmux;\033\033]%s\007\033\\' "$sequence"
+	else
+		printf '\033]%s\007' "$sequence"
+	fi
+}
+
+apply_remote_theme() {
+	if [ -n "${TMUX:-}" ]; then
+		tmux select-pane -t "${TMUX_PANE:?}" -P "bg=${remote_bg}"
+	else
+		send_osc "11;${remote_bg}"
+	fi
+}
+
+restore_theme() {
+	if [ -n "${TMUX:-}" ]; then
+		if [ -n "$tmux_pane_style" ]; then
+			tmux select-pane -t "${TMUX_PANE:?}" -P "$tmux_pane_style"
+		else
+			tmux select-pane -t "${TMUX_PANE:?}" -P default
+		fi
+	else
+		send_osc "111"
+	fi
+}
+
+if [ "$#" -eq 0 ]; then
+	echo "usage: sshex [ssh-options] destination [command]" >&2
+	exit 2
+fi
+
+trap restore_theme EXIT HUP INT TERM
+apply_remote_theme
+command ssh "$@"
