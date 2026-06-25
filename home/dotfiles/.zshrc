@@ -68,3 +68,7 @@ command -v ccusage >/dev/null 2>&1 && {
   alias cc-today='ccusage daily --since $(date +%Y%m%d) --until $(date +%Y%m%d)'
   alias cc-live='ccusage blocks --live'
 }
+
+command -v tailscale >/dev/null 2>&1 && {
+  source <(tailscale completion zsh)
+}
