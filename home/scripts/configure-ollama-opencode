@@ -7,7 +7,8 @@ set -euo pipefail
 #   configure-ollama-opencode genesis
 #
 # Optional env:
-#   MODEL_NAME=qwen3-coder:30b
+#   DEFAULT_MODEL_NAME=qwen3-coder-next:latest
+#   LEGACY_MODEL_NAME=qwen3-coder:30b
 #   PROVIDER_ID=genesis-ollama
 #
 # This script preserves existing OpenCode config.
@@ -18,7 +19,8 @@ set -euo pipefail
 #   .model
 
 SERVER_HOST="${1:-}"
-MODEL_NAME="${MODEL_NAME:-qwen3-coder:30b}"
+DEFAULT_MODEL_NAME="${DEFAULT_MODEL_NAME:-qwen3-coder-next:latest}"
+LEGACY_MODEL_NAME="${LEGACY_MODEL_NAME:-qwen3-coder:30b}"
 
 if [[ -z "$SERVER_HOST" ]]; then
   echo "Usage: $0 <ollama-server-hostname>"
@@ -69,15 +71,17 @@ echo "==> Checking remote Ollama model endpoint"
 
 MODELS_JSON="$(curl -fsS "${BASE_URL}/models")"
 
-if ! echo "$MODELS_JSON" | jq -e --arg model "$MODEL_NAME" '.data[]? | select(.id == $model)' >/dev/null; then
-  echo "Remote Ollama endpoint is reachable, but model '${MODEL_NAME}' was not found."
-  echo
-  echo "Models returned:"
-  echo "$MODELS_JSON" | jq .
-  exit 1
-fi
+for model_name in "$DEFAULT_MODEL_NAME" "$LEGACY_MODEL_NAME"; do
+  if ! echo "$MODELS_JSON" | jq -e --arg model "$model_name" '.data[]? | select(.id == $model)' >/dev/null; then
+    echo "Remote Ollama endpoint is reachable, but model '${model_name}' was not found."
+    echo
+    echo "Models returned:"
+    echo "$MODELS_JSON" | jq .
+    exit 1
+  fi
 
-echo "Remote model found: ${MODEL_NAME}"
+  echo "Remote model found: ${model_name}"
+done
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/opencode"
 CONFIG_FILE="${CONFIG_DIR}/opencode.json"
@@ -117,8 +121,10 @@ jq \
   --arg provider_id "$PROVIDER_ID" \
   --arg provider_name "Ollama on ${SERVER_HOST}" \
   --arg base_url "$BASE_URL" \
-  --arg model_name "$MODEL_NAME" \
-  --arg model_display_name "Qwen3 Coder 30B on ${SERVER_HOST}" \
+  --arg default_model_name "$DEFAULT_MODEL_NAME" \
+  --arg legacy_model_name "$LEGACY_MODEL_NAME" \
+  --arg default_model_display_name "Qwen3 Coder Next on ${SERVER_HOST}" \
+  --arg legacy_model_display_name "Qwen3 Coder 30B on ${SERVER_HOST}" \
   '
   .provider = (.provider // {})
   | .provider = (.provider | del(.[$provider_id]))
@@ -129,8 +135,12 @@ jq \
         "baseURL": $base_url
       },
       "models": {
-        ($model_name): {
-          "name": $model_display_name,
+        ($default_model_name): {
+          "name": $default_model_display_name,
+          "tool_call": true
+        },
+        ($legacy_model_name): {
+          "name": $legacy_model_display_name,
           "tool_call": true
         }
       }
@@ -149,7 +159,8 @@ echo "Provider:"
 echo "  ${PROVIDER_ID}"
 echo
 echo "Model available as:"
-echo "  ${PROVIDER_ID}/${MODEL_NAME}"
+echo "  ${PROVIDER_ID}/${DEFAULT_MODEL_NAME}"
+echo "  ${PROVIDER_ID}/${LEGACY_MODEL_NAME}"
 echo
 echo "Base URL:"
 echo "  ${BASE_URL}"

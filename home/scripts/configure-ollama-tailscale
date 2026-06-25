@@ -15,6 +15,13 @@ set -euo pipefail
 #
 # It does NOT overwrite:
 #   /etc/caddy/Caddyfile
+#
+# Optional env:
+#   DEFAULT_MODEL_NAME=qwen3-coder-next:latest
+#   LEGACY_MODEL_NAME=qwen3-coder:30b
+
+DEFAULT_MODEL_NAME="${DEFAULT_MODEL_NAME:-qwen3-coder-next:latest}"
+LEGACY_MODEL_NAME="${LEGACY_MODEL_NAME:-qwen3-coder:30b}"
 
 CURRENT_HOST="$(cat /proc/sys/kernel/hostname)"
 
@@ -63,6 +70,11 @@ wait_for_url() {
 # jq is used only to discover the Tailscale DNS name at the end.
 sudo pacman -S --needed ollama caddy jq
 
+if ! command -v ollama >/dev/null 2>&1; then
+  echo "Missing required command after package install: ollama"
+  exit 1
+fi
+
 echo "==> Writing Ollama systemd override"
 
 sudo mkdir -p /etc/systemd/system/ollama.service.d
@@ -93,6 +105,12 @@ if ! wait_for_url "Ollama" "http://127.0.0.1:11434/api/tags"; then
   exit 1
 fi
 echo "Ollama OK: http://127.0.0.1:11434"
+
+echo "==> Ensuring Ollama models are available"
+
+for model_name in "$DEFAULT_MODEL_NAME" "$LEGACY_MODEL_NAME"; do
+  ollama pull "$model_name"
+done
 
 echo "==> Checking Caddy conf.d import"
 
