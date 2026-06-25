@@ -45,6 +45,7 @@ in {
     # ref: https://vimcolorschemes.com/
     extraPlugins = with pkgs; [
       vimPlugins.ayu-vim
+      vimPlugins.edge
       # vimPlugins.base16-nvim
       vimPlugins.catppuccin-nvim
       vimPlugins.dracula-nvim

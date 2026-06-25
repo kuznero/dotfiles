@@ -32,5 +32,5 @@ else
   persist_appearance(appearance)
 end
 
-local colorscheme = appearance == "dark" and "nightfox" or "dayfox"
+local colorscheme = appearance == "dark" and "edge" or "edge"
 vim.cmd("colorscheme " .. colorscheme)
