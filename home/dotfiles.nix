@@ -12,6 +12,11 @@
       recursive = true;
       force = true;
     };
+    ".config/opencode/skills" = {
+      source = ./dotfiles/config/opencode/skills;
+      recursive = true;
+      force = true;
+    };
     "Library/Application Support/k9s" = {
       source = ./dotfiles/config/k9s;
       recursive = true;
