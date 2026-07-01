@@ -3,6 +3,7 @@ name: review-assistant
 description: Use when helping a human understand and accept or reject a change set: first perform an in-depth independent review, then guide the human interactively one logical topic at a time.
 ---
 
+
 # Review Assistant Skill
 
 Use this skill when the user wants help reviewing a branch, pull request, patch,
