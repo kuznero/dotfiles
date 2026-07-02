@@ -1,59 +1,78 @@
 version: "3"
 
 tasks:
-  nixos:switch:
-    desc: Switches nixos configuration
-    dir: "{{.ROOT_DIR}}"
-    env:
-      NIXPKGS_ALLOW_UNFREE: "1"
-    requires:
-      vars:
-        - NAME
-    cmds:
-      - sudo nixos-rebuild switch --flake .#{{.NAME}} --impure
-
-  home:switch:
-    desc: Switches home-manager configuration
-    dir: "{{.ROOT_DIR}}"
+  _nix:
+    internal: true
+    silent: true
     env:
       HOME_MANAGER_BACKUP_EXT: "bak"
       NIXPKGS_ALLOW_UNFREE: "1"
     requires:
       vars:
+        - CMD
+    cmds:
+      - |
+        if [ "$(uname)" = "Darwin" ]; then
+          ulimit -n 65536 2>/dev/null || true
+        fi
+        {{.CMD}}
+
+  nixos:switch:
+    desc: Switches nixos configuration
+    dir: "{{.ROOT_DIR}}"
+    requires:
+      vars:
         - NAME
     cmds:
-      - nix run .#homeConfigurations.{{.NAME}}.activationPackage --impure
+      - task: _nix
+        vars:
+          CMD: sudo nixos-rebuild switch --flake .#{{.NAME}} --impure
+
+  home:switch:
+    desc: Switches home-manager configuration
+    dir: "{{.ROOT_DIR}}"
+    requires:
+      vars:
+        - NAME
+    cmds:
+      - task: _nix
+        vars:
+          CMD: nix run .#homeConfigurations.{{.NAME}}.activationPackage --impure
 
   flake:show:
     desc: Shows flake outputs
     dir: "{{.ROOT_DIR}}"
     cmds:
-      - nix flake show --all-systems
+      - task: _nix
+        vars:
+          CMD: nix flake show --all-systems
 
   fmt:
     desc: Formats Nix files
     dir: "{{.ROOT_DIR}}"
     cmds:
-      - nix fmt
+      - task: _nix
+        vars:
+          CMD: nix fmt
 
   home:check:
     desc: Evaluates home-manager activation package
     dir: "{{.ROOT_DIR}}"
-    env:
-      NIXPKGS_ALLOW_UNFREE: "1"
     requires:
       vars:
         - NAME
     cmds:
-      - nix eval .#homeConfigurations.{{.NAME}}.activationPackage.drvPath --impure
+      - task: _nix
+        vars:
+          CMD: nix eval .#homeConfigurations.{{.NAME}}.activationPackage.drvPath --impure
 
   nixos:check:
     desc: Evaluates NixOS system closure
     dir: "{{.ROOT_DIR}}"
-    env:
-      NIXPKGS_ALLOW_UNFREE: "1"
     requires:
       vars:
         - NAME
     cmds:
-      - nix eval .#nixosConfigurations.{{.NAME}}.config.system.build.toplevel.drvPath --impure
+      - task: _nix
+        vars:
+          CMD: nix eval .#nixosConfigurations.{{.NAME}}.config.system.build.toplevel.drvPath --impure
