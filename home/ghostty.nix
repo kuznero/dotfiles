@@ -11,8 +11,7 @@ let
     font-style-bold = false
     adjust-cell-height = 10%
     adjust-cell-width = 0%
-    shell-integration-features = cursor,sudo,ssh-env,ssh-terminfo
-    cursor-style =
+    shell-integration-features = no-cursor,sudo,ssh-env,ssh-terminfo
     cursor-style = block
     mouse-hide-while-typing = true
     mouse-scroll-multiplier = 1.0
