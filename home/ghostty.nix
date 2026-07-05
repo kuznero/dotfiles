@@ -5,7 +5,8 @@ let
 
   ghosttyConfig = ''
     theme = dark:GitHub Dark Default,light:GitHub Light Default
-    font-family = RecMonoCasual Nerd Font
+    font-family =
+    font-family = Agave Nerd Font
     font-size = 14
     font-style-bold = false
     adjust-cell-height = 10%
