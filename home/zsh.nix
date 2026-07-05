@@ -63,7 +63,7 @@ in {
     oh-my-zsh = {
       enable = true;
       plugins =
-        [ "fzf" "git" "git-extras" "kube-ps1" "man" "sudo" "systemd" "tmux" ];
+        [ "fzf" "git" "git-extras" "kube-ps1" "man" "sudo" "systemd" ];
       # ref: https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
       theme = "kuznero";
       custom = "$HOME/.local/share/zsh-custom";

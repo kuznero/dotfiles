@@ -12,6 +12,7 @@ let
     adjust-cell-height = 10%
     adjust-cell-width = 0%
     shell-integration-features = cursor,sudo,ssh-env,ssh-terminfo
+    cursor-style =
     cursor-style = block
     mouse-hide-while-typing = true
     mouse-scroll-multiplier = 1.0
