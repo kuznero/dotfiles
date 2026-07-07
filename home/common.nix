@@ -7,6 +7,7 @@
       btop
       cmatrix
       coreutils-full
+      curl
       eza
       fd
       ffmpegthumbnailer
@@ -23,6 +24,7 @@
       nixd
       nodejs_24
       pass
+      piper-tts
       poppler
       ripgrep
       rsync
@@ -34,5 +36,8 @@
     ] ++ builtins.attrValues
     (pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) pkgs.nerd-fonts)
     ++ (with pkgs-stable; [ yazi ])
-    ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isLinux xclip;
+    ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+      wl-clipboard
+      xclip
+    ];
 }

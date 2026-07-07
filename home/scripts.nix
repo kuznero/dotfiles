@@ -8,5 +8,6 @@
     (writeShellScriptBin "greview" (builtins.readFile ./scripts/greview))
     (writeShellScriptBin "gsreset" (builtins.readFile ./scripts/gsreset))
     (writeShellScriptBin "sshex" (builtins.readFile ./scripts/sshex))
+    (writeShellScriptBin "tts" (builtins.readFile ./scripts/tts))
   ];
 }

@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VOICE_DIR="${PIPER_VOICE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/piper-voices/en/en_US/amy/medium}"
+DEFAULT_MODEL_FILE="${VOICE_DIR}/en_US-amy-medium.onnx"
+DEFAULT_CONFIG_FILE="${DEFAULT_MODEL_FILE}.json"
+MODEL_FILE="${PIPER_MODEL:-$DEFAULT_MODEL_FILE}"
+CONFIG_FILE="${PIPER_CONFIG:-${MODEL_FILE}.json}"
+PIPER_LENGTH_SCALE="${PIPER_LENGTH_SCALE:-0.65}"
+
+DEFAULT_MODEL_URL="https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/amy/medium/en_US-amy-medium.onnx"
+DEFAULT_CONFIG_URL="https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_US/amy/medium/en_US-amy-medium.onnx.json"
+
+if ! command -v piper >/dev/null 2>&1; then
+  echo "Missing required command: piper"
+  exit 1
+fi
+
+download_if_missing() {
+  local url="$1"
+  local dest="$2"
+
+  if [[ -s "$dest" ]]; then
+    return 0
+  fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "Missing required command: curl"
+    exit 1
+  fi
+
+  echo "Downloading: $dest"
+  mkdir -p "${dest%/*}"
+  curl -fL --retry 3 --retry-delay 2 -o "${dest}.tmp" "$url"
+  mv "${dest}.tmp" "$dest"
+}
+
+if [[ "$MODEL_FILE" == "$DEFAULT_MODEL_FILE" ]]; then
+  download_if_missing "$DEFAULT_MODEL_URL" "$DEFAULT_MODEL_FILE"
+fi
+
+if [[ "$CONFIG_FILE" == "$DEFAULT_CONFIG_FILE" ]]; then
+  download_if_missing "$DEFAULT_CONFIG_URL" "$DEFAULT_CONFIG_FILE"
+fi
+
+if [[ ! -s "$MODEL_FILE" ]]; then
+  echo "Missing Piper model: $MODEL_FILE"
+  echo "Unset PIPER_MODEL to download the default voice, or set it to an existing model."
+  exit 1
+fi
+
+if [[ -n "${PIPER_CONFIG:-}" && ! -s "$CONFIG_FILE" ]]; then
+  echo "Missing Piper config: $CONFIG_FILE"
+  exit 1
+fi
+
+PIPER_ARGS=(-m "$MODEL_FILE" --length-scale "$PIPER_LENGTH_SCALE")
+
+if [[ -s "$CONFIG_FILE" ]]; then
+  PIPER_ARGS+=(-c "$CONFIG_FILE")
+fi
+
+read_clipboard() {
+  if [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-paste >/dev/null 2>&1; then
+    wl-paste --no-newline --type text 2>/dev/null && return 0
+  fi
+
+  if [[ -n "${DISPLAY:-}" ]] && command -v xclip >/dev/null 2>&1; then
+    xclip -selection clipboard -target UTF8_STRING -out 2>/dev/null && return 0
+  fi
+
+  if [[ -n "${DISPLAY:-}" ]] && command -v xsel >/dev/null 2>&1; then
+    xsel --clipboard --output 2>/dev/null && return 0
+  fi
+
+  if command -v wl-paste >/dev/null 2>&1; then
+    wl-paste --no-newline --type text 2>/dev/null && return 0
+  fi
+
+  if command -v xclip >/dev/null 2>&1; then
+    xclip -selection clipboard -target UTF8_STRING -out 2>/dev/null && return 0
+  fi
+
+  if command -v xsel >/dev/null 2>&1; then
+    xsel --clipboard --output 2>/dev/null && return 0
+  fi
+
+  if command -v pbpaste >/dev/null 2>&1; then
+    pbpaste
+    return 0
+  fi
+
+  echo "Could not read clipboard text. Install wl-clipboard, xclip, xsel, or pbpaste." >&2
+  return 1
+}
+
+TEXT="$(read_clipboard)"
+
+if [[ -z "${TEXT//[[:space:]]/}" ]]; then
+  echo "Clipboard is empty."
+  exit 1
+fi
+
+if command -v pw-play >/dev/null 2>&1; then
+  printf '%s\n' "$TEXT" | piper "${PIPER_ARGS[@]}" --output-file - | pw-play -
+elif command -v afplay >/dev/null 2>&1; then
+  WAV_FILE="$(mktemp "${TMPDIR:-/tmp}/tts.XXXXXX.wav")"
+  trap 'rm -f "$WAV_FILE"' EXIT
+  printf '%s\n' "$TEXT" | piper "${PIPER_ARGS[@]}" --output-file "$WAV_FILE"
+  afplay "$WAV_FILE"
+else
+  echo "Missing audio player: install pipewire for pw-play, or run on macOS with afplay." >&2
+  exit 1
+fi
