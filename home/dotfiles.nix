@@ -22,11 +22,6 @@
       recursive = true;
       force = true;
     };
-    ".config/mc" = {
-      source = ./dotfiles/config/mc;
-      recursive = true;
-      force = true;
-    };
     ".config/yazi" = {
       source = ./dotfiles/config/yazi;
       recursive = true;
