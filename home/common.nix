@@ -23,7 +23,6 @@
       nixd
       nodejs_24
       pass
-      piper-tts
       poppler
       ripgrep
       rsync
@@ -34,7 +33,7 @@
       zsh
     ] ++ builtins.attrValues
     (pkgs.lib.filterAttrs (_: v: pkgs.lib.isDerivation v) pkgs.nerd-fonts)
-    ++ (with pkgs-stable; [ yazi ])
+    ++ (with pkgs-stable; [ piper-tts yazi ])
     ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       wl-clipboard
       xclip
