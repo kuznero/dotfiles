@@ -157,13 +157,13 @@ in {
       {
         mode = "n";
         key = "]c";
-        action = "<cmd>Gitsigns next_hunk<CR>";
+        action.__raw = "function() require('gitsigns').nav_hunk('next') end";
         options = { desc = "Go to next git hunk"; };
       }
       {
         mode = "n";
         key = "[c";
-        action = "<cmd>Gitsigns prev_hunk<CR>";
+        action.__raw = "function() require('gitsigns').nav_hunk('prev') end";
         options = { desc = "Go to previous git hunk"; };
       }
       # Gopls build tags discovery
@@ -415,7 +415,6 @@ in {
       gitsigns = {
         enable = true;
         settings = {
-          base = "origin/main";
           signs = {
             add = { text = "│"; };
             change = { text = "│"; };
