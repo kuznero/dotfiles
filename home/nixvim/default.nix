@@ -130,7 +130,16 @@ in {
         key = "<leader>t";
         action = "<cmd>Telescope<CR>";
       }
-
+      {
+        mode = "n";
+        key = "<leader>a";
+        action = "<cmd>AerialToggle<CR>";
+      }
+      {
+        mode = "n";
+        key = "<leader>o";
+        action = "<cmd>AerialNavToggle<CR>";
+      }
       # Diagnostic navigation
       {
         mode = "n";
@@ -180,16 +189,6 @@ in {
     ] ++ (if fastProfile then
       [ ]
     else [
-      {
-        mode = "n";
-        key = "<leader>a";
-        action = "<cmd>AerialToggle<CR>";
-      }
-      {
-        mode = "n";
-        key = "<leader>o";
-        action = "<cmd>AerialNavToggle<CR>";
-      }
       {
         mode = "n";
         key = "<leader>z";
@@ -304,7 +303,7 @@ in {
 
     # ref: https://nix-community.github.io/nixvim/index.html
     plugins = {
-      aerial.enable = !fastProfile;
+      aerial.enable = true;
       barbar = {
         enable = true;
         settings = {
