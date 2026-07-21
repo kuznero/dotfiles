@@ -238,6 +238,8 @@ in {
       # Enable focus-events
       set -g focus-events on
 
+      set -g extended-keys on
+
       # Set default escape-time
       set-option -sg escape-time 10
 
