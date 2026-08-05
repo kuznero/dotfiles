@@ -8,7 +8,7 @@ let
     font-family =
     # font-family = Agave Nerd Font
     font-family = AtkynsonMono Nerd Font
-    font-size = 12
+    font-size = 13
     font-style-bold = false
     # adjust-cell-height = 10%
     # adjust-cell-width = 0%
