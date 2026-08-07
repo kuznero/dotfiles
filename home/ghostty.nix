@@ -7,12 +7,12 @@ let
     theme = dark:GitHub Dark Default,light:GitHub Light Default
     font-family =
     # font-family = Agave Nerd Font
-    font-family = AtkynsonMono Nerd Font
-    font-size = 13
+    # font-family = AtkynsonMono Nerd Font
+    font-family = MartianMono Nerd Font
+    font-size = 12
     font-style-bold = false
-    # adjust-cell-height = 10%
-    # adjust-cell-width = 0%
-    adjust-cell-width = -5%
+    adjust-cell-height = 5%
+    adjust-cell-width = 0%
     shell-integration-features = no-cursor,sudo,ssh-env,ssh-terminfo
     cursor-style = block
     mouse-hide-while-typing = true
