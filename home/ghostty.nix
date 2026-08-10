@@ -13,7 +13,10 @@ let
     font-style-bold = false
     adjust-cell-height = 5%
     adjust-cell-width = 0%
-    shell-integration-features = no-cursor,sudo,ssh-env,ssh-terminfo
+    # Use the widely-available xterm-256color instead of xterm-ghostty so that
+    # remote servers over SSH work without installing custom terminfo entries.
+    term = xterm-256color
+    shell-integration-features = no-cursor
     cursor-style = block
     mouse-hide-while-typing = true
     mouse-scroll-multiplier = 1.0

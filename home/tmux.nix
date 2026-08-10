@@ -231,7 +231,6 @@ in {
 
       # Keep pane TERM managed by tmux and advertise outer terminal features.
       set-environment -gu TERM
-      set -as terminal-features ",xterm-ghostty*:RGB"
       set -as terminal-features ",xterm-256color:RGB"
       set -as terminal-overrides ",xterm-256color:smcup@:rmcup@"
 
