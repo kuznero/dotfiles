@@ -21,6 +21,7 @@ let
     mouse-hide-while-typing = true
     mouse-scroll-multiplier = 1.0
     macos-option-as-alt = true
+    maximize = true
   '';
 in {
   xdg.configFile."ghostty/config".text = ghosttyConfig;
