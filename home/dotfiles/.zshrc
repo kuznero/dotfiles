@@ -25,7 +25,13 @@ command -v kubectl >/dev/null 2>&1 && {
 
 command -v switcher >/dev/null 2>&1 && {
   source <(switcher init zsh)
-  alias s=switch
+  # Use fzf for context selection instead of kubeswitch's built-in picker
+  # (go-fuzzyfinder with hardcoded colors that ignore the terminal theme)
+  function s() {
+    local ctx
+    ctx=$(switch list-contexts | fzf --prompt='k8s ctx> ' --height=40% --reverse) || return
+    [ -n "$ctx" ] && switch "$ctx"
+  }
   source <(switch completion zsh)
 }
 
