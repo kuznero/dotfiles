@@ -207,7 +207,6 @@
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              ./home/ghostty.nix
               ./home/git.nix
               # ./home/messengers.nix
               (import ./home/nixvim/default.nix {
@@ -243,7 +242,6 @@
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              ./home/ghostty.nix
               ./home/git.nix
               (import ./home/nixvim/default.nix {
                 nixvim = nixvim;
@@ -286,7 +284,6 @@
               ./home/common.nix
               ./home/dotfiles.nix
               ./home/fzf.nix
-              ./home/ghostty.nix
               ./home/git.nix
               (import ./home/nixvim/default.nix {
                 nixvim = nixvim;
