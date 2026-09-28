@@ -112,7 +112,6 @@ let
     fi
 
     if [ "$appearance" = "dark" ]; then
-      tmux set-option -g status-style "bg=#0f172a,fg=#cbd5e1"
       tmux set-option -g mode-style "bg=#f59e0b,fg=#0f172a"
       tmux set-option -g message-style "bg=#1e293b,fg=#e2e8f0"
       tmux set-option -g message-command-style "bg=#2dd4bf,fg=#0f172a"
@@ -122,13 +121,7 @@ let
       tmux set-option -g display-panes-active-colour "#f59e0b"
       tmux set-option -g popup-style "bg=#111827,fg=#cbd5e1"
       tmux set-option -g popup-border-style "fg=#2dd4bf"
-      tmux set-option -g window-status-format " #[fg=#94a3b8,bg=#1e293b] #I:#W#{?window_zoomed_flag, ●,} "
-      tmux set-option -g window-status-current-format " #[fg=#0f172a,bg=#2dd4bf,bold] #I:#W#{?window_zoomed_flag, ●,} "
-      tmux set-option -g window-status-last-style "fg=#f59e0b"
-      tmux set-option -g window-status-activity-style "fg=#f59e0b,bold"
-      tmux set-option -g status-right "#{?client_prefix,#[fg=#0f172a,bg=#f59e0b,bold] PREFIX ,}#[fg=#e2e8f0,bg=#1e293b] #S #[fg=#0f172a,bg=#2dd4bf] %a %H:%M "
     else
-      tmux set-option -g status-style "bg=#e8eef5,fg=#334155"
       tmux set-option -g mode-style "bg=#d97706,fg=#fff7ed"
       tmux set-option -g message-style "bg=#dbe4f0,fg=#1e293b"
       tmux set-option -g message-command-style "bg=#0f766e,fg=#f8fafc"
@@ -138,11 +131,6 @@ let
       tmux set-option -g display-panes-active-colour "#d97706"
       tmux set-option -g popup-style "bg=#f8fafc,fg=#334155"
       tmux set-option -g popup-border-style "fg=#0f766e"
-      tmux set-option -g window-status-format " #[fg=#64748b,bg=#dbe4f0] #I:#W#{?window_zoomed_flag, ●,} "
-      tmux set-option -g window-status-current-format " #[fg=#f8fafc,bg=#0f766e,bold] #I:#W#{?window_zoomed_flag, ●,} "
-      tmux set-option -g window-status-last-style "fg=#b45309"
-      tmux set-option -g window-status-activity-style "fg=#b45309,bold"
-      tmux set-option -g status-right "#{?client_prefix,#[fg=#fff7ed,bg=#d97706,bold] PREFIX ,}#[fg=#1e293b,bg=#dbe4f0] #S #[fg=#f8fafc,bg=#0f766e] %a %H:%M "
     fi
   '';
 
@@ -243,14 +231,23 @@ in {
       # Set default escape-time
       set-option -sg escape-time 10
 
-      # Shared tmux layout; colors are loaded from ~/.config/appearance.
+      # Shared tmux layout; pane borders/messages/popups follow
+      # ~/.config/appearance via tmux-apply-appearance.
       set-option -g status-position top
       set-option -g status-interval 5
       set-option -g status-justify left
 
+      # Status line (incl. tabs) always uses terminal default colors and does
+      # not depend on the light/dark appearance.
+      set-option -g status-style "default"
+      set-option -g window-status-style "default"
+      set-option -g window-status-current-style "reverse,bold"
+      set-option -g window-status-format " #I:#W#{?window_zoomed_flag, ●,} "
+      set-option -g window-status-current-format " #I:#W#{?window_zoomed_flag, ●,} "
       set-option -g window-status-separator ""
 
       set-option -g status-left ""
+      set-option -g status-right "#{?client_prefix,#[reverse,bold] PREFIX ,} #S  %a %H:%M "
       set-option -g status-right-length 100
       set-option -g status-left-length 100
 
