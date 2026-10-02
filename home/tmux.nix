@@ -119,8 +119,6 @@ let
       tmux set-option -g pane-active-border-style "fg=#2dd4bf"
       tmux set-option -g display-panes-colour "#94a3b8"
       tmux set-option -g display-panes-active-colour "#f59e0b"
-      tmux set-option -g popup-style "bg=#111827,fg=#cbd5e1"
-      tmux set-option -g popup-border-style "fg=#2dd4bf"
     else
       tmux set-option -g mode-style "bg=#d97706,fg=#fff7ed"
       tmux set-option -g message-style "bg=#dbe4f0,fg=#1e293b"
@@ -129,8 +127,6 @@ let
       tmux set-option -g pane-active-border-style "fg=#0f766e"
       tmux set-option -g display-panes-colour "#64748b"
       tmux set-option -g display-panes-active-colour "#d97706"
-      tmux set-option -g popup-style "bg=#f8fafc,fg=#334155"
-      tmux set-option -g popup-border-style "fg=#0f766e"
     fi
   '';
 
@@ -231,8 +227,12 @@ in {
       # Set default escape-time
       set-option -sg escape-time 10
 
-      # Shared tmux layout; pane borders/messages/popups follow
+      # Shared tmux layout; pane borders/messages follow
       # ~/.config/appearance via tmux-apply-appearance.
+      # Popups (e.g. the M-p session picker) always use terminal default
+      # colors and do not depend on the light/dark appearance.
+      set-option -g popup-style "default"
+      set-option -g popup-border-style "default"
       set-option -g status-position top
       set-option -g status-interval 5
       set-option -g status-justify left
