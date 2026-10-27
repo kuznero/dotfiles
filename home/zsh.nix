@@ -46,6 +46,10 @@ in {
         export PATH="$PATH:$HOME/.opencode/bin"
       fi
 
+      if [ -d "$HOME/.pi/agent/bin" ]; then
+        export PATH="$PATH:$HOME/.pi/agent/bin"
+      fi
+
       if [ -f /etc/arch-release ]; then
         path=(/usr/local/bin /usr/bin /bin $path)
       fi
