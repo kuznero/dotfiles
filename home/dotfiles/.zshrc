@@ -78,3 +78,7 @@ command -v ccusage >/dev/null 2>&1 && {
 command -v tailscale >/dev/null 2>&1 && {
   source <(tailscale completion zsh)
 }
+
+if [ -d "$HOME/.lmstudio/bin" ]; then
+  export PATH="$PATH:$HOME/.lmstudio/bin"
+fi
