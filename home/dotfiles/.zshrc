@@ -82,3 +82,7 @@ command -v tailscale >/dev/null 2>&1 && {
 if [ -d "$HOME/.lmstudio/bin" ]; then
   export PATH="$PATH:$HOME/.lmstudio/bin"
 fi
+
+if [ -d "$HOME/.spicetify" ]; then
+  export PATH="$PATH:$HOME/.spicetify"
+fi
